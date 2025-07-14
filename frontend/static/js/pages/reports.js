@@ -300,7 +300,7 @@ function showNotification(message, type = 'success') {
 }
 
 // Reports.js - Professional Reports Dashboard
-const API_BASE = 'http://localhost:4455/api/reports';
+const API_BASE = `${window.location.protocol}//${window.location.hostname}:4455/api/reports`;
 
 // 1. Monthly Student Admissions
 async function loadStudentAdmissions() {
@@ -452,7 +452,7 @@ async function loadStudentsByMonth() {
     tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
     countDiv.textContent = '';
     try {
-        const response = await fetch(`http://localhost:4455/api/reports/students-by-month?month=${month}`);
+        const response = await fetch(`${API_BASE}/students-by-month?month=${month}`);
         const students = await response.json();
         if (students.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="4">No students found for this month.</td></tr>';
