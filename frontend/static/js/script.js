@@ -1,3 +1,66 @@
+// === Device Check Overlay ===
+function showDeviceOverlay() {
+    if (document.getElementById('device-overlay')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'device-overlay';
+    overlay.innerHTML = `
+        <div class="device-message">
+            <div class="device-icon">💻</div>
+            <h2>Desktop Only</h2>
+            <p>This application is only available on laptops/desktops.<br>Mobile support is coming soon!</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+function hideDeviceOverlay() {
+    const overlay = document.getElementById('device-overlay');
+    if (overlay) overlay.remove();
+}
+function checkDevice() {
+    if (window.innerWidth < 900) {
+        showDeviceOverlay();
+    } else {
+        hideDeviceOverlay();
+    }
+}
+window.addEventListener('resize', checkDevice);
+document.addEventListener('DOMContentLoaded', checkDevice);
+
+// === Server Status Overlay ===
+function showServerOverlay() {
+    if (document.getElementById('server-overlay')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'server-overlay';
+    overlay.innerHTML = `
+        <div class="server-message">
+            <div class="server-animation">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+            <h2>Server Not Running</h2>
+            <p>Oops! The backend server is not available.<br>Please start the server and try again.</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+function hideServerOverlay() {
+    const overlay = document.getElementById('server-overlay');
+    if (overlay) overlay.remove();
+}
+async function checkServer() {
+    try {
+        // Try a lightweight API endpoint
+        const res = await fetch('http://localhost:4455/api/reports/monthly-student-admissions', { method: 'GET' });
+        if (!res.ok) throw new Error('Not OK');
+        hideServerOverlay();
+    } catch (e) {
+        showServerOverlay();
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    checkServer();
+    setInterval(checkServer, 10000); // Check every 10s
+});
+
 // Check if user is logged in
 if (!localStorage.getItem('isLoggedIn')) {
     window.location.replace('login.html');
