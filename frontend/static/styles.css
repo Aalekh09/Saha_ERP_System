@@ -3133,3 +3133,74 @@ label[for]:after {
     box-shadow: 0 8px 24px rgba(25, 118, 210, 0.18);
     transform: translateY(-2px) scale(1.03);
 }
+
+#maintenanceModal {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: none;
+    background: none;
+    width: auto;
+    max-width: none;
+    pointer-events: none;
+    height: auto;
+}
+#maintenanceModal .modal-content {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+    padding: 32px 28px 24px 28px;
+    text-align: center;
+    position: relative;
+    pointer-events: all;
+    border: 1.5px solid #e3e8ee;
+    min-width: 320px;
+    max-width: 420px;
+    margin: 0 auto;
+    color: #222;
+    font-size: 1.08rem;
+    font-weight: 500;
+    animation: modalDropIn 0.25s cubic-bezier(.4,1.6,.6,1) 1;
+}
+#maintenanceModal .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 22px;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+#maintenanceModal .close-btn:hover {
+    color: #1976d2;
+}
+@keyframes modalDropIn {
+    from { opacity: 0; transform: translateY(-40px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Unified modal content style for all modals */
+.modal-content {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+    padding: 32px 28px 24px 28px;
+    text-align: center;
+    position: relative;
+    pointer-events: all;
+    border: 1.5px solid #e3e8ee;
+    min-width: 320px;
+    max-width: 420px;
+    margin: 0 auto;
+    color: #222;
+    font-size: 1.08rem;
+    font-weight: 500;
+    animation: modalDropIn 0.25s cubic-bezier(.4,1.6,.6,1) 1;
+}
+#maintenanceModal .modal-content {
+    /* Inherit all from .modal-content for consistency */
+}

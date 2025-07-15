@@ -633,6 +633,43 @@
             alert('This is under working. Please contact admin for more details.');
         });
     }
+    // Intercept Teachers panel click globally
+    const teachersBtn = document.querySelector('.admin-menu .tab-btn[data-tab="teachers"]');
+    const teachersPanel = document.getElementById('teachers-panel');
+    const listPanel = document.getElementById('list-panel');
+    if (teachersBtn) {
+        teachersBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(function(panel) {
+                panel.classList.remove('active');
+            });
+            // Show the list students panel
+            if (listPanel) listPanel.classList.add('active');
+            // Show modal with message
+            const modal = document.getElementById('maintenanceModal');
+            if (modal) {
+                modal.style.display = 'block';
+            } else {
+                alert('Teachers panel is not available yet. It will come soon. For more details, contact admin.');
+            }
+        });
+    }
+    // Close maintenance modal logic
+    const closeMaintenanceModal = document.getElementById('closeMaintenanceModal');
+    if (closeMaintenanceModal) {
+        closeMaintenanceModal.addEventListener('click', function() {
+            const modal = document.getElementById('maintenanceModal');
+            if (modal) modal.style.display = 'none';
+        });
+    }
+    // Optional: Hide modal on outside click
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('maintenanceModal');
+        if (modal && event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
     </script>
 </body>
 </html>
