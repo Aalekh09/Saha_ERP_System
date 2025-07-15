@@ -379,11 +379,11 @@ function updateStats(students) {
         totalFees.textContent = `₹${formatCurrency(total)}`;
     }
     
-    // Active Students (students with remaining fees > 0)
-    const activeStudents = document.getElementById('activeStudents');
-    if (activeStudents) {
-        const active = students.filter(student => (parseFloat(student.remainingAmount) || 0) > 0).length;
-        activeStudents.textContent = active;
+    // Students who have not made any payments (paidAmount is 0 or falsy)
+    const noPaymentStudents = document.getElementById('noPaymentStudents');
+    if (noPaymentStudents) {
+        const count = students.filter(student => !student.paidAmount || parseFloat(student.paidAmount) === 0).length;
+        noPaymentStudents.textContent = count;
     }
 }
 
