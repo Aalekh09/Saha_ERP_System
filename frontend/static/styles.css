@@ -3075,3 +3075,61 @@ label[for]:after {
         padding: 24px 12px 12px 12px;
     }
 }
+
+/* Payment panel header flex alignment */
+.payment-actions-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.payment-actions-flex .search-container {
+    flex: 1 1 300px;
+    min-width: 220px;
+}
+.payment-actions-flex #addPaymentBtn {
+    flex-shrink: 0;
+    min-width: 180px;
+    margin-left: 12px;
+}
+@media (max-width: 700px) {
+    .payment-actions-flex {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .payment-actions-flex #addPaymentBtn {
+        width: 100%;
+        min-width: unset;
+        margin-left: 0;
+    }
+}
+
+/* Enhanced Add New Payment button style */
+#addPaymentBtn {
+    background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 32px;
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.10);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    outline: none;
+}
+#addPaymentBtn i {
+    font-size: 18px;
+}
+#addPaymentBtn:hover, #addPaymentBtn:focus {
+    background: linear-gradient(90deg, #1565c0 60%, #1e88e5 100%);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(25, 118, 210, 0.18);
+    transform: translateY(-2px) scale(1.03);
+}
