@@ -291,48 +291,81 @@
                         </button>
                     </div>
                 </div>
-                
                 <div class="panel-content">
-                    <div class="payment-form" style="display: none;">
-                        <div class="form-header">
-                            <h3><i class="fas fa-plus-circle"></i> Add Payment</h3>
+                    <!-- Payment Modal (hidden by default) -->
+                    <div id="addPaymentModal" class="modal" style="display:none;">
+                        <div class="modal-content payment-modal-upgraded">
+                            <div class="modal-header upgraded-modal-header">
+                                <div class="modal-header-left">
+                                    <div class="modal-icon-bg">
+                                        <i class="fas fa-wallet"></i>
+                                    </div>
+                                    <div class="modal-header-title">
+                                        <h2><i class="fas fa-plus-circle"></i> Add New Payment</h2>
+                                        <p class="modal-subtitle">Fill in the details to record a new payment for a student.</p>
+                                    </div>
+                                </div>
+                                <button class="close-btn" id="closeAddPaymentModalBtn" title="Close Add Payment Modal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body-upgraded">
+                                <!-- Student summary card (hidden by default, can be shown with JS if student is selected) -->
+                                <div id="selectedStudentSummary" class="student-summary-card" style="display:none;">
+                                    <div class="student-summary-avatar"><i class="fas fa-user-graduate"></i></div>
+                                    <div class="student-summary-details">
+                                        <div class="student-summary-name" id="summaryStudentName">Student Name</div>
+                                        <div class="student-summary-id" id="summaryStudentId">ID: 123</div>
+                                    </div>
+                                </div>
+                                <form id="paymentForm" class="payment-form-upgraded">
+                                    <div class="form-section">
+                                        <h4 class="form-section-title"><i class="fas fa-user"></i> Student</h4>
+                                        <div class="form-group">
+                                            <label for="studentSearchInput">Search Student:</label>
+                                            <input type="text" id="studentSearchInput" placeholder="Type to search by name or ID...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="studentSelect" id="studentSelectLabel">Student:</label>
+                                            <select id="studentSelect" required title="Select Student" aria-labelledby="studentSelectLabel">
+                                                <option value="">Select Student</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-section">
+                                        <h4 class="form-section-title"><i class="fas fa-rupee-sign"></i> Payment Details</h4>
+                                        <div class="form-grid-2col">
+                                            <div class="form-group">
+                                                <label for="amount">Amount:</label>
+                                                <input type="number" id="amount" required min="0" step="0.01">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="paymentMethod">Payment Method:</label>
+                                                <select id="paymentMethod" required>
+                                                    <option value="CASH">Cash</option>
+                                                    <option value="ONLINE">Online</option>
+                                                    <option value="CHEQUE">Cheque</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description">Description:</label>
+                                                <input type="text" id="description" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions upgraded-form-actions">
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-save"></i> Submit Payment
+                                        </button>
+                                        <button type="button" id="cancelPaymentBtn" class="btn-secondary">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <form id="paymentForm">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="studentSelect">Student:</label>
-                                    <select id="studentSelect" required>
-                                        <option value="">Select Student</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="amount">Amount:</label>
-                                    <input type="number" id="amount" required min="0" step="0.01">
-                                </div>
-                                <div class="form-group">
-                                    <label for="paymentMethod">Payment Method:</label>
-                                    <select id="paymentMethod" required>
-                                        <option value="CASH">Cash</option>
-                                        <option value="ONLINE">Online</option>
-                                        <option value="CHEQUE">Cheque</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="description">Description:</label>
-                                    <input type="text" id="description" required>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-save"></i> Submit Payment
-                                </button>
-                                <button type="button" id="cancelPaymentBtn" class="btn-secondary">
-                                    <i class="fas fa-times"></i> Cancel
-                                </button>
-                            </div>
-                        </form>
                     </div>
-
+                    <!-- End Payment Modal -->
                     <div class="payments-list">
                         <div class="table-container">
                             <table id="paymentsTable">

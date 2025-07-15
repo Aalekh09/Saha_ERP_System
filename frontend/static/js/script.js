@@ -823,7 +823,8 @@ if (paymentForm) {
             if (paymentResponse.ok) {
                 const payment = await paymentResponse.json();
                 showNotification('Payment added successfully!');
-                document.querySelector('.payment-form').style.display = 'none';
+                const modal = document.getElementById('addPaymentModal');
+                if (modal) modal.style.display = 'none';
                 paymentForm.reset();
                 fetchPayments();
                 fetchStudents(); // Refresh the student list to show updated payment info
@@ -841,15 +842,27 @@ if (paymentForm) {
 // Initialize add payment button
 if (addPaymentBtn) {
     addPaymentBtn.addEventListener('click', () => {
-        document.querySelector('.payment-form').style.display = 'block';
+        const modal = document.getElementById('addPaymentModal');
+        if (modal) modal.style.display = 'block';
         loadStudentsForPayment();
+    });
+}
+
+// Initialize close modal button
+const closeAddPaymentModalBtn = document.getElementById('closeAddPaymentModalBtn');
+if (closeAddPaymentModalBtn) {
+    closeAddPaymentModalBtn.addEventListener('click', () => {
+        const modal = document.getElementById('addPaymentModal');
+        if (modal) modal.style.display = 'none';
+        paymentForm.reset();
     });
 }
 
 // Initialize cancel payment button
 if (cancelPaymentBtn) {
     cancelPaymentBtn.addEventListener('click', () => {
-        document.querySelector('.payment-form').style.display = 'none';
+        const modal = document.getElementById('addPaymentModal');
+        if (modal) modal.style.display = 'none';
         paymentForm.reset();
     });
 }
@@ -1047,6 +1060,42 @@ document.getElementById('paymentSearchInput').addEventListener('input', () => {
     fetchPayments();
 });
 
+// Student search for Add Payment modal
+const studentSearchInput = document.getElementById('studentSearchInput');
+if (studentSearchInput && studentSelect) {
+    studentSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        // Store all students in a global variable if not already
+        if (!window._allStudentsForPayment) {
+            window._allStudentsForPayment = [];
+            for (let i = 0; i < studentSelect.options.length; i++) {
+                const opt = studentSelect.options[i];
+                if (opt.value) {
+                    window._allStudentsForPayment.push({
+                        value: opt.value,
+                        text: opt.textContent,
+                        phone: opt.getAttribute('data-phone') || ''
+                    });
+                }
+            }
+        }
+        // Filter and repopulate
+        studentSelect.innerHTML = '<option value="">Select Student</option>';
+        window._allStudentsForPayment.forEach(opt => {
+            if (
+                opt.text.toLowerCase().includes(searchTerm) ||
+                opt.value.toLowerCase().includes(searchTerm)
+            ) {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.text;
+                if (opt.phone) option.setAttribute('data-phone', opt.phone);
+                studentSelect.appendChild(option);
+            }
+        });
+    });
+}
+
 // Teacher Management Functions
 function showAddTeacherForm() {
     document.getElementById('teacher-form').style.display = 'block';
@@ -1060,11 +1109,16 @@ function hideTeacherForm() {
 
 function loadTeachers() {
     fetch('/api/teachers')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                // If 404, suppress error notification
+                if (response.status === 404) return Promise.reject({ suppress: true });
+            }
+            return response.json();
+        })
         .then(teachers => {
             const tableBody = document.getElementById('teachersTableBody');
             tableBody.innerHTML = '';
-            
             teachers.forEach(teacher => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -1100,6 +1154,9 @@ function loadTeachers() {
             });
         })
         .catch(error => {
+            // Suppress error notification for 404 or invalid JSON
+            if (error && error.suppress) return;
+            if (error instanceof SyntaxError) return;
             console.error('Error loading teachers:', error);
             showNotification('Error loading teachers', 'error');
         });
