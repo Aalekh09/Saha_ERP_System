@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = window.location.protocol + '//' + "localhost:4455";
+const API_BASE = window.location.protocol + '//' + "aalekhapi.sahaedu.in";
 
 const EnquiryList = () => {
     const [enquiries, setEnquiries] = useState([]);

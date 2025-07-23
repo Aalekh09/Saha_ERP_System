@@ -300,7 +300,7 @@ function showNotification(message, type = 'success') {
 }
 
 // Reports.js - Professional Reports Dashboard
-const API_BASE = `${window.location.protocol}//localhost:4455/api/reports`;
+const API_BASE = `${window.location.protocol}//aalekhapi.sahaedu.in/api/reports`;
 
 // 1. Monthly Student Admissions
 async function loadStudentAdmissions() {

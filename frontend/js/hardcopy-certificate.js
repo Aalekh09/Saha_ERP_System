@@ -84,7 +84,7 @@ function showCertificateDetails(data, certificateId, pdfBlob = null) {
 async function loadExistingCertificates() {
     try {
         console.log('Loading existing certificates...');
-        const response = await fetch('http://localhost:4455/api/certificates');
+        const response = await fetch('https://aalekhapi.sahaedu.in/api/certificates');
         
         if (response.ok) {
             const certificates = await response.json();
@@ -351,7 +351,7 @@ async function saveCertificateToBackend(data) {
         
         console.log('Sending certificate data to backend:', certificateData);
         
-        const response = await fetch('http://localhost:4455/api/certificates', {
+        const response = await fetch('https://aalekhapi.sahaedu.in/api/certificates', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
