@@ -29,16 +29,39 @@ public class CertificateService {
     }
 
     public Certificate createCertificate(Certificate certificate) {
-        // Set default status if not provided
-        if (certificate.getStatus() == null) {
-            certificate.setStatus("Active");
+        try {
+            // Set default status if not provided
+            if (certificate.getStatus() == null) {
+                certificate.setStatus("Active");
+            }
+            
+            // Ensure required fields are not null
+            if (certificate.getType() == null || certificate.getType().trim().isEmpty()) {
+                certificate.setType("Certificate");
+            }
+            
+            // Ensure issue date is set
+            if (certificate.getIssueDate() == null) {
+                certificate.setIssueDate(LocalDate.now());
+            }
+            
+            System.out.println("About to save certificate with type: " + certificate.getType());
+            System.out.println("Status: " + certificate.getStatus());
+            System.out.println("Issue date: " + certificate.getIssueDate());
+            System.out.println("Registration number: " + certificate.getRegistrationNumber());
+            
+            // Note: We're not linking to existing students since registration number
+            // is not a field in the Student entity. The certificate will be created
+            // with the registration number stored in the certificate itself.
+            
+            Certificate savedCertificate = certificateRepository.save(certificate);
+            System.out.println("Certificate saved successfully with ID: " + savedCertificate.getId());
+            return savedCertificate;
+        } catch (Exception e) {
+            System.err.println("Error in CertificateService.createCertificate: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
-        
-        // Note: We're not linking to existing students since registration number
-        // is not a field in the Student entity. The certificate will be created
-        // with the registration number stored in the certificate itself.
-        
-        return certificateRepository.save(certificate);
     }
 
     public Certificate updateCertificate(Long id, Certificate certificateDetails) {
@@ -78,9 +101,5 @@ public class CertificateService {
     public List<Certificate> getCertificatesByStudentId(Long studentId) {
         Optional<Student> student = studentRepository.findById(studentId);
         return student.map(certificateRepository::findByStudent).orElse(List.of());
-    }
-    
-    public List<Certificate> getCertificatesByRegistrationNumber(String registrationNumber) {
-        return certificateRepository.findByRegistrationNumber(registrationNumber);
     }
 } 

@@ -11,7 +11,7 @@ if (username) {
 }
 
 // Dynamic API base URL for cross-device compatibility
-const API_BASE = window.location.protocol + '//' + "aalekh.sahaedu.in";
+const API_BASE = window.location.protocol + '//' + "localhost:4455";
 const API_URL = API_BASE + '/api/enquiries';
 
 const enquiryForm = document.getElementById('enquiryForm');

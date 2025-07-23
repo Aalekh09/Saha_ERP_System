@@ -17,8 +17,11 @@ function testCertificateDetails() {
     showCertificateDetails(testData, 'TEST-CERT-001');
 }
 
+// Global variable to store the last generated PDF
+let lastGeneratedPDF = null;
+
 // Function to show certificate details panel
-function showCertificateDetails(data, certificateId) {
+function showCertificateDetails(data, certificateId, pdfBlob = null) {
     console.log('showCertificateDetails called with:', data, certificateId);
     
     const detailsPanel = document.getElementById('certificateDetailsPanel');
@@ -29,18 +32,39 @@ function showCertificateDetails(data, certificateId) {
         return;
     }
     
-    // Populate certificate details with only essential information
-    document.getElementById('detailStudentName').textContent = titleCase(data.name);
-    document.getElementById('detailRegistrationNo').textContent = data.registration;
-    document.getElementById('detailIssueDate').textContent = new Date().toLocaleDateString();
-    document.getElementById('detailCertificateId').textContent = certificateId || 'CERT-' + data.registration;
-    document.getElementById('detailCourseName').textContent = titleCase(data.certificate);
-    document.getElementById('detailGrade').textContent = data.Grade;
-    document.getElementById('detailStatus').textContent = 'Issued';
+    // Store the PDF blob for download functionality
+    if (pdfBlob) {
+        lastGeneratedPDF = pdfBlob;
+    }
+    
+    // Show the certificate details panel
+    detailsPanel.style.display = 'block';
+    
+    // Populate certificate details with null checks
+    const detailStudentName = document.getElementById('detailStudentName');
+    const detailRegistrationNo = document.getElementById('detailRegistrationNo');
+    const detailIssueDate = document.getElementById('detailIssueDate');
+    const detailCertificateId = document.getElementById('detailCertificateId');
+    const detailCourseName = document.getElementById('detailCourseName');
+    const detailGrade = document.getElementById('detailGrade');
+    const detailStatus = document.getElementById('detailStatus');
+    
+    if (detailStudentName) detailStudentName.textContent = titleCase(data.name);
+    if (detailRegistrationNo) detailRegistrationNo.textContent = data.registration;
+    if (detailIssueDate) detailIssueDate.textContent = new Date().toLocaleDateString();
+    if (detailCertificateId) detailCertificateId.textContent = certificateId || 'CERT-' + data.registration;
+    if (detailCourseName) detailCourseName.textContent = titleCase(data.certificate);
+    if (detailGrade) detailGrade.textContent = data.Grade;
+    if (detailStatus) detailStatus.textContent = 'Issued';
+    
+    // Update status badge
+    const statusElement = document.getElementById('certificateStatus');
+    if (statusElement) {
+        statusElement.textContent = 'Issued';
+        statusElement.className = 'certificate-status status-issued';
+    }
     
     console.log('Certificate details populated successfully');
-    
-    // Panel is always visible, no need to show/hide
     console.log('Certificate details panel updated');
 }
 
@@ -48,7 +72,7 @@ function showCertificateDetails(data, certificateId) {
 async function loadExistingCertificates() {
     try {
         console.log('Loading existing certificates...');
-        const response = await fetch('/api/certificates');
+        const response = await fetch('http://localhost:4455/api/certificates');
         
         if (response.ok) {
             const certificates = await response.json();
@@ -76,16 +100,25 @@ async function loadExistingCertificates() {
 function displayCertificateData(certificate) {
     console.log('Displaying certificate data:', certificate);
     
-    document.getElementById('detailStudentName').textContent = certificate.student ? certificate.student.name : certificate.registrationNumber || '-';
-    document.getElementById('detailRegistrationNo').textContent = certificate.registrationNumber || '-';
-    document.getElementById('detailIssueDate').textContent = certificate.issueDate ? new Date(certificate.issueDate).toLocaleDateString() : '-';
-    document.getElementById('detailCertificateId').textContent = certificate.id ? 'CERT-' + certificate.id : '-';
-    document.getElementById('detailCourseName').textContent = certificate.type || '-';
-    document.getElementById('detailGrade').textContent = certificate.grade || '-';
-    document.getElementById('detailStatus').textContent = certificate.status || 'Active';
+    // Add null checks for all elements
+    const detailStudentName = document.getElementById('detailStudentName');
+    const detailRegistrationNo = document.getElementById('detailRegistrationNo');
+    const detailIssueDate = document.getElementById('detailIssueDate');
+    const detailCertificateId = document.getElementById('detailCertificateId');
+    const detailCourseName = document.getElementById('detailCourseName');
+    const detailGrade = document.getElementById('detailGrade');
+    const detailStatus = document.getElementById('detailStatus');
+    const statusElement = document.getElementById('certificateStatus');
+    
+    if (detailStudentName) detailStudentName.textContent = certificate.student ? certificate.student.name : certificate.registrationNumber || '-';
+    if (detailRegistrationNo) detailRegistrationNo.textContent = certificate.registrationNumber || '-';
+    if (detailIssueDate) detailIssueDate.textContent = certificate.issueDate ? new Date(certificate.issueDate).toLocaleDateString() : '-';
+    if (detailCertificateId) detailCertificateId.textContent = certificate.id ? 'CERT-' + certificate.id : '-';
+    if (detailCourseName) detailCourseName.textContent = certificate.type || '-';
+    if (detailGrade) detailGrade.textContent = certificate.grade || '-';
+    if (detailStatus) detailStatus.textContent = certificate.status || 'Active';
     
     // Update status badge
-    const statusElement = document.getElementById('certificateStatus');
     if (statusElement) {
         statusElement.textContent = certificate.status || 'Active';
         statusElement.className = `certificate-status ${certificate.status === 'Issued' ? 'status-issued' : 'status-pending'}`;
@@ -96,16 +129,25 @@ function displayCertificateData(certificate) {
 function displayEmptyCertificateData() {
     console.log('Displaying empty certificate data');
     
-    document.getElementById('detailStudentName').textContent = 'No certificates found';
-    document.getElementById('detailRegistrationNo').textContent = '-';
-    document.getElementById('detailIssueDate').textContent = '-';
-    document.getElementById('detailCertificateId').textContent = '-';
-    document.getElementById('detailCourseName').textContent = '-';
-    document.getElementById('detailGrade').textContent = '-';
-    document.getElementById('detailStatus').textContent = 'No Data';
+    // Add null checks for all elements
+    const detailStudentName = document.getElementById('detailStudentName');
+    const detailRegistrationNo = document.getElementById('detailRegistrationNo');
+    const detailIssueDate = document.getElementById('detailIssueDate');
+    const detailCertificateId = document.getElementById('detailCertificateId');
+    const detailCourseName = document.getElementById('detailCourseName');
+    const detailGrade = document.getElementById('detailGrade');
+    const detailStatus = document.getElementById('detailStatus');
+    const statusElement = document.getElementById('certificateStatus');
+    
+    if (detailStudentName) detailStudentName.textContent = 'No certificates found';
+    if (detailRegistrationNo) detailRegistrationNo.textContent = '-';
+    if (detailIssueDate) detailIssueDate.textContent = '-';
+    if (detailCertificateId) detailCertificateId.textContent = '-';
+    if (detailCourseName) detailCourseName.textContent = '-';
+    if (detailGrade) detailGrade.textContent = '-';
+    if (detailStatus) detailStatus.textContent = 'No Data';
     
     // Update status badge
-    const statusElement = document.getElementById('certificateStatus');
     if (statusElement) {
         statusElement.textContent = 'No Data';
         statusElement.className = 'certificate-status status-pending';
@@ -116,10 +158,10 @@ function displayEmptyCertificateData() {
 async function saveCertificateToBackend(data) {
     try {
         const certificateData = {
-            type: data.certificate,
+            type: data.certificate || "Certificate",
             issueDate: new Date().toISOString().split('T')[0],
             validUntil: null,
-            remarks: `Course: ${data.certificate}, Duration: ${data.duration}, Grade: ${data.Grade}`,
+            remarks: `Course: ${data.certificate || 'N/A'}, Duration: ${data.duration || 'N/A'}, Grade: ${data.Grade || 'N/A'}`,
             status: "Issued",
             // Additional fields for hardcopy certificate
             registrationNumber: data.registration,
@@ -137,7 +179,9 @@ async function saveCertificateToBackend(data) {
             dateOfBirth: data.dob
         };
         
-        const response = await fetch('/api/certificates', {
+        console.log('Sending certificate data to backend:', certificateData);
+        
+        const response = await fetch('http://localhost:4455/api/certificates', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -145,15 +189,22 @@ async function saveCertificateToBackend(data) {
             body: JSON.stringify(certificateData)
         });
         
+        console.log('Backend response status:', response.status);
+        console.log('Backend response headers:', response.headers);
+        
         if (response.ok) {
             const savedCertificate = await response.json();
+            console.log('Certificate saved successfully:', savedCertificate);
             return savedCertificate.id;
         } else {
-            console.error('Failed to save certificate to backend');
+            const errorText = await response.text();
+            console.error('Failed to save certificate to backend. Status:', response.status);
+            console.error('Error response:', errorText);
             return null;
         }
     } catch (error) {
         console.error('Error saving certificate:', error);
+        console.error('Error details:', error.message);
         return null;
     }
 }
@@ -227,35 +278,51 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (viewCertificateBtn) {
         viewCertificateBtn.addEventListener('click', function() {
-            // Open certificate in new window for viewing
-            window.open(`certificate_${document.getElementById('detailRegistrationNo').textContent}.pdf`, '_blank');
+            if (lastGeneratedPDF) {
+                // Open certificate in new window for viewing
+                const pdfUrl = URL.createObjectURL(lastGeneratedPDF);
+                window.open(pdfUrl, '_blank');
+            } else {
+                alert('No certificate available for viewing. Please generate a certificate first.');
+            }
         });
     }
 
     if (downloadCertificateBtn) {
         downloadCertificateBtn.addEventListener('click', function() {
-            // Trigger download of the generated PDF
-            const link = document.createElement('a');
-            link.href = `certificate_${document.getElementById('detailRegistrationNo').textContent}.pdf`;
-            link.download = `certificate_${document.getElementById('detailRegistrationNo').textContent}.pdf`;
-            link.click();
+            if (lastGeneratedPDF) {
+                // Create download link from the stored PDF blob
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(lastGeneratedPDF);
+                link.download = `certificate_${document.getElementById('detailRegistrationNo').textContent}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            } else {
+                alert('No certificate available for download. Please generate a certificate first.');
+            }
         });
     }
 
     if (printCertificateBtn) {
         printCertificateBtn.addEventListener('click', function() {
-            // Open print dialog for the certificate
-            const printWindow = window.open(`certificate_${document.getElementById('detailRegistrationNo').textContent}.pdf`, '_blank');
-            printWindow.onload = function() {
-                printWindow.print();
-            };
+            if (lastGeneratedPDF) {
+                // Open print dialog for the certificate
+                const pdfUrl = URL.createObjectURL(lastGeneratedPDF);
+                const printWindow = window.open(pdfUrl, '_blank');
+                printWindow.onload = function() {
+                    printWindow.print();
+                };
+            } else {
+                alert('No certificate available for printing. Please generate a certificate first.');
+            }
         });
     }
 
     if (editCertificateBtn) {
         editCertificateBtn.addEventListener('click', function() {
-            // Hide details panel and show form for editing
-            document.getElementById('certificateDetailsPanel').style.display = 'none';
+            // Scroll to form for editing
             document.getElementById('certificateForm').scrollIntoView({ behavior: 'smooth' });
         });
     }
@@ -292,15 +359,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Prepare QR data as a formatted string for readability
             const qrDataString = `
-SAHA INSTITUTE CERTIFICATE VERIFICATION
----------------------------------------
-Student Name: ${data.name}
-Registration No: ${data.registration}
-Roll No: ${data.rollno}
-Session: ${data.IssueSession}
-Certificate: ${data.certificate}
-Grade: ${data.Grade}
-            `.trim();
+Thank you for joining Saha Institute of Management & Technology!
+
+Congratulations, ${titleCase(data.name)}!
+You have successfully completed the course: ${titleCase(data.certificate)}.
+
+We are proud of your achievement and wish you a bright future ahead.
+
+- Saha Institute of Management & Technology`;
 
             // Generate QR code
             const qrDataUrl = await new Promise((resolve, reject) => {
@@ -403,7 +469,10 @@ Grade: ${data.Grade}
             doc.text(`${data.Grade}`, 240, 610);
             doc.text(`${data.IssueDay}`, 240, 635);
             doc.text(` ${titleCase(data.IssueMonth)} ${data.IssueYear}`, 355, 635);
-            // Save PDF
+            // Generate PDF blob for storage and download
+            const pdfBlob = doc.output('blob');
+            
+            // Save PDF file immediately
             doc.save(`certificate_${data.registration}.pdf`);
             console.log('PDF saved successfully');
             
@@ -413,7 +482,7 @@ Grade: ${data.Grade}
             console.log('Certificate saved to backend, ID:', certificateId);
             
             console.log('Calling showCertificateDetails...');
-            showCertificateDetails(data, certificateId);
+            showCertificateDetails(data, certificateId, pdfBlob);
             console.log('Certificate details panel should now be visible');
             
             // Refresh the certificate list to show the new certificate

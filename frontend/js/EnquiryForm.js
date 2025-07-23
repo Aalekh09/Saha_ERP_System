@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_BASE = window.location.protocol + '//' + "aalekh.sahaedu.in";
+const API_BASE = window.location.protocol + '//' + "localhost:4455";
 
 const EnquiryForm = () => {
     const [formData, setFormData] = useState({

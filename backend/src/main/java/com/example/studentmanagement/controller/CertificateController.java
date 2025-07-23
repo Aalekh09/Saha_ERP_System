@@ -32,8 +32,17 @@ public class CertificateController {
 
     @PostMapping
     public ResponseEntity<Certificate> createCertificate(@RequestBody Certificate certificate) {
-        Certificate createdCertificate = certificateService.createCertificate(certificate);
-        return ResponseEntity.ok(createdCertificate);
+        try {
+            System.out.println("Received certificate data: " + certificate.getType());
+            System.out.println("Registration number: " + certificate.getRegistrationNumber());
+            System.out.println("Status: " + certificate.getStatus());
+            Certificate createdCertificate = certificateService.createCertificate(certificate);
+            return ResponseEntity.ok(createdCertificate);
+        } catch (Exception e) {
+            System.err.println("Error creating certificate: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PutMapping("/{id}")

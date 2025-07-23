@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,338 +17,581 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background: #f4f7fb;
-    }
-    .card {
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(44,62,80,0.13);
-        padding: 56px 40px 40px 40px;
-        max-width: 1000px;
-        margin: 48px auto 48px auto;
-    }
-    #certificateForm {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px 36px;
-        margin-top: 32px;
-    }
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        margin-bottom: 10px;
-    }
-    .form-group label {
-        font-size: 14px;
-        color: #34495e;
-        margin-bottom: 6px;
-        font-weight: 500;
-    }
-    .form-group input[type="text"],
-    .form-group input[type="number"],
-    .form-group input[type="date"],
-    .form-group input[type="file"] {
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 15px;
-        background: #f9fafb;
-        transition: border 0.2s;
-        margin-bottom: 2px;
-    }
-    .form-group input:focus {
-        border: 1.5px solid #2980ef;
-        outline: none;
-        background: #fff;
-    }
-    .subjects-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 18px;
-        margin-top: 8px;
-    }
-    .subjects-table th, .subjects-table td {
-        border: 1px solid #e1e4e8;
-        padding: 6px 8px;
-        text-align: center;
-        font-size: 14px;
-    }
-    .subjects-table th {
-        background: #f3f6fa;
-        font-weight: 600;
-    }
-    .subject-row input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 6px 8px;
-        border-radius: 4px;
-        border: 1px solid #d1d5db;
-        background: #f9fafb;
-        font-size: 14px;
-        margin-bottom: 0;
-    }
-    .subject-row button {
-        background: #e74c3c;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 4px 10px;
-        cursor: pointer;
-        font-size: 13px;
-        transition: background 0.2s;
-    }
-    .subject-row button:hover {
-        background: #c0392b;
-    }
-    #addSubjectBtn {
-        background: #3498db;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 7px 18px;
-        font-size: 15px;
-        margin-top: 10px;
-        margin-bottom: 0;
-        cursor: pointer;
-        transition: background 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-    #addSubjectBtn:hover {
-        background: #2980b9;
-    }
-    .file-input-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-        margin-bottom: 0;
-    }
-    .file-input-wrapper input[type="file"] {
-        opacity: 0;
-        width: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        cursor: pointer;
-    }
-    .file-input-label {
-        background: #f3f6fa;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        padding: 10px 12px;
-        font-size: 15px;
-        color: #34495e;
-        cursor: pointer;
-        width: 100%;
-        text-align: left;
-        transition: border 0.2s;
-    }
-    .file-input-label:hover {
-        border: 1.5px solid #2980ef;
-    }
-    .full-width {
-        grid-column: 1 / -1;
-        margin-top: 10px;
-    }
-    #certificateForm button[type="submit"] {
-        background: #27ae60;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 12px 0;
-        font-size: 17px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 18px;
-        transition: background 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-    #certificateForm button[type="submit"]:hover {
-        background: #219150;
-    }
-    @media (max-width: 900px) {
-        #certificateForm {
-            grid-template-columns: 1fr;
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e9f0fa 0%, #f7fafc 100%);
+            margin: 0;
+            min-height: 100vh;
+            color: #222;
         }
-        .card {
-            padding: 24px 8px 24px 8px;
+
+        header {
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+            padding: 32px 0 18px 0;
+            text-align: center;
+            border-bottom: 1px solid #e6eaf1;
         }
-    }
-    
-    /* Certificate Details Panel Styles */
-    .certificate-details-panel {
-        display: none;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(44,62,80,0.13);
-        padding: 40px;
-        margin-top: 32px;
-        max-width: 1000px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .certificate-details-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 32px;
-        padding-bottom: 16px;
-        border-bottom: 2px solid #e1e4e8;
-    }
-    
-    .certificate-details-header h3 {
-        color: #2c3e50;
-        font-weight: 600;
-        font-size: 24px;
-        margin: 0;
-    }
-    
-    .certificate-status {
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 14px;
-    }
-    
-    .status-issued {
-        background: #d4edda;
-        color: #155724;
-    }
-    
-    .status-pending {
-        background: #fff3cd;
-        color: #856404;
-    }
-    
-    .certificate-info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-bottom: 32px;
-    }
-    
-    .info-section {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        border-left: 4px solid #2980ef;
-    }
-    
-    .info-section h4 {
-        color: #2c3e50;
-        font-weight: 600;
-        margin: 0 0 16px 0;
-        font-size: 16px;
-    }
-    
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #e1e4e8;
-    }
-    
-    .info-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
-    
-    .info-label {
-        font-weight: 500;
-        color: #7b8a8b;
-        font-size: 14px;
-    }
-    
-    .info-value {
-        font-weight: 600;
-        color: #2c3e50;
-        font-size: 14px;
-        text-align: right;
-    }
-    
-    .certificate-actions {
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-        padding-top: 24px;
-        border-top: 2px solid #e1e4e8;
-    }
-    
-    .action-btn {
-        padding: 12px 24px;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-    }
-    
-    .btn-view {
-        background: #3498db;
-        color: #fff;
-    }
-    
-    .btn-view:hover {
-        background: #2980b9;
-    }
-    
-    .btn-download {
-        background: #27ae60;
-        color: #fff;
-    }
-    
-    .btn-download:hover {
-        background: #219150;
-    }
-    
-    .btn-print {
-        background: #f39c12;
-        color: #fff;
-    }
-    
-    .btn-print:hover {
-        background: #e67e22;
-    }
-    
-    .btn-edit {
-        background: #9b59b6;
-        color: #fff;
-    }
-    
-    .btn-edit:hover {
-        background: #8e44ad;
-    }
-    
-    @media (max-width: 768px) {
-        .certificate-info-grid {
-            grid-template-columns: 1fr;
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #2c3e50;
+            margin-bottom: 6px;
         }
-        
-        .certificate-actions {
+
+        header p {
+            color: #7b8a8b;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            background: none;
+        }
+
+        .side-panel {
+            background: #fff;
+            box-shadow: 2px 0 16px rgba(44, 62, 80, 0.07);
+            padding: 36px 18px 24px 18px;
+            width: 260px;
+            min-height: 100vh;
+            border-right: 1px solid #e6eaf1;
+            display: flex;
             flex-direction: column;
+            gap: 32px;
         }
-        
-        .action-btn {
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .admin-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e6eaf1;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+        }
+
+        .admin-info h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .admin-role {
+            color: #7b8a8b;
+            font-size: 0.98rem;
+        }
+
+        .tab-btn,
+        .tab-btn.active,
+        .tab-btn:focus {
+            background: none;
+            border: none;
+            color: #34495e;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: #2980ef;
+            color: #fff;
+        }
+
+        .tab-btn i.fas {
+            color: #3498db;
+            font-size: 1.1em;
+        }
+
+        .tab-btn.active i.fas,
+        .tab-btn:hover i.fas {
+            color: #fff;
+        }
+
+        .student-section h4 {
+            color: #2c3e50;
+            font-size: 1.08rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .content-panel {
+            flex: 1;
+            padding: 0 0 0 0;
+            background: none;
+            min-height: 100vh;
+        }
+
+        .panel-header {
+            background: #fff;
+            border-bottom: 1px solid #e6eaf1;
+            padding: 32px 40px 18px 40px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 0;
+        }
+
+        .panel-title h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .panel-title .subtitle {
+            color: #7b8a8b;
+            font-size: 1.08rem;
+            margin: 0;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
+            padding: 48px 64px 36px 64px;
+            max-width: 950px;
+            margin: 48px auto 48px auto;
+            border: 1px solid #e6eaf1;
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #7b8a8b;
+            font-size: 1.08rem;
+            margin-bottom: 24px;
+        }
+
+        #certificateForm {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px 36px;
+            margin-top: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            font-size: 1.01rem;
+            color: #34495e;
+            margin-bottom: 7px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group input[type="file"] {
+            padding: 12px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 1.05rem;
+            background: #f9fafb;
+            transition: border 0.2s, box-shadow 0.2s;
+            margin-bottom: 2px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            border: 1.5px solid #2980ef;
+            outline: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            opacity: 0;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            background: #f3f6fa;
+            border: 1.5px solid #d1d5db;
+            border-radius: 7px;
+            padding: 12px 14px;
+            font-size: 1.05rem;
+            color: #34495e;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: border 0.2s;
+            font-family: inherit;
+        }
+
+        .file-input-label:hover {
+            border: 1.5px solid #2980ef;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+
+        .subjects-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 18px;
+            margin-top: 8px;
+            background: #f9fafb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+        }
+
+        .subjects-table th,
+        .subjects-table td {
+            border: none;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 1.01rem;
+        }
+
+        .subjects-table th {
+            background: #eaf2fb;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .subjects-table td {
+            background: #fff;
+            color: #34495e;
+        }
+
+        .subject-row input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 8px;
+            border-radius: 5px;
+            border: 1.5px solid #d1d5db;
+            background: #f9fafb;
+            font-size: 1.01rem;
+            margin-bottom: 0;
+            font-family: inherit;
+        }
+
+        .subject-row input:focus {
+            border: 1.5px solid #2980ef;
+            background: #fff;
+        }
+
+        .subject-row button {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .subject-row button:hover {
+            background: #c0392b;
+        }
+
+        #addSubjectBtn {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 9px 22px;
+            font-size: 1.05rem;
+            margin-top: 10px;
+            margin-bottom: 0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        #addSubjectBtn:hover {
+            background: #2980b9;
+        }
+
+        #certificateForm button[type="submit"] {
+            background: linear-gradient(90deg, #2980ef 0%, #27ae60 100%);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 14px 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+            letter-spacing: 0.01em;
         }
-    }
+
+        #certificateForm button[type="submit"]:hover {
+            background: linear-gradient(90deg, #27ae60 0%, #2980ef 100%);
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
+        }
+
+        @media (max-width: 900px) {
+            #certificateForm {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 24px 8px 24px 8px;
+            }
+
+            .panel-header {
+                padding: 24px 12px 12px 12px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .side-panel {
+                width: 100%;
+                min-height: unset;
+                box-shadow: none;
+                border-right: none;
+                border-bottom: 1px solid #e6eaf1;
+                padding: 18px 8px 12px 8px;
+            }
+
+            .content-panel {
+                padding: 0;
+            }
+
+            .card {
+                padding: 12px 2px 12px 2px;
+                max-width: 100vw;
+            }
+        }
+
+        /* Certificate Details Panel Styles */
+        .certificate-details-panel {
+            display: block;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
+            padding: 40px;
+            margin-top: 32px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .certificate-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e1e4e8;
+        }
+
+        .certificate-details-header h3 {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .certificate-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-issued {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .certificate-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2980ef;
+        }
+
+        .info-section h4 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            font-size: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #7b8a8b;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .certificate-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            padding-top: 24px;
+            border-top: 2px solid #e1e4e8;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-view {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-view:hover {
+            background: #2980b9;
+        }
+
+        .btn-download {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            background: #219150;
+        }
+
+        .btn-print {
+            background: #f39c12;
+            color: #fff;
+        }
+
+        .btn-print:hover {
+            background: #e67e22;
+        }
+
+        .btn-edit {
+            background: #9b59b6;
+            color: #fff;
+        }
+
+        .btn-edit:hover {
+            background: #8e44ad;
+        }
+
+        @media (max-width: 768px) {
+            .certificate-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .certificate-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .card {
+                padding: 32px 16px 24px 16px;
+                max-width: 98vw;
+            }
+        }
     </style>
 </head>
+
 <body>
     <header>
         <h1>Saha Institute of Management & Technology</h1>
@@ -412,11 +656,13 @@
             <div class="panel-content">
                 <div class="card">
                     <h3 style="color:#2c3e50; font-weight: 600; font-size: 24px;">Hardcopy Certificate Generator</h3>
-                    <p style="color:#7b8a8b; margin-top: -2px; margin-bottom: 24px;">Fill in the details below to generate a student certificate.</p>
+                    <p style="color:#7b8a8b; margin-top: -2px; margin-bottom: 24px;">Fill in the details below to
+                        generate a student certificate.</p>
                     <form id="certificateForm">
                         <div class="form-group">
                             <label for="registration">Registration No</label>
-                            <input type="text" id="registration" name="registration" placeholder="Registration No" required>
+                            <input type="text" id="registration" name="registration" placeholder="Registration No"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="name">Name</label>
@@ -444,7 +690,8 @@
                         </div>
                         <div class="form-group">
                             <label for="IssueSession">Issue Session</label>
-                            <input type="text" id="IssueSession" name="IssueSession" placeholder="Issue Session (e.g. 2023-24)" required>
+                            <input type="text" id="IssueSession" name="IssueSession"
+                                placeholder="Issue Session (e.g. 2023-24)" required>
                         </div>
                         <div class="form-group">
                             <label for="duration">Course Duration</label>
@@ -456,7 +703,8 @@
                         </div>
                         <div class="form-group">
                             <label for="certificate">Certificate Name</label>
-                            <input type="text" id="certificate" name="certificate" placeholder="Certificate Name" required>
+                            <input type="text" id="certificate" name="certificate" placeholder="Certificate Name"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="Grade">Grade</label>
@@ -464,15 +712,18 @@
                         </div>
                         <div class="form-group">
                             <label for="IssueDay">Issue Day</label>
-                            <input type="number" id="IssueDay" name="IssueDay" placeholder="Issue Day (e.g. 12)" required>
+                            <input type="number" id="IssueDay" name="IssueDay" placeholder="Issue Day (e.g. 12)"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="IssueMonth">Issue Month</label>
-                            <input type="text" id="IssueMonth" name="IssueMonth" placeholder="Issue Month (e.g. May)" required>
+                            <input type="text" id="IssueMonth" name="IssueMonth" placeholder="Issue Month (e.g. May)"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="IssueYear">Issue Year</label>
-                            <input type="number" id="IssueYear" name="IssueYear" placeholder="Issue Year (e.g. 2024)" required>
+                            <input type="number" id="IssueYear" name="IssueYear" placeholder="Issue Year (e.g. 2024)"
+                                required>
                         </div>
                         <div class="form-group file-input-wrapper">
                             <label for="photo">Photo</label>
@@ -495,60 +746,62 @@
                                     <!-- Subject rows will be added here -->
                                 </tbody>
                             </table>
-                            <button type="button" id="addSubjectBtn" title="Add Subject" aria-label="Add Subject"><i class="fas fa-plus"></i> Add Subject</button>
+                            <button type="button" id="addSubjectBtn" title="Add Subject" aria-label="Add Subject"><i
+                                    class="fas fa-plus"></i> Add Subject</button>
                         </div>
-                        <button type="submit" class="full-width"><i class="fas fa-file-pdf"></i> Generate Certificate PDF</button>
+                        <button type="submit" class="full-width"><i class="fas fa-file-pdf"></i> Generate Certificate
+                            PDF</button>
                     </form>
                     <canvas id="barcodeCanvas" style="display:none"></canvas>
                     <canvas id="watermarkCanvas" width="400" height="400" style="display:none"></canvas>
                     <img id="qrImage" style="display:none">
                 </div>
-                
+
                 <!-- Certificate Details Panel -->
-                <div id="certificateDetailsPanel" class="certificate-details-panel" style="display: block;">
+                <div id="certificateDetailsPanel" class="certificate-details-panel">
                     <div class="certificate-details-header">
-                        <h3><i class="fas fa-certificate"></i> Certificate Details</h3>
-                        <span id="certificateStatus" class="certificate-status status-issued">Issued</span>
+                        <h3>Certificate Details</h3>
+                        <span id="certificateStatus" class="certificate-status status-pending">No Data</span>
                     </div>
-                    
+
                     <div class="certificate-info-grid">
                         <div class="info-section">
-                            <h4><i class="fas fa-user-graduate"></i> Student Information</h4>
+                            <h4>Student Information</h4>
                             <div class="info-row">
                                 <span class="info-label">Student Name:</span>
-                                <span id="detailStudentName" class="info-value">-</span>
+                                <span class="info-value" id="detailStudentName">-</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Registration No:</span>
-                                <span id="detailRegistrationNo" class="info-value">-</span>
+                                <span class="info-value" id="detailRegistrationNo">-</span>
                             </div>
-                            <div class="info-row">
-                                <span class="info-label">Issue Date:</span>
-                                <span id="detailIssueDate" class="info-value">-</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Certificate ID:</span>
-                                <span id="detailCertificateId" class="info-value">-</span>
-                            </div>
-                        </div>
-                        
-                        <div class="info-section">
-                            <h4><i class="fas fa-book"></i> Course Information</h4>
                             <div class="info-row">
                                 <span class="info-label">Course Name:</span>
-                                <span id="detailCourseName" class="info-value">-</span>
+                                <span class="info-value" id="detailCourseName">-</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Grade:</span>
-                                <span id="detailGrade" class="info-value">-</span>
+                                <span class="info-value" id="detailGrade">-</span>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h4>Certificate Information</h4>
+                            <div class="info-row">
+                                <span class="info-label">Certificate ID:</span>
+                                <span class="info-value" id="detailCertificateId">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Issue Date:</span>
+                                <span class="info-value" id="detailIssueDate">-</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Status:</span>
-                                <span id="detailStatus" class="info-value">-</span>
+                                <span class="info-value" id="detailStatus">-</span>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="certificate-actions">
                         <button id="viewCertificateBtn" class="action-btn btn-view">
                             <i class="fas fa-eye"></i>
@@ -560,11 +813,11 @@
                         </button>
                         <button id="printCertificateBtn" class="action-btn btn-print">
                             <i class="fas fa-print"></i>
-                            Print Certificate
+                            Print
                         </button>
                         <button id="editCertificateBtn" class="action-btn btn-edit">
                             <i class="fas fa-edit"></i>
-                            Edit Details
+                            Edit
                         </button>
                     </div>
                 </div>
@@ -573,4 +826,5 @@
     </div>
     <script src="js/hardcopy-certificate.js" defer></script>
 </body>
-</html> 
+
+</html>
