@@ -48,6 +48,12 @@ function showCertificateDetails(data, certificateId, pdfBlob = null) {
     const detailCourseName = document.getElementById('detailCourseName');
     const detailGrade = document.getElementById('detailGrade');
     const detailStatus = document.getElementById('detailStatus');
+    const detailFatherName = document.getElementById('detailFatherName');
+    const detailMotherName = document.getElementById('detailMotherName');
+    const detailPerformance = document.getElementById('detailPerformance');
+    const detailDuration = document.getElementById('detailDuration');
+    const detailIssueSession = document.getElementById('detailIssueSession');
+    const certificateTimestamp = document.getElementById('certificateTimestamp');
     
     if (detailStudentName) detailStudentName.textContent = titleCase(data.name);
     if (detailRegistrationNo) detailRegistrationNo.textContent = data.registration;
@@ -56,6 +62,12 @@ function showCertificateDetails(data, certificateId, pdfBlob = null) {
     if (detailCourseName) detailCourseName.textContent = titleCase(data.certificate);
     if (detailGrade) detailGrade.textContent = data.Grade;
     if (detailStatus) detailStatus.textContent = 'Issued';
+    if (detailFatherName) detailFatherName.textContent = titleCase(data.fathersname || '-');
+    if (detailMotherName) detailMotherName.textContent = titleCase(data.mothersname || '-');
+    if (detailPerformance) detailPerformance.textContent = titleCase(data.performance || '-');
+    if (detailDuration) detailDuration.textContent = data.duration || '-';
+    if (detailIssueSession) detailIssueSession.textContent = data.IssueSession || '-';
+    if (certificateTimestamp) certificateTimestamp.textContent = `Last updated: ${new Date().toLocaleString()}`;
     
     // Update status badge
     const statusElement = document.getElementById('certificateStatus');
@@ -78,21 +90,16 @@ async function loadExistingCertificates() {
             const certificates = await response.json();
             console.log('Loaded certificates:', certificates);
             
-            if (certificates.length > 0) {
-                // Show the most recent certificate
-                const latestCertificate = certificates[certificates.length - 1];
-                displayCertificateData(latestCertificate);
-            } else {
-                // No certificates found, show empty state
-                displayEmptyCertificateData();
-            }
+            // Update the table with all certificates
+            populateCertificatesTable(certificates);
+            updateCertificateTimestamp();
         } else {
             console.error('Failed to load certificates');
-            displayEmptyCertificateData();
+            populateCertificatesTable([]);
         }
     } catch (error) {
         console.error('Error loading certificates:', error);
-        displayEmptyCertificateData();
+        populateCertificatesTable([]);
     }
 }
 
@@ -108,6 +115,12 @@ function displayCertificateData(certificate) {
     const detailCourseName = document.getElementById('detailCourseName');
     const detailGrade = document.getElementById('detailGrade');
     const detailStatus = document.getElementById('detailStatus');
+    const detailFatherName = document.getElementById('detailFatherName');
+    const detailMotherName = document.getElementById('detailMotherName');
+    const detailPerformance = document.getElementById('detailPerformance');
+    const detailDuration = document.getElementById('detailDuration');
+    const detailIssueSession = document.getElementById('detailIssueSession');
+    const certificateTimestamp = document.getElementById('certificateTimestamp');
     const statusElement = document.getElementById('certificateStatus');
     
     if (detailStudentName) detailStudentName.textContent = certificate.student ? certificate.student.name : certificate.registrationNumber || '-';
@@ -117,6 +130,12 @@ function displayCertificateData(certificate) {
     if (detailCourseName) detailCourseName.textContent = certificate.type || '-';
     if (detailGrade) detailGrade.textContent = certificate.grade || '-';
     if (detailStatus) detailStatus.textContent = certificate.status || 'Active';
+    if (detailFatherName) detailFatherName.textContent = certificate.fathersName || '-';
+    if (detailMotherName) detailMotherName.textContent = certificate.mothersName || '-';
+    if (detailPerformance) detailPerformance.textContent = certificate.performance || '-';
+    if (detailDuration) detailDuration.textContent = certificate.courseDuration || '-';
+    if (detailIssueSession) detailIssueSession.textContent = certificate.issueSession || '-';
+    if (certificateTimestamp) certificateTimestamp.textContent = `Last updated: ${certificate.issueDate ? new Date(certificate.issueDate).toLocaleString() : 'Unknown'}`;
     
     // Update status badge
     if (statusElement) {
@@ -151,6 +170,157 @@ function displayEmptyCertificateData() {
     if (statusElement) {
         statusElement.textContent = 'No Data';
         statusElement.className = 'certificate-status status-pending';
+    }
+}
+
+// Function to populate certificates table
+function populateCertificatesTable(certificates) {
+    const tableBody = document.getElementById('certificatesTableBody');
+    const certificateCount = document.getElementById('certificateCount');
+    
+    if (!tableBody) {
+        console.error('Certificates table body not found');
+        return;
+    }
+    
+    // Update certificate count
+    if (certificateCount) {
+        certificateCount.textContent = `${certificates.length} certificate${certificates.length !== 1 ? 's' : ''} found`;
+    }
+    
+    // Clear existing rows
+    tableBody.innerHTML = '';
+    
+    if (certificates.length === 0) {
+        // Show no data row
+        const noDataRow = document.createElement('tr');
+        noDataRow.className = 'no-data-row';
+        noDataRow.innerHTML = `
+            <td colspan="8" class="no-data-cell">
+                <div class="no-data-content">
+                    <i class="fas fa-certificate"></i>
+                    <p>No certificates found</p>
+                    <small>Generate your first certificate using the form above</small>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(noDataRow);
+        return;
+    }
+    
+    // Populate table with certificates
+    certificates.forEach((certificate, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="certificate-id">CERT-${certificate.id || (index + 1)}</td>
+            <td class="student-name">${certificate.registrationNumber || 'Unknown Student'}</td>
+            <td>${certificate.registrationNumber || '-'}</td>
+            <td>${certificate.type || '-'}</td>
+            <td>${certificate.grade || '-'}</td>
+            <td>${certificate.issueDate ? new Date(certificate.issueDate).toLocaleDateString() : '-'}</td>
+            <td>
+                <span class="status-badge ${getStatusClass(certificate.status)}">
+                    ${certificate.status || 'Active'}
+                </span>
+            </td>
+            <td>
+                <div class="table-actions">
+                    <button class="table-action-btn btn-table-view" onclick="viewCertificateFromTable(${certificate.id})" title="View Certificate">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="table-action-btn btn-table-download" onclick="downloadCertificateFromTable(${certificate.id})" title="Download PDF">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="table-action-btn btn-table-edit" onclick="editCertificateFromTable(${certificate.id})" title="Edit Certificate">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Function to get status class for styling
+function getStatusClass(status) {
+    switch (status?.toLowerCase()) {
+        case 'issued':
+            return 'status-issued';
+        case 'active':
+            return 'status-active';
+        case 'pending':
+            return 'status-pending';
+        default:
+            return 'status-active';
+    }
+}
+
+// Function to update certificate timestamp
+function updateCertificateTimestamp() {
+    const certificateTimestamp = document.getElementById('certificateTimestamp');
+    if (certificateTimestamp) {
+        certificateTimestamp.textContent = `Last updated: ${new Date().toLocaleString()}`;
+    }
+}
+
+// Table action functions
+function viewCertificateFromTable(certificateId) {
+    console.log('Viewing certificate:', certificateId);
+    if (lastGeneratedPDF) {
+        const pdfUrl = URL.createObjectURL(lastGeneratedPDF);
+        window.open(pdfUrl, '_blank');
+    } else {
+        alert('Certificate PDF not available. Please regenerate the certificate.');
+    }
+}
+
+function downloadCertificateFromTable(certificateId) {
+    console.log('Downloading certificate:', certificateId);
+    if (lastGeneratedPDF) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(lastGeneratedPDF);
+        link.download = `certificate_${certificateId}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    } else {
+        alert('Certificate PDF not available. Please regenerate the certificate.');
+    }
+}
+
+function editCertificateFromTable(certificateId) {
+    console.log('Editing certificate:', certificateId);
+    // Scroll to form for editing
+    document.getElementById('certificateForm').scrollIntoView({ behavior: 'smooth' });
+    // You could also pre-populate the form with certificate data here
+}
+
+// Function to filter certificates based on search
+function filterCertificates() {
+    const searchInput = document.getElementById('certificateSearchInput');
+    const tableRows = document.querySelectorAll('#certificatesTableBody tr:not(.no-data-row)');
+    
+    if (!searchInput) return;
+    
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    let visibleCount = 0;
+    
+    tableRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const isVisible = text.includes(searchTerm);
+        row.style.display = isVisible ? '' : 'none';
+        if (isVisible) visibleCount++;
+    });
+    
+    // Update count
+    const certificateCount = document.getElementById('certificateCount');
+    if (certificateCount) {
+        if (searchTerm) {
+            certificateCount.textContent = `${visibleCount} certificate${visibleCount !== 1 ? 's' : ''} found (filtered)`;
+        } else {
+            certificateCount.textContent = `${tableRows.length} certificate${tableRows.length !== 1 ? 's' : ''} found`;
+        }
     }
 }
 
@@ -275,6 +445,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
     const printCertificateBtn = document.getElementById('printCertificateBtn');
     const editCertificateBtn = document.getElementById('editCertificateBtn');
+    const refreshCertificatesBtn = document.getElementById('refreshCertificatesBtn');
 
     if (viewCertificateBtn) {
         viewCertificateBtn.addEventListener('click', function() {
@@ -325,6 +496,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Scroll to form for editing
             document.getElementById('certificateForm').scrollIntoView({ behavior: 'smooth' });
         });
+    }
+
+    if (refreshCertificatesBtn) {
+        refreshCertificatesBtn.addEventListener('click', async function() {
+            console.log('Refreshing certificates...');
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            this.disabled = true;
+            
+            try {
+                await loadExistingCertificates();
+                console.log('Certificates refreshed successfully');
+            } catch (error) {
+                console.error('Error refreshing certificates:', error);
+            } finally {
+                this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                this.disabled = false;
+            }
+        });
+    }
+
+    // Add search functionality
+    const certificateSearchInput = document.getElementById('certificateSearchInput');
+    if (certificateSearchInput) {
+        certificateSearchInput.addEventListener('input', filterCertificates);
     }
 
     const certificateForm = document.getElementById('certificateForm');
@@ -476,17 +671,20 @@ We are proud of your achievement and wish you a bright future ahead.
             doc.save(`certificate_${data.registration}.pdf`);
             console.log('PDF saved successfully');
             
-            // Save certificate to backend and show details panel
+            // Save certificate to backend and refresh table
             console.log('Attempting to save certificate to backend...');
             const certificateId = await saveCertificateToBackend(data);
             console.log('Certificate saved to backend, ID:', certificateId);
             
-            console.log('Calling showCertificateDetails...');
-            showCertificateDetails(data, certificateId, pdfBlob);
-            console.log('Certificate details panel should now be visible');
-            
-            // Refresh the certificate list to show the new certificate
+            // Refresh the certificate table to show the new certificate
             await loadExistingCertificates();
+            
+            // Show success message
+            if (certificateId) {
+                alert('Certificate generated and saved successfully!');
+            } else {
+                alert('Certificate generated but failed to save to database. Please check the backend logs.');
+            }
         };
     } else {
         console.error('Certificate form not found!');
