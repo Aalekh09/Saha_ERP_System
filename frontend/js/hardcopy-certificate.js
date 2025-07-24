@@ -123,7 +123,7 @@ function displayCertificateData(certificate) {
     const certificateTimestamp = document.getElementById('certificateTimestamp');
     const statusElement = document.getElementById('certificateStatus');
     
-    if (detailStudentName) detailStudentName.textContent = certificate.student ? certificate.student.name : certificate.registrationNumber || '-';
+    if (detailStudentName) detailStudentName.textContent = certificate.studentName || certificate.student?.name || 'Unknown Student';
     if (detailRegistrationNo) detailRegistrationNo.textContent = certificate.registrationNumber || '-';
     if (detailIssueDate) detailIssueDate.textContent = certificate.issueDate ? new Date(certificate.issueDate).toLocaleDateString() : '-';
     if (detailCertificateId) detailCertificateId.textContent = certificate.id ? 'CERT-' + certificate.id : '-';
@@ -213,7 +213,7 @@ function populateCertificatesTable(certificates) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="certificate-id">CERT-${certificate.id || (index + 1)}</td>
-            <td class="student-name">${certificate.registrationNumber || 'Unknown Student'}</td>
+            <td class="student-name">${certificate.studentName || certificate.student?.name || 'Unknown Student'}</td>
             <td>${certificate.registrationNumber || '-'}</td>
             <td>${certificate.type || '-'}</td>
             <td>${certificate.grade || '-'}</td>
@@ -334,6 +334,7 @@ async function saveCertificateToBackend(data) {
             remarks: `Course: ${data.certificate || 'N/A'}, Duration: ${data.duration || 'N/A'}, Grade: ${data.Grade || 'N/A'}`,
             status: "Issued",
             // Additional fields for hardcopy certificate
+            studentName: data.name,
             registrationNumber: data.registration,
             rollNumber: data.rollno,
             examRollNumber: data.erollno,

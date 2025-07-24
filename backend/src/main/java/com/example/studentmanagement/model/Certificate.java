@@ -69,6 +69,9 @@ public class Certificate {
     @Column(name = "date_of_birth")
     private String dateOfBirth;
 
+    @Column(name = "student_name")
+    private String studentName;
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -228,5 +231,13 @@ public class Certificate {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 } 

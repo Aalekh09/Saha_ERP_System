@@ -75,6 +75,7 @@ public class CertificateService {
             existingCertificate.setStatus(certificateDetails.getStatus());
             
             // Update new fields
+            existingCertificate.setStudentName(certificateDetails.getStudentName());
             existingCertificate.setRegistrationNumber(certificateDetails.getRegistrationNumber());
             existingCertificate.setRollNumber(certificateDetails.getRollNumber());
             existingCertificate.setExamRollNumber(certificateDetails.getExamRollNumber());
