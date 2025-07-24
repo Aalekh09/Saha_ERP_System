@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Details - Saha Institute of Management & Technology</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e9f0fa 0%, #f7fafc 100%);
+            margin: 0;
+            min-height: 100vh;
+            color: #222;
+        }
+
+        header {
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+            padding: 32px 0 18px 0;
+            text-align: center;
+            border-bottom: 1px solid #e6eaf1;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #2c3e50;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #7b8a8b;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            background: none;
+        }
+
+        .side-panel {
+            background: #fff;
+            box-shadow: 2px 0 16px rgba(44, 62, 80, 0.07);
+            padding: 36px 18px 24px 18px;
+            width: 260px;
+            min-height: 100vh;
+            border-right: 1px solid #e6eaf1;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .admin-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e6eaf1;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+        }
+
+        .admin-info h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .admin-role {
+            color: #7b8a8b;
+            font-size: 0.98rem;
+        }
+
+        .tab-btn,
+        .tab-btn.active,
+        .tab-btn:focus {
+            background: none;
+            border: none;
+            color: #34495e;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+            outline: none;
+            text-decoration: none;
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: #2980ef;
+            color: #fff;
+        }
+
+        .tab-btn i.fas {
+            color: #3498db;
+            font-size: 1.1em;
+        }
+
+        .tab-btn.active i.fas,
+        .tab-btn:hover i.fas {
+            color: #fff;
+        }
+
+        .student-section h4 {
+            color: #2c3e50;
+            font-size: 1.08rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .content-panel {
+            flex: 1;
+            padding: 0;
+            background: none;
+            min-height: 100vh;
+        }
+
+        .panel-header {
+            background: #fff;
+            border-bottom: 1px solid #e6eaf1;
+            padding: 32px 40px 18px 40px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 0;
+        }
+
+        .panel-title h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .panel-title .subtitle {
+            color: #7b8a8b;
+            font-size: 1.08rem;
+            margin: 0;
+        }
+
+        /* Certificate Details Panel Styles */
+        .certificate-details-container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        .certificate-overview-card {
+            background: linear-gradient(135deg, #2980ef 0%, #27ae60 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
+        }
+
+        .certificate-overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .certificate-overview-left h1 {
+            margin: 0 0 8px 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .certificate-id-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .certificate-overview-right {
+            text-align: right;
+        }
+
+        .certificate-status-large {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .status-issued-large {
+            background: rgba(255, 255, 255, 0.9);
+            color: #27ae60;
+        }
+
+        .status-pending-large {
+            background: rgba(255, 255, 255, 0.9);
+            color: #f39c12;
+        }
+
+        .certificate-quick-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .quick-info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .quick-info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Main Content Grid */
+        .certificate-content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .certificate-main-details {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+        }
+
+        .certificate-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .section-header i {
+            color: #2980ef;
+            font-size: 1.3rem;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .detail-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #2980ef;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .certificate-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .action-btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-view {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-view:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-download {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            background: #219150;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-print {
+            background: #f39c12;
+            color: #fff;
+        }
+
+        .btn-print:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-edit {
+            background: #9b59b6;
+            color: #fff;
+        }
+
+        .btn-edit:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(155, 89, 182, 0.3);
+        }
+
+        .btn-back {
+            background: #95a5a6;
+            color: #fff;
+        }
+
+        .btn-back:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(149, 165, 166, 0.3);
+        }
+
+        /* Loading and Error States */
+        .loading-container,
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            text-align: center;
+            background: #fff;
+            border-radius: 16px;
+            margin: 32px auto;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+        }
+
+        .loading-container i,
+        .error-container i {
+            font-size: 64px;
+            margin-bottom: 24px;
+            color: #2980ef;
+        }
+
+        .error-container i {
+            color: #e74c3c;
+        }
+
+        .loading-container h3,
+        .error-container h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 12px 0;
+        }
+
+        .loading-container p,
+        .error-container p {
+            font-size: 1rem;
+            color: #7b8a8b;
+            margin: 0 0 24px 0;
+        }
+
+        /* Timeline Styles */
+        .certificate-timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+            border-left: 2px solid #e1e4e8;
+            padding-left: 24px;
+            margin-left: 12px;
+        }
+
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #2980ef;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #2980ef;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: #7b8a8b;
+            margin-bottom: 8px;
+        }
+
+        .timeline-description {
+            font-size: 0.95rem;
+            color: #34495e;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .certificate-content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .certificate-sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .side-panel {
+                width: 100%;
+                min-height: unset;
+                box-shadow: none;
+                border-right: none;
+                border-bottom: 1px solid #e6eaf1;
+                padding: 18px 8px 12px 8px;
+            }
+
+            .content-panel {
+                padding: 0;
+            }
+
+            .certificate-details-container {
+                padding: 0 12px;
+            }
+
+            .certificate-overview-card {
+                padding: 24px 16px;
+            }
+
+            .certificate-overview-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .certificate-overview-right {
+                text-align: left;
+            }
+
+            .certificate-quick-info {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .certificate-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .certificate-overview-left h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .certificate-main-details,
+            .sidebar-card {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Saha Institute of Management & Technology</h1>
+        <p>Welcome, <span id="username">aalekh</span></p>
+    </header>
+    
+    <div class="main-container">
+        <div class="side-panel">
+            <div class="admin-section">
+                <div class="admin-header">
+                    <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
+                    <div class="admin-info">
+                        <h3>Aalekh</h3>
+                        <span class="admin-role">Administrator</span>
+                    </div>
+                </div>
+                <div class="admin-menu">
+                    <button class="tab-btn" onclick="window.location.href='index.html'">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Teachers</span>
+                    </button>
+                </div>
+            </div>
+            <div class="student-section">
+                <h4>Student Management</h4>
+                <button class="tab-btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-list"></i>
+                    <span>List Students</span>
+                </button>
+                <button class="tab-btn" onclick="window.location.href='index.html#add-panel'">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Student</span>
+                </button>
+                <button class="tab-btn" onclick="window.location.href='payments.html'">
+                    <i class="fas fa-money-bill"></i>
+                    <span>Payments</span>
+                </button>
+                <button class="tab-btn" onclick="window.location.href='reports.html'">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </button>
+                <a href="enquiry.html" class="tab-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Enquiries</span>
+                </a>
+                <a href="certificate.html" class="tab-btn">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+                <a href="hardcopy-certificate.html" class="tab-btn">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Hardcopy Certificate</span>
+                </a>
+                <a href="certificate-details.html" class="tab-btn active">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Certificate Details</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="content-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <h2><i class="fas fa-info-circle"></i> Certificate Details</h2>
+                    <p class="subtitle">View comprehensive certificate information and manage certificate records</p>
+                </div>
+            </div>
+            
+            <div class="certificate-details-container">
+                <!-- Loading State -->
+                <div id="loadingContainer" class="loading-container">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading Certificate Details</h3>
+                    <p>Please wait while we fetch the certificate information...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorContainer" class="error-container" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Certificate</h3>
+                    <p id="errorMessage">Failed to load certificate details. Please try again.</p>
+                    <div class="certificate-actions">
+                        <button class="action-btn btn-back" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i> Go Back
+                        </button>
+                        <button class="action-btn btn-view" onclick="reloadCertificate()">
+                            <i class="fas fa-refresh"></i> Retry
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Certificate Details Content -->
+                <div id="certificateContent" style="display: none;">
+                    <!-- Certificate Overview Card -->
+                    <div class="certificate-overview-card">
+                        <div class="certificate-overview-header">
+                            <div class="certificate-overview-left">
+                                <h1>
+                                    <i class="fas fa-certificate"></i>
+                                    <span id="certificateTitle">Certificate Details</span>
+                                </h1>
+                                <div class="certificate-id-badge" id="certificateIdBadge">CERT-001</div>
+                            </div>
+                            <div class="certificate-overview-right">
+                                <div class="certificate-status-large status-issued-large" id="certificateStatusLarge">
+                                    ISSUED
+                                </div>
+                                <div class="quick-info-label">Last Updated</div>
+                                <div class="quick-info-value" id="lastUpdated">Today</div>
+                            </div>
+                        </div>
+                        
+                        <div class="certificate-quick-info">
+                            <div class="quick-info-item">
+                                <div class="quick-info-label">Student Name</div>
+                                <div class="quick-info-value" id="quickStudentName">-</div>
+                            </div>
+                            <div class="quick-info-item">
+                                <div class="quick-info-label">Course</div>
+                                <div class="quick-info-value" id="quickCourse">-</div>
+                            </div>
+                            <div class="quick-info-item">
+                                <div class="quick-info-label">Grade</div>
+                                <div class="quick-info-value" id="quickGrade">-</div>
+                            </div>
+                            <div class="quick-info-item">
+                                <div class="quick-info-label">Issue Date</div>
+                                <div class="quick-info-value" id="quickIssueDate">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="certificate-content-grid">
+                        <!-- Main Details -->
+                        <div class="certificate-main-details">
+                            <!-- Student Information -->
+                            <div class="section-header">
+                                <i class="fas fa-user"></i>
+                                <h3>Student Information</h3>
+                            </div>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Full Name</div>
+                                    <div class="detail-value" id="studentName">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Registration Number</div>
+                                    <div class="detail-value" id="registrationNumber">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Roll Number</div>
+                                    <div class="detail-value" id="rollNumber">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Exam Roll Number</div>
+                                    <div class="detail-value" id="examRollNumber">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Date of Birth</div>
+                                    <div class="detail-value" id="dateOfBirth">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Father's Name</div>
+                                    <div class="detail-value" id="fatherName">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Mother's Name</div>
+                                    <div class="detail-value" id="motherName">-</div>
+                                </div>
+                            </div>
+
+                            <!-- Academic Information -->
+                            <div class="section-header">
+                                <i class="fas fa-graduation-cap"></i>
+                                <h3>Academic Information</h3>
+                            </div>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Course Name</div>
+                                    <div class="detail-value" id="courseName">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Course Duration</div>
+                                    <div class="detail-value" id="courseDuration">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Final Grade</div>
+                                    <div class="detail-value" id="finalGrade">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Performance</div>
+                                    <div class="detail-value" id="performance">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Issue Session</div>
+                                    <div class="detail-value" id="issueSession">-</div>
+                                </div>
+                            </div>
+
+                            <!-- Certificate Information -->
+                            <div class="section-header">
+                                <i class="fas fa-certificate"></i>
+                                <h3>Certificate Information</h3>
+                            </div>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Certificate Type</div>
+                                    <div class="detail-value" id="certificateType">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Issue Date</div>
+                                    <div class="detail-value" id="issueDate">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Valid Until</div>
+                                    <div class="detail-value" id="validUntil">Lifetime</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Status</div>
+                                    <div class="detail-value" id="certificateStatus">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="certificate-sidebar">
+                            <!-- Quick Actions -->
+                            <div class="sidebar-card">
+                                <div class="section-header">
+                                    <i class="fas fa-bolt"></i>
+                                    <h3>Quick Actions</h3>
+                                </div>
+                                <div class="certificate-actions">
+                                    <button class="action-btn btn-view" onclick="viewCertificatePDF()">
+                                        <i class="fas fa-eye"></i> View PDF
+                                    </button>
+                                    <button class="action-btn btn-download" onclick="downloadCertificatePDF()">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <button class="action-btn btn-print" onclick="printCertificate()">
+                                        <i class="fas fa-print"></i> Print
+                                    </button>
+                                    <button class="action-btn btn-edit" onclick="editCertificate()">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Certificate Timeline -->
+                            <div class="sidebar-card">
+                                <div class="section-header">
+                                    <i class="fas fa-history"></i>
+                                    <h3>Certificate Timeline</h3>
+                                </div>
+                                <div class="certificate-timeline" id="certificateTimeline">
+                                    <!-- Timeline items will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="sidebar-card">
+                                <div class="section-header">
+                                    <i class="fas fa-info"></i>
+                                    <h3>Additional Information</h3>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Remarks</div>
+                                    <div class="detail-value" id="remarks">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Actions -->
+                    <div class="certificate-actions">
+                        <button class="action-btn btn-back" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </button>
+                        <button class="action-btn btn-view" onclick="viewCertificatePDF()">
+                            <i class="fas fa-eye"></i> View Certificate
+                        </button>
+                        <button class="action-btn btn-download" onclick="downloadCertificatePDF()">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                        <button class="action-btn btn-print" onclick="printCertificate()">
+                            <i class="fas fa-print"></i> Print Certificate
+                        </button>
+                        <button class="action-btn btn-edit" onclick="editCertificate()">
+                            <i class="fas fa-edit"></i> Edit Certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/certificate-details.js" defer></script>
+</body>
+
+</html>
