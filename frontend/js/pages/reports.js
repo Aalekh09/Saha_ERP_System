@@ -286,17 +286,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Notification system
+// Enhanced notification system
 function showNotification(message, type = 'success') {
+    // Remove any existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notif => notif.remove());
+    
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.textContent = message;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    // Add styles for the notification
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+        color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        z-index: 10000;
+        font-weight: 500;
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        backdrop-filter: blur(10px);
+    `;
+    
+    const content = notification.querySelector('.notification-content');
+    content.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    `;
     
     document.body.appendChild(notification);
     
+    // Trigger animation
     setTimeout(() => {
-        notification.remove();
-    }, 3000);
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove notification after 4 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    }, 4000);
 }
 
 // Reports.js - Professional Reports Dashboard
@@ -304,51 +348,84 @@ const API_BASE = `${window.location.protocol}//localhost:4455/api/reports`;
 
 // 1. Monthly Student Admissions
 async function loadStudentAdmissions() {
-    const res = await fetch(`${API_BASE}/monthly-student-admissions`);
-    const data = await res.json();
-    const labels = data.map(row => row.month);
-    const counts = data.map(row => row.count);
-    // Chart
-    renderBarChart('studentAdmissionsChart', labels, counts, 'New Students');
-    // Table
-    const tbody = document.querySelector('#studentAdmissionsTable tbody');
-    let total = counts.reduce((sum, val) => sum + val, 0);
-    tbody.innerHTML = data.map(row => `<tr><td>${row.month}</td><td>${row.count}</td></tr>`).join('');
-    tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td style='text-align:right;'>Total</td><td>${total}</td></tr>`;
+    try {
+        const res = await fetch(`${API_BASE}/monthly-student-admissions`);
+        if (!res.ok) throw new Error('Failed to fetch data');
+        
+        const data = await res.json();
+        const labels = data.map(row => row.month);
+        const counts = data.map(row => row.count);
+        
+        // Chart
+        renderBarChart('studentAdmissionsChart', labels, counts, 'New Students');
+        
+        // Table
+        const tbody = document.querySelector('#studentAdmissionsTable tbody');
+        let total = counts.reduce((sum, val) => sum + val, 0);
+        tbody.innerHTML = data.map(row => `<tr><td>${row.month}</td><td>${row.count}</td></tr>`).join('');
+        tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td style='text-align:right;'>Total</td><td>${total}</td></tr>`;
+    } catch (error) {
+        console.error('Error loading student admissions:', error);
+        const tbody = document.querySelector('#studentAdmissionsTable tbody');
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#888;">Error loading data. Please check if the server is running.</td></tr>';
+        showNotification('Error loading student admissions data', 'error');
+    }
 }
 
 // 2. Monthly Payments Collected
 async function loadMonthlyPayments() {
-    const res = await fetch(`${API_BASE}/monthly-payments`);
-    const data = await res.json();
-    const labels = data.map(row => row.month);
-    const totals = data.map(row => row.totalPayments);
-    // Chart
-    renderBarChart('monthlyPaymentsChart', labels, totals, 'Total Payments (₹)');
-    // Table
-    const tbody = document.querySelector('#monthlyPaymentsTable tbody');
-    tbody.innerHTML = data.map(row => `<tr><td>${row.month}</td><td>₹${row.totalPayments.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`).join('');
+    try {
+        const res = await fetch(`${API_BASE}/monthly-payments`);
+        if (!res.ok) throw new Error('Failed to fetch data');
+        
+        const data = await res.json();
+        const labels = data.map(row => row.month);
+        const totals = data.map(row => row.totalPayments);
+        
+        // Chart
+        renderBarChart('monthlyPaymentsChart', labels, totals, 'Total Payments (₹)');
+        
+        // Table
+        const tbody = document.querySelector('#monthlyPaymentsTable tbody');
+        tbody.innerHTML = data.map(row => `<tr><td>${row.month}</td><td>₹${row.totalPayments.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`).join('');
+    } catch (error) {
+        console.error('Error loading monthly payments:', error);
+        const tbody = document.querySelector('#monthlyPaymentsTable tbody');
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#888;">Error loading data. Please check if the server is running.</td></tr>';
+        showNotification('Error loading monthly payments data', 'error');
+    }
 }
 
 // 3. Pending Fees
 async function loadPendingFees() {
-    const res = await fetch(`${API_BASE}/pending-fees`);
-    const data = await res.json();
-    const tbody = document.querySelector('#pendingFeesTable tbody');
-    const countDiv = document.getElementById('pendingFeesCount');
-    
-    if (data.length) {
-        let total = 0;
-        tbody.innerHTML = data.map(row => {
-            total += Number(row.pendingAmount);
-            const admissionDate = row.admissionDate ? new Date(row.admissionDate).toLocaleDateString('en-IN') : 'N/A';
-            return `<tr><td>${row.studentName}</td><td>${row.course}</td><td>₹${row.pendingAmount}</td><td>${admissionDate}</td></tr>`;
-        }).join('');
-        tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td colspan='3' style='text-align:right;'>Total Pending Fees</td><td>₹${total.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`;
-        countDiv.textContent = `Total Students with Pending Fees: ${data.length}`;
-    } else {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">No pending fees</td></tr>';
-        countDiv.textContent = 'Total Students with Pending Fees: 0';
+    try {
+        const res = await fetch(`${API_BASE}/pending-fees`);
+        if (!res.ok) throw new Error('Failed to fetch data');
+        
+        const data = await res.json();
+        const tbody = document.querySelector('#pendingFeesTable tbody');
+        const countDiv = document.getElementById('pendingFeesCount');
+        
+        if (data.length) {
+            let total = 0;
+            tbody.innerHTML = data.map(row => {
+                total += Number(row.pendingAmount);
+                const admissionDate = row.admissionDate ? new Date(row.admissionDate).toLocaleDateString('en-IN') : 'N/A';
+                return `<tr><td>${row.studentName}</td><td>${row.course}</td><td>₹${row.pendingAmount}</td><td>${admissionDate}</td></tr>`;
+            }).join('');
+            tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td colspan='3' style='text-align:right;'>Total Pending Fees</td><td>₹${total.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`;
+            countDiv.textContent = `Total Students with Pending Fees: ${data.length}`;
+        } else {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">No pending fees</td></tr>';
+            countDiv.textContent = 'Total Students with Pending Fees: 0';
+        }
+    } catch (error) {
+        console.error('Error loading pending fees:', error);
+        const tbody = document.querySelector('#pendingFeesTable tbody');
+        const countDiv = document.getElementById('pendingFeesCount');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">Error loading data. Please check if the server is running.</td></tr>';
+        countDiv.textContent = 'Error loading pending fees data';
+        showNotification('Error loading pending fees data', 'error');
     }
 }
 
@@ -474,4 +551,39 @@ async function loadStudentsByMonth() {
     }
 }
 window.loadStudentsByMonth = loadStudentsByMonth;
-window.loadPendingFeesByMonth = loadPendingFeesByMonth; 
+window.loadPendingFeesByMonth = loadPendingFeesByMonth;
+
+// Export all reports function
+function exportAllReports() {
+    const tables = [
+        { id: 'studentAdmissionsTable', name: 'Student_Admissions' },
+        { id: 'monthlyPaymentsTable', name: 'Monthly_Payments' },
+        { id: 'pendingFeesTable', name: 'Pending_Fees' },
+        { id: 'studentsByMonthTable', name: 'Students_By_Month' }
+    ];
+    
+    tables.forEach(table => {
+        const tableElement = document.getElementById(table.id);
+        if (tableElement && tableElement.querySelector('tbody').children.length > 0) {
+            setTimeout(() => {
+                exportTableToExcel(table.id, table.name);
+            }, 500);
+        }
+    });
+    
+    showNotification('All available reports are being exported...', 'success');
+}
+
+// Enhanced export function with custom filename
+function exportTableToExcel(tableId, customName = null) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+    
+    const filename = customName || tableId;
+    const wb = XLSX.utils.table_to_book(table, {sheet: "Report"});
+    XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// Make functions globally available
+window.exportAllReports = exportAllReports;
+window.exportTableToExcel = exportTableToExcel;

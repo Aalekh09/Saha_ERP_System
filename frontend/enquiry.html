@@ -196,29 +196,90 @@
         <span id="notificationMessage"></span>
     </div>
 
-    <!-- Feedback Modal -->
+    <!-- Professional Feedback Modal -->
     <div id="feedbackModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-btn" id="closeFeedbackModal">&times;</span>
-            <h2>Feedback Log</h2>
-            <div id="feedbackLog"></div>
-            <form id="feedbackForm">
-                <div class="form-group">
-                    <label for="feedbackDate">Date:</label>
-                    <input type="date" id="feedbackDate" required>
+        <div class="modal-content professional-feedback-modal">
+            <div class="modal-header professional-feedback-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon-bg">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="modal-header-title">
+                        <h2><i class="fas fa-clipboard-list"></i> Feedback Management</h2>
+                        <p class="modal-subtitle">Track communication history and add new feedback entries</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="feedbackTime">Time:</label>
-                    <input type="time" id="feedbackTime" required>
+                <button class="close-btn" id="closeFeedbackModal" title="Close Feedback Modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body professional-feedback-body">
+                <!-- Feedback History Section -->
+                <div class="feedback-history-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Communication History</h3>
+                    </div>
+                    <div class="feedback-log-container">
+                        <div id="feedbackLog" class="professional-feedback-log"></div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="feedbackText">Feedback:</label>
-                    <textarea id="feedbackText" rows="2" required></textarea>
+                
+                <!-- Add New Feedback Section -->
+                <div class="add-feedback-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3>Add New Feedback</h3>
+                    </div>
+                    
+                    <form id="feedbackForm" class="professional-feedback-form">
+                        <div class="form-grid-feedback">
+                            <div class="form-group">
+                                <label for="feedbackDate">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date
+                                </label>
+                                <input type="date" id="feedbackDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackTime">
+                                    <i class="fas fa-clock"></i>
+                                    Time
+                                </label>
+                                <input type="time" id="feedbackTime" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="feedbackText">
+                                <i class="fas fa-comment-dots"></i>
+                                Feedback Details
+                            </label>
+                            <textarea id="feedbackText" rows="4" required placeholder="Enter detailed feedback about the communication or follow-up..."></textarea>
+                            <div class="textarea-footer">
+                                <span class="char-count">0 characters</span>
+                                <span class="helpful-text">Be specific about the conversation and next steps</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions professional-feedback-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i>
+                                Add Feedback Entry
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="document.getElementById('feedbackForm').reset()">
+                                <i class="fas fa-eraser"></i>
+                                Clear Form
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Add Feedback</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
