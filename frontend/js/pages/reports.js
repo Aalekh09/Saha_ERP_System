@@ -262,8 +262,46 @@ function exportReport(format) {
 //     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 // });
 
+// === Mobile Menu Functionality ===
+function initializeMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const sidePanel = document.querySelector('.side-panel');
+    
+    if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
+        // Toggle mobile menu
+        mobileMenuToggle.addEventListener('click', function() {
+            sidePanel.classList.toggle('mobile-active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.classList.toggle('mobile-menu-open');
+        });
+        
+        // Close menu when overlay is clicked
+        mobileMenuOverlay.addEventListener('click', function() {
+            sidePanel.classList.remove('mobile-active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.classList.remove('mobile-menu-open');
+        });
+        
+        // Close menu when a navigation item is clicked (on mobile)
+        const tabButtons = sidePanel.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidePanel.classList.remove('mobile-active');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.classList.remove('mobile-menu-open');
+                }
+            });
+        });
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize mobile menu
+    initializeMobileMenu();
+    
     // Only load the charts/tables that exist in the current HTML
     loadStudentAdmissions();
     loadMonthlyPayments();

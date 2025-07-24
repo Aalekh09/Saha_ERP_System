@@ -1,30 +1,43 @@
-// === Device Check Overlay ===
-function showDeviceOverlay() {
-    if (document.getElementById('device-overlay')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'device-overlay';
-    overlay.innerHTML = `
-        <div class="device-message">
-            <div class="device-icon">💻</div>
-            <h2>Desktop Only</h2>
-            <p>This application is only available on laptops/desktops.<br>Mobile support is coming soon!</p>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-}
-function hideDeviceOverlay() {
-    const overlay = document.getElementById('device-overlay');
-    if (overlay) overlay.remove();
-}
-function checkDevice() {
-    if (window.innerWidth < 900) {
-        showDeviceOverlay();
-    } else {
-        hideDeviceOverlay();
+// === Mobile Support Enabled ===
+// Device check removed - Full mobile support now available
+
+// === Mobile Menu Functionality ===
+function initializeMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const sidePanel = document.getElementById('sidePanel');
+    
+    if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
+        // Toggle mobile menu
+        mobileMenuToggle.addEventListener('click', function() {
+            sidePanel.classList.toggle('mobile-active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.classList.toggle('mobile-menu-open');
+        });
+        
+        // Close menu when overlay is clicked
+        mobileMenuOverlay.addEventListener('click', function() {
+            sidePanel.classList.remove('mobile-active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.classList.remove('mobile-menu-open');
+        });
+        
+        // Close menu when a navigation item is clicked (on mobile)
+        const tabButtons = sidePanel.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidePanel.classList.remove('mobile-active');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.classList.remove('mobile-menu-open');
+                }
+            });
+        });
     }
 }
-window.addEventListener('resize', checkDevice);
-document.addEventListener('DOMContentLoaded', checkDevice);
+
+// Initialize mobile menu when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeMobileMenu);
 
 // === Server Status Overlay ===
 function showServerOverlay() {
