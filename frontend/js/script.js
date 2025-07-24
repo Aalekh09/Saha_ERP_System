@@ -983,53 +983,507 @@ async function fetchPaymentAndGenerateReceipt(paymentId) {
     }
 }
 
-// Generate and display receipt
+// Generate professional payment receipt
 function generateReceipt(payment) {
-    const receiptWindow = window.open('', '_blank');
-    receiptWindow.document.write(`
+    console.log('Generating professional receipt for:', payment);
+    
+    // Create professional receipt HTML
+    const receiptHTML = `
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Payment Receipt</title>
+            <meta charset="UTF-8">
+            <title>Payment Receipt - ${payment.receiptNumber}</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                .receipt { border: 1px solid #ccc; padding: 20px; max-width: 600px; margin: 0 auto; }
-                .header { text-align: center; margin-bottom: 20px; }
-                .details { margin: 20px 0; }
-                .details div { margin: 10px 0; }
-                .footer { text-align: center; margin-top: 40px; }
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    line-height: 1.6;
+                    color: #2c3e50;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 100vh;
+                    padding: 20px;
+                }
+                
+                .receipt-container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    background: #ffffff;
+                    border-radius: 20px;
+                    overflow: hidden;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+                    position: relative;
+                }
+                
+                .receipt-container::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 6px;
+                    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+                }
+                
+                .header {
+                    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                    color: white;
+                    padding: 40px;
+                    text-align: center;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .header::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    right: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                    animation: float 6s ease-in-out infinite;
+                }
+                
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px) rotate(0deg); }
+                    50% { transform: translateY(-20px) rotate(180deg); }
+                }
+                
+                .institute-logo {
+                    width: 80px;
+                    height: 80px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 50%;
+                    margin: 0 auto 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    font-weight: bold;
+                    color: white;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                }
+                
+                .institute-name {
+                    font-size: 2.2rem;
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                }
+                
+                .institute-tagline {
+                    font-size: 1rem;
+                    opacity: 0.9;
+                    margin-bottom: 15px;
+                    font-weight: 300;
+                }
+                
+                .institute-address {
+                    font-size: 0.9rem;
+                    opacity: 0.8;
+                    line-height: 1.4;
+                }
+                
+                .receipt-badge {
+                    background: linear-gradient(135deg, #f093fb, #f5576c);
+                    color: white;
+                    padding: 12px 30px;
+                    border-radius: 50px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    margin: 20px auto 0;
+                    display: inline-block;
+                    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+                }
+                
+                .receipt-meta {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 30px;
+                    padding: 40px;
+                    background: #f8f9fa;
+                    border-bottom: 1px solid #e9ecef;
+                }
+                
+                .meta-card {
+                    background: white;
+                    padding: 25px;
+                    border-radius: 15px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    border-left: 4px solid #667eea;
+                }
+                
+                .meta-label {
+                    font-size: 0.85rem;
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 8px;
+                    font-weight: 600;
+                }
+                
+                .meta-value {
+                    font-size: 1.3rem;
+                    font-weight: 700;
+                    color: #2c3e50;
+                }
+                
+                .receipt-number {
+                    color: #667eea;
+                    font-family: 'Courier New', monospace;
+                }
+                
+                .payment-details {
+                    padding: 40px;
+                }
+                
+                .section-title {
+                    font-size: 1.4rem;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 25px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .section-icon {
+                    width: 35px;
+                    height: 35px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 1rem;
+                }
+                
+                .details-grid {
+                    display: grid;
+                    gap: 20px;
+                }
+                
+                .detail-item {
+                    display: grid;
+                    grid-template-columns: 200px 1fr;
+                    gap: 20px;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 12px;
+                    border-left: 4px solid #e9ecef;
+                    transition: all 0.3s ease;
+                }
+                
+                .detail-item:hover {
+                    border-left-color: #667eea;
+                    transform: translateX(5px);
+                }
+                
+                .detail-label {
+                    font-weight: 600;
+                    color: #495057;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                .detail-value {
+                    font-weight: 500;
+                    color: #2c3e50;
+                }
+                
+                .amount-highlight {
+                    background: linear-gradient(135deg, #28a745, #20c997);
+                    color: white;
+                    border-left-color: #28a745 !important;
+                    font-size: 1.1rem;
+                }
+                
+                .amount-highlight .detail-value {
+                    color: white;
+                    font-weight: 700;
+                    font-size: 1.3rem;
+                }
+                
+                .payment-summary {
+                    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                    padding: 30px 40px;
+                    border-top: 1px solid #dee2e6;
+                }
+                
+                .summary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 15px 0;
+                    border-bottom: 1px solid #dee2e6;
+                }
+                
+                .summary-row:last-child {
+                    border-bottom: none;
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: #28a745;
+                }
+                
+                .footer {
+                    background: #2c3e50;
+                    color: white;
+                    padding: 40px;
+                    text-align: center;
+                }
+                
+                .thank-you {
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    margin-bottom: 15px;
+                }
+                
+                .footer-note {
+                    opacity: 0.8;
+                    margin-bottom: 20px;
+                }
+                
+                .signature-section {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 30px;
+                    padding-top: 30px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.2);
+                }
+                
+                .signature-box {
+                    text-align: center;
+                    flex: 1;
+                }
+                
+                .signature-line {
+                    width: 150px;
+                    height: 1px;
+                    background: rgba(255, 255, 255, 0.5);
+                    margin: 40px auto 10px;
+                }
+                
+                .signature-label {
+                    font-size: 0.9rem;
+                    opacity: 0.8;
+                }
+                
+                .generated-info {
+                    margin-top: 20px;
+                    padding-top: 20px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.2);
+                    font-size: 0.85rem;
+                    opacity: 0.7;
+                }
+                
+                .print-button {
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 50px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    margin: 20px;
+                    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+                    transition: all 0.3s ease;
+                }
+                
+                .print-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+                }
+                
                 @media print {
-                    .no-print { display: none; }
+                    body {
+                        background: white;
+                        padding: 0;
+                    }
+                    .receipt-container {
+                        box-shadow: none;
+                        border-radius: 0;
+                    }
+                    .header::before {
+                        display: none;
+                    }
+                    .print-button {
+                        display: none;
+                    }
+                }
+                
+                @media (max-width: 768px) {
+                    .receipt-meta {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                        padding: 30px 20px;
+                    }
+                    
+                    .payment-details {
+                        padding: 30px 20px;
+                    }
+                    
+                    .detail-item {
+                        grid-template-columns: 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .signature-section {
+                        flex-direction: column;
+                        gap: 30px;
+                    }
                 }
             </style>
         </head>
         <body>
-            <div class="receipt">
+            <div class="receipt-container">
                 <div class="header">
-                    <h1>Saha Institute of Management & Technology</h1>
-                    <h2>Payment Receipt</h2>
+                    <div class="institute-logo">SIMT</div>
+                    <h1 class="institute-name">Saha Institute of Management & Technology</h1>
+                    <p class="institute-tagline">Excellence in Education & Technology</p>
+                    <p class="institute-address">
+                        House No. 2219, Sector 3, Faridabad, Haryana<br>
+                        Phone: +91 9871261719 | Email: sahaedu@gmail.com
+                    </p>
+                    <div class="receipt-badge">Payment Receipt</div>
                 </div>
-                <div class="details">
-                    <div><strong>Receipt No:</strong> ${payment.receiptNumber}</div>
-                    <div><strong>Date:</strong> ${new Date(payment.paymentDate).toLocaleString()}</div>
-                    <div><strong>Student Name:</strong> ${payment.student.name}</div>
-                    <div><strong>Student Phone:</strong> ${payment.student.phoneNumber}</div>
-                    <div><strong>Amount:</strong> ₹${payment.amount}</div>
-                    <div><strong>Payment Method:</strong> ${payment.paymentMethod}</div>
-                    <div><strong>Description:</strong> ${payment.description}</div>
-                    <div><strong>Status:</strong> ${payment.status}</div>
+                
+                <div class="receipt-meta">
+                    <div class="meta-card">
+                        <div class="meta-label">Receipt Number</div>
+                        <div class="meta-value receipt-number">${payment.receiptNumber}</div>
+                    </div>
+                    <div class="meta-card">
+                        <div class="meta-label">Payment Date</div>
+                        <div class="meta-value">${new Date(payment.paymentDate).toLocaleDateString('en-IN', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</div>
+                    </div>
                 </div>
+                
+                <div class="payment-details">
+                    <h2 class="section-title">
+                        <div class="section-icon">👤</div>
+                        Payment Details
+                    </h2>
+                    
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>👨‍🎓</span> Student Name
+                            </div>
+                            <div class="detail-value">${payment.student.name}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>📞</span> Student Phone
+                            </div>
+                            <div class="detail-value">${payment.student.phoneNumber || 'N/A'}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>💳</span> Payment Method
+                            </div>
+                            <div class="detail-value">${payment.paymentMethod}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>📝</span> Description
+                            </div>
+                            <div class="detail-value">${payment.description}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>✅</span> Status
+                            </div>
+                            <div class="detail-value">${payment.status || 'Completed'}</div>
+                        </div>
+                        
+                        <div class="detail-item amount-highlight">
+                            <div class="detail-label">
+                                <span>💰</span> Amount Paid
+                            </div>
+                            <div class="detail-value">₹${parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-summary">
+                    <div class="summary-row">
+                        <span>Payment Status:</span>
+                        <span style="color: #28a745; font-weight: 600;">✅ Completed</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Transaction ID:</span>
+                        <span style="font-family: 'Courier New', monospace;">${payment.receiptNumber}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total Amount Received:</span>
+                        <span>₹${parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </div>
+                </div>
+                
                 <div class="footer">
-                    <p>Thank you for your payment!</p>
-                    <p>This is a computer-generated receipt and does not require a signature.</p>
+                    <div class="thank-you">🙏 Thank you for your payment!</div>
+                    <div class="footer-note">
+                        This is a computer-generated receipt and does not require a physical signature.
+                    </div>
+                    
+                    <div class="signature-section">
+                        <div class="signature-box">
+                            <div class="signature-line"></div>
+                            <div class="signature-label">Student Signature</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="signature-line"></div>
+                            <div class="signature-label">Authorized Signature</div>
+                        </div>
+                    </div>
+                    
+                    <div class="generated-info">
+                        Generated on: ${new Date().toLocaleString('en-IN')}<br>
+                        System: SIMT Student Management System v2.0
+                    </div>
                 </div>
-                <div class="no-print" style="text-align: center; margin-top: 20px;">
-                    <button onclick="window.print()">Print Receipt</button>
-                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="print-button" onclick="window.print()">🖨️ Print Receipt</button>
             </div>
         </body>
         </html>
-    `);
+    `;
+    
+    // Create and download the receipt as HTML file
+    const blob = new Blob([receiptHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Receipt_${payment.receiptNumber}_${payment.student.name.replace(/\s+/g, '_')}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // Also open receipt in new window for immediate viewing
+    const receiptWindow = window.open('', '_blank');
+    receiptWindow.document.write(receiptHTML);
+    receiptWindow.document.close();
 }
 
 // Initialize payments when payments tab is clicked
