@@ -3022,20 +3022,24 @@ rofessional Payment Modal Styles */
 /* Ul
 tra Professional Payment Modal Styles */
 .payment-modal-upgraded {
-    max-width: 750px;
+    max-width: 850px;
     width: 95%;
-    margin: 1% auto;
-    background: var(--surface-color);
-    border-radius: 24px;
+    max-height: 90vh;
+    margin: 2% auto;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 28px;
     box-shadow:
-        0 32px 64px -12px rgba(0, 0, 0, 0.25),
-        0 0 0 1px rgba(255, 255, 255, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 50px 100px -20px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
     overflow: hidden;
-    animation: modalSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: modalSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(30px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     position: relative;
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
 }
 
 .payment-modal-upgraded::before {
@@ -3050,14 +3054,15 @@ tra Professional Payment Modal Styles */
 }
 
 .upgraded-modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%, #f093fb 100%);
     color: white;
-    padding: 32px 40px;
+    padding: 40px 48px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 }
 
 .upgraded-modal-header::before {
@@ -5269,9 +5274,9 @@ fessional Student Profile Modal Styles */
     .professional-id-card {
         transform: scale(0.9);
     }
-}/
-* Compact Professional Student Profile Modal Styles */
-.professional-student-profile-modal {
+}
+
+/ * Compact Professional Student Profile Modal Styles */ .professional-student-profile-modal {
     max-width: 600px !important;
     width: auto !important;
     min-width: 500px;
@@ -5493,36 +5498,36 @@ fessional Student Profile Modal Styles */
         min-width: auto;
         width: 95% !important;
     }
-    
+
     .profile-header-compact {
         padding: 20px;
         flex-direction: column;
         text-align: center;
         gap: 16px;
     }
-    
+
     .profile-main-info-compact {
         text-align: center;
     }
-    
+
     .profile-details-grid {
         grid-template-columns: 1fr;
         padding: 20px;
         gap: 12px;
     }
-    
+
     .detail-card {
         padding: 12px;
     }
-    
+
     .profile-name-compact {
         font-size: 1.25rem;
     }
-    
+
     .fee-progress-compact {
         text-align: center;
     }
-    
+
     .progress-bar-compact {
         margin: 0 auto 4px;
     }
@@ -5532,24 +5537,805 @@ fessional Student Profile Modal Styles */
     .profile-header-compact {
         padding: 16px;
     }
-    
+
     .profile-details-grid {
         padding: 16px;
     }
-    
+
     .detail-card {
         flex-direction: column;
         text-align: center;
         gap: 8px;
     }
-    
+
     .detail-icon {
         margin: 0 auto;
     }
-    
+
     .profile-avatar-compact {
         width: 56px;
         height: 56px;
         font-size: 1.25rem;
+    }
+}
+
+/ * Enhanced Add New Payment Modal Design */
+/* Enhanced Payment Modal Container */
+.payment-modal-upgraded::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.03) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Enhanced Modal Body */
+.modal-body-upgraded {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+/* Enhanced Student Summary Card */
+.student-summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.student-summary-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.student-summary-avatar {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.student-summary-name,
+.student-summary-id {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.student-summary-id {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Enhanced Form Sections */
+.payment-form-upgraded .form-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-form-upgraded .form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+    border-radius: inherit;
+    padding: 2px;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+.payment-form-upgraded .form-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 16px 16px 0 0;
+}
+
+/* Enhanced Form Section Titles */
+.form-section-title {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.form-section-title::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Enhanced Form Inputs */
+.payment-form-upgraded input,
+.payment-form-upgraded select {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    position: relative;
+}
+
+.payment-form-upgraded input:focus,
+.payment-form-upgraded select:focus {
+    background: #ffffff;
+    border-color: #667eea;
+    box-shadow:
+        0 0 0 4px rgba(102, 126, 234, 0.1),
+        0 4px 12px rgba(102, 126, 234, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Enhanced Student Search Input */
+.payment-form-upgraded #studentSearchInput {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #e2e8f0;
+    position: relative;
+}
+
+.payment-form-upgraded #studentSearchInput:focus {
+    background: #ffffff;
+    border-color: #667eea;
+    box-shadow:
+        0 0 0 4px rgba(102, 126, 234, 0.1),
+        0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+/* Enhanced Select Dropdown */
+.payment-form-upgraded select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-size: 1.2em 1.2em;
+}
+
+.payment-form-upgraded select:hover {
+    border-color: #764ba2;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+/* Ultra Professional Form Actions */
+.upgraded-form-actions {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.upgraded-form-actions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+}
+
+.upgraded-form-actions .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow:
+        0 4px 12px rgba(102, 126, 234, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.upgraded-form-actions .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.upgraded-form-actions .btn-primary:hover::before {
+    left: 100%;
+}
+
+.upgraded-form-actions .btn-primary:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    box-shadow:
+        0 8px 25px rgba(102, 126, 234, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+}
+
+.upgraded-form-actions .btn-secondary {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.upgraded-form-actions .btn-secondary:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #667eea;
+    color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Payment Actions Flex */
+.payment-actions-flex .action-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow:
+        0 4px 12px rgba(16, 185, 129, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-actions-flex .action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.payment-actions-flex .action-btn:hover::before {
+    left: 100%;
+}
+
+.payment-actions-flex .action-btn:hover {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    box-shadow:
+        0 8px 25px rgba(16, 185, 129, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+}
+
+/* Enhanced Form Labels */
+.payment-form-upgraded label {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.payment-form-upgraded label::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 1px;
+    opacity: 0.7;
+}
+
+/* Enhanced Modal Backdrop */
+.modal {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+}
+
+/* Professional Loading States */
+.payment-form-upgraded input:disabled,
+.payment-form-upgraded select:disabled {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 768px) {
+    .payment-modal-upgraded {
+        border-radius: 20px;
+        margin: 3% auto;
+    }
+
+    .upgraded-modal-header {
+        padding: 28px 24px;
+    }
+
+    .modal-body-upgraded {
+        padding: 28px 24px;
+    }
+
+    .payment-form-upgraded .form-section {
+        padding: 24px;
+    }
+
+    .upgraded-form-actions {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-modal-upgraded {
+        border-radius: 16px;
+        margin: 5% auto;
+    }
+
+    .upgraded-modal-header {
+        padding: 24px 20px;
+    }
+
+    .modal-body-upgraded {
+        padding: 24px 20px;
+    }
+
+    .payment-form-upgraded .form-section {
+        padding: 20px;
+    }
+
+    .upgraded-form-actions {
+        padding: 20px;
+    }
+
+    .upgraded-form-actions .btn-primary,
+    .upgraded-form-actions .btn-secondary {
+        padding: 14px 24px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Professional Animation Enhancements */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(180deg);
+    }
+}
+
+/* Enhanced Focus States */
+.payment-form-upgraded input:focus+label,
+.payment-form-upgraded select:focus+label {
+    color: #667eea;
+}
+
+/* Professional Validation States */
+.payment-form-upgraded input:valid {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.payment-form-upgraded input:invalid:not(:placeholder-shown) {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Enhanced Typography */
+.payment-form-upgraded {
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+}
+
+/* Professional Micro-interactions */
+.payment-form-upgraded input:focus,
+.payment-form-upgraded select:focus {
+    animation: inputFocus 0.3s ease;
+}
+
+@keyframes inputFocus {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Professional Scrollable Payment Modal */
+.modal-body-upgraded {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding: 40px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    position: relative;
+    z-index: 1;
+}
+
+/* Professional Gradient Scrollbar */
+.modal-body-upgraded::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body-upgraded::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 3px;
+}
+
+.modal-body-upgraded::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.modal-body-upgraded::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #f093fb);
+    width: 8px;
+}
+
+/* Professional Form Sections */
+.payment-form-upgraded .form-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.payment-form-upgraded .form-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.payment-form-upgraded .form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 16px 16px 0 0;
+}
+
+.payment-form-upgraded .form-section:last-child {
+    margin-bottom: 32px;
+}
+
+/* Professional Sticky Form Actions */
+.upgraded-form-actions {
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-top: 1px solid rgba(102, 126, 234, 0.1);
+    padding: 24px 40px;
+    margin: 0;
+    z-index: 10;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.upgraded-form-actions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+}
+
+/* Enhanced mobile scrollability */
+@media (max-width: 768px) {
+    .payment-modal-upgraded {
+        max-height: 95vh;
+        margin: 2.5% auto;
+    }
+
+    .modal-body-upgraded {
+        max-height: 70vh;
+        padding: 24px 20px;
+    }
+
+    .upgraded-form-actions {
+        padding: 20px;
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-modal-upgraded {
+        max-height: 98vh;
+        margin: 1% auto;
+    }
+
+    .modal-body-upgraded {
+        max-height: 75vh;
+        padding: 20px 16px;
+    }
+
+    .upgraded-form-actions {
+        padding: 16px;
+        margin-top: 12px;
+    }
+}
+
+/ * Enhanced Mobile Scrollability for Payment Modal */ @media (max-width: 768px) {
+    .payment-modal-upgraded {
+        max-height: 95vh;
+        margin: 2.5% auto;
+        border-radius: 20px;
+    }
+
+    .modal-body-upgraded {
+        max-height: 70vh;
+        padding: 24px 20px;
+    }
+
+    .upgraded-form-actions {
+        padding: 20px;
+        margin-top: 16px;
+    }
+
+    .payment-form-upgraded .form-section {
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-modal-upgraded {
+        max-height: 98vh;
+        margin: 1% auto;
+        border-radius: 16px;
+    }
+
+    .modal-body-upgraded {
+        max-height: 75vh;
+        padding: 20px 16px;
+    }
+
+    .upgraded-form-actions {
+        padding: 16px;
+        margin-top: 12px;
+    }
+
+    .payment-form-upgraded .form-section {
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+
+    .upgraded-form-actions .btn-primary,
+    .upgraded-form-actions .btn-secondary {
+        padding: 14px 24px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+
+    .upgraded-form-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* Professional Scroll Indicators */
+.modal-body-upgraded {
+    position: relative;
+}
+
+.modal-body-upgraded::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+    z-index: 5;
+    pointer-events: none;
+}
+
+.modal-body-upgraded::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Enhanced Student Summary Card in Modal */
+.student-summary-card {
+    border-radius: 16px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Professional Form Section Enhancements */
+.payment-form-upgraded .form-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-form-upgraded .form-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 16px 16px 0 0;
+}
+
+/* Enhanced Form Section Titles */
+.form-section-title {
+    position: relative;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.form-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 1px;
+}
+
+/* Professional Input Focus States */
+.payment-form-upgraded input:focus,
+.payment-form-upgraded select:focus {
+    border-color: #667eea;
+    box-shadow:
+        0 0 0 3px rgba(102, 126, 234, 0.1),
+        0 2px 8px rgba(102, 126, 234, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Enhanced Button Styling */
+.upgraded-form-actions .btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.upgraded-form-actions .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.upgraded-form-actions .btn-primary:hover::before {
+    left: 100%;
+}
+
+/* Professional Loading State */
+.payment-form-upgraded.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.payment-form-upgraded.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Smooth Transitions */
+.payment-form-upgraded * {
+    transition: all 0.2s ease;
+}
+
+/* Professional Typography */
+.payment-form-upgraded {
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+}
+
+/* Enhanced Visual Hierarchy */
+.payment-form-upgraded label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+    font-size: 0.875rem;
+}
+
+.payment-form-upgraded input,
+.payment-form-upgraded select {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+/* Professional Validation States */
+.payment-form-upgraded input:valid {
+    border-color: #10b981;
+}
+
+.payment-form-upgraded input:invalid:not(:placeholder-shown) {
+    border-color: #ef4444;
+}
+
+/* Enhanced Accessibility */
+.payment-form-upgraded input:focus,
+.payment-form-upgraded select:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+/* Professional Animation Timing */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
