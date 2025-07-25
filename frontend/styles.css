@@ -595,6 +595,54 @@ tr:last-child td {
     color: white;
 }
 
+/* Simple Professional View Profile and ID Card Buttons */
+.professional-view-profile-btn,
+.professional-id-card-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Professional View Profile Button Styling */
+.professional-view-profile-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.professional-view-profile-btn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Professional ID Card Button Styling */
+.professional-id-card-btn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.professional-id-card-btn:hover {
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(245, 87, 108, 0.3);
+}
+
+.professional-view-profile-btn i,
+.professional-id-card-btn i {
+    font-size: 0.9rem;
+}
+
+/* Legacy button styles for backward compatibility */
 .id-card-btn {
     background: var(--warning-color);
     color: white;
@@ -603,6 +651,70 @@ tr:last-child td {
 .view-profile-btn {
     background: var(--secondary-color);
     color: white;
+}
+
+/* Mobile responsiveness for professional buttons */
+@media (max-width: 768px) {
+
+    .professional-view-profile-btn,
+    .professional-id-card-btn {
+        min-width: 120px;
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    .btn-icon-wrapper {
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-icon-wrapper i {
+        font-size: 1rem;
+    }
+
+    .btn-label {
+        font-size: 0.8rem;
+    }
+
+    .btn-sublabel {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .professional-view-profile-btn,
+    .professional-id-card-btn {
+        flex-direction: column;
+        text-align: center;
+        min-width: 100px;
+        padding: 12px 8px;
+        gap: 6px;
+    }
+
+    .btn-content {
+        align-items: center;
+    }
+
+    .btn-label {
+        font-size: 0.75rem;
+    }
+
+    .btn-sublabel {
+        font-size: 0.65rem;
+    }
+
+    /* Stack action buttons vertically on very small screens */
+    .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .professional-view-profile-btn,
+    .professional-id-card-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Form Styles */
@@ -4567,5 +4679,877 @@ onal Mobile Enhancements */
     .form-group textarea:invalid {
         border-color: var(--error-color);
         box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
+}
+
+/* Pro
+fessional Student Profile Modal Styles */
+.professional-student-profile-modal {
+    max-width: 900px;
+    width: 95%;
+    margin: 1% auto;
+    background: var(--surface-color);
+    border-radius: 24px;
+    box-shadow:
+        0 32px 64px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    animation: modalSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.professional-student-profile-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+    z-index: 1;
+}
+
+.professional-profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 32px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.professional-profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 8s ease-in-out infinite;
+}
+
+.professional-profile-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite reverse;
+}
+
+.professional-profile-body {
+    padding: 40px;
+    background: var(--surface-color);
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.professional-profile-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.professional-profile-body::-webkit-scrollbar-track {
+    background: var(--background-color);
+    border-radius: 4px;
+}
+
+.professional-profile-body::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.professional-profile-body::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Professional ID Card Modal Styles */
+.professional-id-card-modal {
+    max-width: 800px;
+    width: 95%;
+    margin: 1% auto;
+    background: var(--surface-color);
+    border-radius: 24px;
+    box-shadow:
+        0 32px 64px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    animation: modalSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.professional-id-card-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f093fb, #f5576c, #667eea, #764ba2);
+    z-index: 1;
+}
+
+.professional-id-card-header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 32px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.professional-id-card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 8s ease-in-out infinite;
+}
+
+.professional-id-card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite reverse;
+}
+
+.professional-id-card-body {
+    padding: 40px;
+    background: var(--surface-color);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ID Card Preview Section */
+.id-card-preview-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.id-card-preview-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border-radius: 2px 0 0 2px;
+}
+
+.id-card-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Professional ID Card Design */
+.professional-id-card {
+    width: 350px;
+    height: 220px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.professional-id-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f093fb, #f5576c, #667eea, #764ba2);
+}
+
+.professional-id-card .id-card-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.institute-logo {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+.institute-info h2 {
+    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.institute-info p {
+    font-size: 0.7rem;
+    margin: 2px 0 0 0;
+    opacity: 0.9;
+}
+
+.professional-id-card .id-card-body {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+}
+
+.student-photo-placeholder {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.professional-id-card .student-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.professional-id-card .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    padding: 2px 0;
+}
+
+.professional-id-card .label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 60px;
+}
+
+.professional-id-card .value {
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: right;
+    flex: 1;
+}
+
+.professional-id-card .id-card-footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+}
+
+.signature-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.signature-line {
+    width: 60px;
+    height: 1px;
+    background: var(--text-secondary);
+}
+
+.signature-section p {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.qr-code-placeholder {
+    width: 24px;
+    height: 24px;
+    background: var(--text-secondary);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+}
+
+/* ID Card Actions Section */
+.id-card-actions-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.id-card-actions-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px 0 0 2px;
+}
+
+.id-card-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.professional-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.professional-action-btn.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.professional-action-btn.btn-primary:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.professional-action-btn.btn-secondary {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.professional-action-btn.btn-secondary:hover {
+    background: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Shared Modal Header Elements */
+.professional-profile-header .modal-header-left,
+.professional-id-card-header .modal-header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    flex: 1;
+    z-index: 2;
+    position: relative;
+}
+
+.professional-profile-header .modal-icon-bg,
+.professional-id-card-header .modal-icon-bg {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.professional-profile-header .modal-icon-bg i,
+.professional-id-card-header .modal-icon-bg i {
+    font-size: 1.75rem;
+    color: white;
+}
+
+.professional-profile-header .modal-header-title h2,
+.professional-id-card-header .modal-header-title h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.professional-profile-header .modal-subtitle,
+.professional-id-card-header .modal-subtitle {
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+    font-weight: 300;
+}
+
+.professional-profile-header .close-btn,
+.professional-id-card-header .close-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 1.25rem;
+    z-index: 2;
+    position: relative;
+}
+
+.professional-profile-header .close-btn:hover,
+.professional-id-card-header .close-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05) rotate(90deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Section Headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border-color);
+    position: relative;
+}
+
+.section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+}
+
+.section-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+
+    .professional-student-profile-modal,
+    .professional-id-card-modal {
+        width: 98%;
+        margin: 2% auto;
+        max-height: 95vh;
+        overflow-y: auto;
+        border-radius: 16px;
+    }
+
+    .professional-profile-header,
+    .professional-id-card-header {
+        padding: 24px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .professional-profile-body,
+    .professional-id-card-body {
+        padding: 24px 20px;
+        gap: 24px;
+    }
+
+    .professional-id-card {
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+        min-height: 200px;
+    }
+
+    .id-card-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .professional-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .professional-profile-header,
+    .professional-id-card-header {
+        padding: 20px 16px;
+    }
+
+    .professional-profile-body,
+    .professional-id-card-body {
+        padding: 20px 16px;
+    }
+
+    .id-card-preview-section,
+    .id-card-actions-section {
+        padding: 16px;
+    }
+
+    .professional-id-card {
+        transform: scale(0.9);
+    }
+}/
+* Compact Professional Student Profile Modal Styles */
+.professional-student-profile-modal {
+    max-width: 600px !important;
+    width: auto !important;
+    min-width: 500px;
+}
+
+.compact-profile-card {
+    background: var(--surface-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.profile-header-compact {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-header-compact::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.profile-avatar-compact {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+    z-index: 2;
+    position: relative;
+}
+
+.profile-main-info-compact {
+    flex: 1;
+    z-index: 2;
+    position: relative;
+}
+
+.profile-name-compact {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-id-compact {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.profile-course-compact {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    font-weight: 300;
+}
+
+.profile-status-compact {
+    z-index: 2;
+    position: relative;
+}
+
+.fee-progress-compact {
+    text-align: right;
+}
+
+.progress-bar-compact {
+    width: 80px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.progress-fill-compact {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #34d399);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.progress-text-compact {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 24px;
+}
+
+.detail-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+}
+
+.detail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.detail-card.fee-card::before {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.detail-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.fee-card .detail-icon {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.detail-content {
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.detail-value {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.detail-value:last-child {
+    margin-bottom: 0;
+}
+
+.detail-value.pending {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.detail-value.completed {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.error-message {
+    padding: 2rem;
+    text-align: center;
+    color: #ef4444;
+    font-weight: 500;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+/* Mobile Responsiveness for Compact Profile */
+@media (max-width: 768px) {
+    .professional-student-profile-modal {
+        min-width: auto;
+        width: 95% !important;
+    }
+    
+    .profile-header-compact {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .profile-main-info-compact {
+        text-align: center;
+    }
+    
+    .profile-details-grid {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 12px;
+    }
+    
+    .detail-card {
+        padding: 12px;
+    }
+    
+    .profile-name-compact {
+        font-size: 1.25rem;
+    }
+    
+    .fee-progress-compact {
+        text-align: center;
+    }
+    
+    .progress-bar-compact {
+        margin: 0 auto 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-header-compact {
+        padding: 16px;
+    }
+    
+    .profile-details-grid {
+        padding: 16px;
+    }
+    
+    .detail-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .detail-icon {
+        margin: 0 auto;
+    }
+    
+    .profile-avatar-compact {
+        width: 56px;
+        height: 56px;
+        font-size: 1.25rem;
     }
 }

@@ -297,8 +297,13 @@ function displayStudents(students) {
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="action-btn view-profile-btn primary" data-id="${student.id}" title="View Profile">
-                        <i class="fas fa-user"></i> <span>View Profile</span>
+                    <button class="action-btn professional-view-profile-btn" data-id="${student.id}" title="View Complete Student Profile">
+                        <i class="fas fa-user-circle"></i>
+                        <span>View Profile</span>
+                    </button>
+                    <button class="action-btn professional-id-card-btn" data-id="${student.id}" title="Generate & View Student ID Card">
+                        <i class="fas fa-id-badge"></i>
+                        <span>ID Card</span>
                     </button>
                     <button class="action-btn edit-btn" data-id="${student.id}" title="Edit Student">
                         <i class="fas fa-edit"></i>
@@ -308,9 +313,6 @@ function displayStudents(students) {
                     </button>
                     <button class="action-btn delete-btn" data-id="${student.id}" title="Delete Student">
                         <i class="fas fa-trash"></i>
-                    </button>
-                    <button class="action-btn id-card-btn" data-id="${student.id}" title="View ID Card">
-                        <i class="fas fa-id-card"></i>
                     </button>
                 </div>
             </td>
@@ -331,36 +333,73 @@ function displayStudents(students) {
             });
         }
 
-        // Payment event
+        // Payment event - Open Add New Payment modal with pre-filled details
         const paymentBtn = row.querySelector('.payment-btn');
         if (paymentBtn) {
             paymentBtn.addEventListener('click', () => {
-                // Switch to payments tab
+                // Switch to payments tab first
                 document.querySelector('[data-tab="payments"]').click();
-                // Show payment form
-                document.querySelector('.payment-form').style.display = 'block';
-                // Pre-select the student
-                const studentSelect = document.getElementById('studentSelect');
-                const option = new Option(toUpperCase(student.name), student.id);
-                option.setAttribute('data-phone', student.phoneNumber);
-                studentSelect.innerHTML = '';
-                studentSelect.appendChild(option);
+                
+                // Wait a moment for the tab to load, then open the modal
+                setTimeout(() => {
+                    // Open the Add New Payment modal
+                    const modal = document.getElementById('addPaymentModal');
+                    if (modal) {
+                        modal.style.display = 'block';
+                        
+                        // Pre-fill the student details
+                        const studentSelect = document.getElementById('studentSelect');
+                        if (studentSelect) {
+                            // Clear existing options
+                            studentSelect.innerHTML = '<option value="">Select Student</option>';
+                            
+                            // Add the selected student as an option
+                            const option = new Option(toUpperCase(student.name), student.id);
+                            option.setAttribute('data-phone', student.phoneNumber);
+                            option.selected = true;
+                            studentSelect.appendChild(option);
+                            
+                            // Show student summary if available
+                            const studentSummary = document.getElementById('selectedStudentSummary');
+                            const summaryName = document.getElementById('summaryStudentName');
+                            const summaryId = document.getElementById('summaryStudentId');
+                            
+                            if (studentSummary && summaryName && summaryId) {
+                                summaryName.textContent = toUpperCase(student.name);
+                                summaryId.textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+                                studentSummary.style.display = 'flex';
+                            }
+                        }
+                        
+                        // Pre-fill description with student's course
+                        const descriptionInput = document.getElementById('description');
+                        if (descriptionInput && student.courses) {
+                            descriptionInput.value = `Course fee payment - ${student.courses}`;
+                        }
+                        
+                        // Focus on amount input for quick entry
+                        const amountInput = document.getElementById('amount');
+                        if (amountInput) {
+                            setTimeout(() => amountInput.focus(), 300);
+                        }
+                    }
+                }, 100);
             });
         }
         
-        // ID Card event
-        const idCardBtn = row.querySelector('.id-card-btn');
-        if (idCardBtn) {
-            idCardBtn.addEventListener('click', () => {
-                console.log('ID Card button clicked for student:', student);
+        // Professional ID Card event
+        const professionalIdCardBtn = row.querySelector('.professional-id-card-btn');
+        if (professionalIdCardBtn) {
+            professionalIdCardBtn.addEventListener('click', () => {
+                console.log('Professional ID Card button clicked for student:', student);
                 showIdCard(student.id);
             });
         }
         
-        // View Profile button event
-        const viewProfileBtn = row.querySelector('.view-profile-btn');
-        if (viewProfileBtn) {
-            viewProfileBtn.addEventListener('click', () => {
+        // Professional View Profile button event
+        const professionalViewProfileBtn = row.querySelector('.professional-view-profile-btn');
+        if (professionalViewProfileBtn) {
+            professionalViewProfileBtn.addEventListener('click', () => {
                 showStudentProfile(student.id);
             });
         }
@@ -2126,63 +2165,93 @@ document.head.appendChild(chartScript);
 
 // Function to display student profile in a modal
 async function showStudentProfile(studentId) {
-    // Debug: log the studentId and allStudents
-    console.log('Looking for studentId:', studentId, 'in', allStudents);
-
     const student = allStudents.find(s => String(s.id) === String(studentId));
     const modal = document.getElementById('studentProfileModal');
     const profileContent = document.getElementById('studentProfileContent');
 
     if (!student) {
         if (profileContent) {
-            profileContent.innerHTML = '<div style="padding:2rem;text-align:center;color:#c00;">Student not found.</div>';
+            profileContent.innerHTML = '<div class="error-message">Student not found.</div>';
         }
         if (modal) modal.style.display = 'flex';
         return;
     }
 
+    // Calculate fee progress
+    const totalFee = parseFloat(student.totalCourseFee) || 0;
+    const paidAmount = parseFloat(student.paidAmount) || 0;
+    const remainingAmount = totalFee - paidAmount;
+    const progress = totalFee > 0 ? (paidAmount / totalFee) * 100 : 0;
+
     profileContent.innerHTML = `
-        <div class="profile-modal-card">
-            <div class="profile-header">
-                <div class="profile-avatar">${student.name ? student.name.charAt(0).toUpperCase() : '?'}</div>
-                <div class="profile-main-info">
-                    <div class="profile-name">${student.name || '-'}</div>
-                    <div class="profile-id-status">
-                        <span class="profile-id">ID: STU${String(student.id).padStart(4, '0')}</span>
-                        <span class="profile-status ${student.status === 'active' ? 'active' : 'inactive'}">
-                            <i class="fas fa-circle"></i> ${student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : '-'}
-                        </span>
+        <div class="compact-profile-card">
+            <div class="profile-header-compact">
+                <div class="profile-avatar-compact">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="profile-main-info-compact">
+                    <h3 class="profile-name-compact">${student.name || 'N/A'}</h3>
+                    <div class="profile-id-compact">ID: STU${String(student.id).padStart(4, '0')}</div>
+                    <div class="profile-course-compact">${student.courses || 'No Course'}</div>
+                </div>
+                <div class="profile-status-compact">
+                    <div class="fee-progress-compact">
+                        <div class="progress-bar-compact">
+                            <div class="progress-fill-compact" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="progress-text-compact">${progress.toFixed(0)}% Paid</div>
                     </div>
                 </div>
             </div>
-            <span class="close-btn" id="closeStudentProfileModal">&times;</span>
-            <hr class="profile-divider" />
-            <div class="profile-section">
-                <h4><i class="fas fa-user"></i> Personal</h4>
-                <div class="profile-row"><b>Father's Name:</b> ${student.fatherName || '-'}</div>
-                <div class="profile-row"><b>Mother's Name:</b> ${student.motherName || '-'}</div>
-                <div class="profile-row"><b>Date of Birth:</b> ${student.dob || '-'}</div>
-            </div>
-            <div class="profile-section">
-                <h4><i class="fas fa-address-book"></i> Contact</h4>
-                <div class="profile-row"><b>Phone Number:</b> ${student.phoneNumber || '-'}</div>
-                <div class="profile-row"><b>Email Address:</b> ${student.email || '-'}</div>
-                <div class="profile-row"><b>Address:</b> ${student.address || '-'}</div>
-            </div>
-            <div class="profile-section">
-                <h4><i class="fas fa-graduation-cap"></i> Course</h4>
-                <div class="profile-row"><b>Course(s):</b> ${student.courses || '-'}</div>
-                <div class="profile-row"><b>Course Duration:</b> ${student.courseDuration || '-'}</div>
-                <div class="profile-row"><b>Total Course Fee:</b> ₹${formatCurrency(student.totalCourseFee) || 'N/A'}</div>
-            </div>
-            <div class="profile-section">
-                <h4><i class="fas fa-rupee-sign"></i> Fee Status</h4>
-                <div class="profile-row"><b>Paid Amount:</b> ₹${formatCurrency(student.paidAmount) || '0.00'}</div>
-                <div class="profile-row"><b>Remaining Amount:</b> ₹${formatCurrency((student.totalCourseFee || 0) - (student.paidAmount || 0))}</div>
+            
+            <div class="profile-details-grid">
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-user"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Personal Info</div>
+                        <div class="detail-value">Father: ${student.fatherName || 'N/A'}</div>
+                        <div class="detail-value">Mother: ${student.motherName || 'N/A'}</div>
+                        <div class="detail-value">DOB: ${student.dob || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-phone"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Contact Info</div>
+                        <div class="detail-value">Phone: ${student.phoneNumber || 'N/A'}</div>
+                        <div class="detail-value">Email: ${student.email || 'N/A'}</div>
+                        <div class="detail-value">Address: ${student.address || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Academic Info</div>
+                        <div class="detail-value">Course: ${student.courses || 'N/A'}</div>
+                        <div class="detail-value">Duration: ${student.courseDuration || 'N/A'}</div>
+                        <div class="detail-value">Joined: ${student.admissionDate || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-card fee-card">
+                    <div class="detail-icon"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Fee Status</div>
+                        <div class="detail-value">Total: ₹${formatCurrency(totalFee)}</div>
+                        <div class="detail-value">Paid: ₹${formatCurrency(paidAmount)}</div>
+                        <div class="detail-value ${remainingAmount > 0 ? 'pending' : 'completed'}">
+                            Remaining: ₹${formatCurrency(remainingAmount)}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
+    
     modal.style.display = 'flex';
+    
     // Ensure close button works
     const closeBtn = document.getElementById('closeStudentProfileModal');
     if (closeBtn) {
