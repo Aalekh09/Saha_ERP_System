@@ -208,24 +208,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            showNotification('Generating high-quality PDF...', 'info');
-            
-            // Try PDF generation first
-            if (typeof html2pdf !== 'undefined') {
-                await generatePDFDownload(certificateElement);
-            } else {
-                // Fallback to JPG if html2pdf is not available
-                await generateJPGDownload(certificateElement);
-            }
+            // Prioritize JPG download for better quality and reliability
+            showNotification('Generating Full HD certificate...', 'info');
+            await generateJPGDownload(certificateElement);
             
         } catch (error) {
-            console.error('PDF generation failed, trying JPG fallback:', error);
-            showNotification('PDF failed, generating high-quality JPG...', 'info');
+            console.error('JPG generation failed, trying PDF fallback:', error);
+            showNotification('JPG failed, trying PDF...', 'info');
             
             try {
-                await generateJPGDownload(certificateElement);
-            } catch (jpgError) {
-                console.error('JPG generation also failed:', jpgError);
+                if (typeof html2pdf !== 'undefined') {
+                    await generatePDFDownload(certificateElement);
+                } else {
+                    throw new Error('PDF library not available');
+                }
+            } catch (pdfError) {
+                console.error('Both JPG and PDF generation failed:', pdfError);
                 showNotification('Error generating certificate download', 'error');
             }
         }
@@ -305,51 +303,111 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function generateJPGDownload(certificateElement) {
-        // High-quality JPG generation using html2canvas
-        const canvas = await html2canvas(certificateElement, {
-            scale: 4, // Very high scale for maximum quality
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-            letterRendering: true,
-            onclone: function(clonedDoc) {
-                // Optimize cloned document for JPG
-                const clonedCert = clonedDoc.querySelector('.certificate-template');
-                if (clonedCert) {
-                    clonedCert.style.maxHeight = 'none';
-                    clonedCert.style.overflow = 'visible';
+        // Create a wrapper div with equal padding for proper spacing
+        const wrapper = document.createElement('div');
+        wrapper.style.padding = '60px';
+        wrapper.style.backgroundColor = '#ffffff';
+        wrapper.style.display = 'inline-block';
+        wrapper.style.boxSizing = 'border-box';
+        
+        // Clone the certificate element
+        const clonedCert = certificateElement.cloneNode(true);
+        
+        // Style the cloned certificate for optimal capture
+        clonedCert.style.width = '1000px';
+        clonedCert.style.height = 'auto';
+        clonedCert.style.minHeight = '1400px';
+        clonedCert.style.margin = '0';
+        clonedCert.style.display = 'block';
+        clonedCert.style.boxSizing = 'border-box';
+        
+        // Append cloned certificate to wrapper
+        wrapper.appendChild(clonedCert);
+        
+        // Temporarily add wrapper to body (hidden)
+        wrapper.style.position = 'absolute';
+        wrapper.style.left = '-9999px';
+        wrapper.style.top = '-9999px';
+        document.body.appendChild(wrapper);
+        
+        try {
+            // Enhanced Full HD JPG generation with equal border spacing
+            const canvas = await html2canvas(wrapper, {
+                scale: 3, // High scale for Full HD quality
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                letterRendering: true,
+                scrollX: 0,
+                scrollY: 0,
+                width: wrapper.offsetWidth,
+                height: wrapper.offsetHeight,
+                onclone: function(clonedDoc) {
+                    // Ensure footer content is fully visible
+                    const clonedFooter = clonedDoc.querySelector('.certificate-footer-new');
+                    if (clonedFooter) {
+                        clonedFooter.style.marginTop = '30px';
+                        clonedFooter.style.paddingTop = '25px';
+                        clonedFooter.style.position = 'relative';
+                        clonedFooter.style.pageBreakInside = 'avoid';
+                    }
+                    
+                    // Ensure certificate info is fully visible
+                    const clonedInfo = clonedDoc.querySelector('.certificate-info-new');
+                    if (clonedInfo) {
+                        clonedInfo.style.minWidth = '250px';
+                        clonedInfo.style.fontSize = '14px';
+                        clonedInfo.style.lineHeight = '1.5';
+                        clonedInfo.style.visibility = 'visible';
+                        clonedInfo.style.display = 'flex';
+                    }
+                    
+                    // Ensure signature area is visible
+                    const clonedSignature = clonedDoc.querySelector('.signature-area-new');
+                    if (clonedSignature) {
+                        clonedSignature.style.visibility = 'visible';
+                        clonedSignature.style.display = 'flex';
+                    }
+                    
+                    // Ensure all text is crisp and visible
+                    const allText = clonedDoc.querySelectorAll('*');
+                    allText.forEach(element => {
+                        element.style.webkitFontSmoothing = 'antialiased';
+                        element.style.mozOsxFontSmoothing = 'grayscale';
+                        element.style.textRendering = 'optimizeLegibility';
+                    });
+                    
+                    // Ensure images are properly sized and crisp
+                    const images = clonedDoc.querySelectorAll('img');
+                    images.forEach(img => {
+                        img.style.maxWidth = '100%';
+                        img.style.height = 'auto';
+                        img.style.imageRendering = 'crisp-edges';
+                        img.style.imageRendering = '-webkit-optimize-contrast';
+                    });
                 }
-                
-                const clonedContainer = clonedDoc.querySelector('.certificate-container-new');
-                if (clonedContainer) {
-                    clonedContainer.style.minHeight = 'auto';
-                    clonedContainer.style.height = 'auto';
-                }
-                
-                // Ensure images are properly sized
-                const images = clonedDoc.querySelectorAll('img');
-                images.forEach(img => {
-                    img.style.maxWidth = '100%';
-                    img.style.height = 'auto';
-                });
-            }
-        });
+            });
 
-        // Convert canvas to high-quality JPG
-        const imgData = canvas.toDataURL('image/jpeg', 1.0); // Maximum quality
-        
-        // Create download link
-        const link = document.createElement('a');
-        link.download = `Certificate_${studentName.value.replace(/\s+/g, '_') || 'Student'}.jpg`;
-        link.href = imgData;
-        
-        // Trigger download
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showNotification('Certificate JPG downloaded successfully!', 'success');
+            // Convert canvas to ultra high-quality JPG
+            const imgData = canvas.toDataURL('image/jpeg', 1.0); // Maximum quality (100%)
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = `Certificate_${studentName.value.replace(/\s+/g, '_') || 'Student'}_FullHD.jpg`;
+            link.href = imgData;
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Full HD Certificate JPG downloaded successfully!', 'success');
+            
+        } finally {
+            // Clean up - remove the temporary wrapper
+            document.body.removeChild(wrapper);
+        }
     }
 
     function showCertificatePreview() {
