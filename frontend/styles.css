@@ -5276,7 +5276,8 @@ fessional Student Profile Modal Styles */
     }
 }
 
-/ * Compact Professional Student Profile Modal Styles */ .professional-student-profile-modal {
+/* / * Compact Professional Student Profile Modal Styles */  */
+.professional-student-profile-modal {
     max-width: 600px !important;
     width: auto !important;
     min-width: 500px;
@@ -5559,7 +5560,7 @@ fessional Student Profile Modal Styles */
     }
 }
 
-/ * Enhanced Add New Payment Modal Design */
+/* / * Enhanced Add New Payment Modal Design */ */
 /* Enhanced Payment Modal Container */
 .payment-modal-upgraded::after {
     content: '';
@@ -6102,7 +6103,8 @@ fessional Student Profile Modal Styles */
     }
 }
 
-/ * Enhanced Mobile Scrollability for Payment Modal */ @media (max-width: 768px) {
+/* Enhanced Mobile Scrollability for Payment Modal */
+@media (max-width: 768px) {
     .payment-modal-upgraded {
         max-height: 95vh;
         margin: 2.5% auto;
