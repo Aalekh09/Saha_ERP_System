@@ -123,7 +123,7 @@ function displayCertificateData(certificate) {
     const certificateTimestamp = document.getElementById('certificateTimestamp');
     const statusElement = document.getElementById('certificateStatus');
     
-    if (detailStudentName) detailStudentName.textContent = certificate.student ? certificate.student.name : certificate.registrationNumber || '-';
+    if (detailStudentName) detailStudentName.textContent = certificate.studentName || certificate.student?.name || 'Unknown Student';
     if (detailRegistrationNo) detailRegistrationNo.textContent = certificate.registrationNumber || '-';
     if (detailIssueDate) detailIssueDate.textContent = certificate.issueDate ? new Date(certificate.issueDate).toLocaleDateString() : '-';
     if (detailCertificateId) detailCertificateId.textContent = certificate.id ? 'CERT-' + certificate.id : '-';
@@ -213,7 +213,7 @@ function populateCertificatesTable(certificates) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="certificate-id">CERT-${certificate.id || (index + 1)}</td>
-            <td class="student-name">${certificate.registrationNumber || 'Unknown Student'}</td>
+            <td class="student-name">${certificate.studentName || certificate.student?.name || 'Unknown Student'}</td>
             <td>${certificate.registrationNumber || '-'}</td>
             <td>${certificate.type || '-'}</td>
             <td>${certificate.grade || '-'}</td>
@@ -334,20 +334,32 @@ async function saveCertificateToBackend(data) {
             remarks: `Course: ${data.certificate || 'N/A'}, Duration: ${data.duration || 'N/A'}, Grade: ${data.Grade || 'N/A'}`,
             status: "Issued",
             // Additional fields for hardcopy certificate
-            registrationNumber: data.registration,
-            rollNumber: data.rollno,
-            examRollNumber: data.erollno,
-            courseDuration: data.duration,
-            performance: data.performance,
-            grade: data.Grade,
-            issueSession: data.IssueSession,
-            issueDay: parseInt(data.IssueDay),
-            issueMonth: data.IssueMonth,
-            issueYear: parseInt(data.IssueYear),
-            fathersName: data.fathersname,
-            mothersName: data.mothersname,
-            dateOfBirth: data.dob
+            studentName: data.name || "",
+            registrationNumber: data.registration || "",
+            rollNumber: data.rollno || "",
+            examRollNumber: data.erollno || "",
+            courseDuration: data.duration || "",
+            performance: data.performance || "",
+            grade: data.Grade || "",
+            issueSession: data.IssueSession || "",
+            issueDay: data.IssueDay ? parseInt(data.IssueDay) : null,
+            issueMonth: data.IssueMonth || "",
+            issueYear: data.IssueYear ? parseInt(data.IssueYear) : null,
+            fathersName: data.fathersname || "",
+            mothersName: data.mothersname || "",
+            dateOfBirth: data.dob || ""
         };
+        
+        // Validate required fields
+        if (!certificateData.type || !certificateData.studentName || !certificateData.registrationNumber) {
+            console.error('Missing required fields:', {
+                type: certificateData.type,
+                studentName: certificateData.studentName,
+                registrationNumber: certificateData.registrationNumber
+            });
+            alert('Missing required fields: Certificate type, student name, and registration number are required.');
+            return null;
+        }
         
         console.log('Sending certificate data to backend:', certificateData);
         
@@ -367,9 +379,18 @@ async function saveCertificateToBackend(data) {
             console.log('Certificate saved successfully:', savedCertificate);
             return savedCertificate.id;
         } else {
-            const errorText = await response.text();
+            let errorText = '';
+            try {
+                errorText = await response.text();
+            } catch (e) {
+                errorText = 'Unable to read error response';
+            }
             console.error('Failed to save certificate to backend. Status:', response.status);
             console.error('Error response:', errorText);
+            console.error('Request data that failed:', certificateData);
+            
+            // Show user-friendly error message
+            alert(`Failed to save certificate to backend. Status: ${response.status}\nError: ${errorText || 'Unknown error'}`);
             return null;
         }
     } catch (error) {

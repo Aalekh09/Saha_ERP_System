@@ -133,9 +133,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('updatePreview called');
         const data = {
             student: {
-                name: studentName.value || '[Student Name]',
-                courseName: courseName.value || '[Course Name]',
-                studentId: studentIdInput.value || '[ID]'
+                name: studentName.value.trim() || '[Student Name]',
+                courseName: courseName.value.trim() || '[Course Name]',
+                studentId: studentIdInput.value.trim() || '[ID]'
             },
             type: certificateType.value || 'Completion'
         };
@@ -143,17 +143,39 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePreviewContent(data);
     }
 
+    // Generate Certificate ID function
+    function generateCertificateId(options = {}) {
+        const type = options.type || 'Completion';
+        const year = new Date().getFullYear();
+        const month = String(new Date().getMonth() + 1).padStart(2, '0');
+        const randomNum = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+        
+        // Format: SIMT-COMP-2024-12-1234
+        const typeCode = type.substring(0, 4).toUpperCase();
+        return `SIMT-${typeCode}-${year}-${month}-${randomNum}`;
+    }
+
     async function handleCertificateGeneration(e) {
         e.preventDefault();
+
+        // Validate required fields
+        if (!studentName.value.trim()) {
+            showNotification('Please enter student name', 'error');
+            return;
+        }
+        
+        if (!courseName.value.trim()) {
+            showNotification('Please enter course name', 'error');
+            return;
+        }
 
         const certificateData = {
             student: {
                 name: studentName.value,
-                courseName: courseName.value
+                courseName: courseName.value,
+                studentId: studentIdInput.value || generateCertificateId({ type: certificateType.value })
             },
             type: certificateType.value,
-            // issueDate: issueDate.value, // Removed
-            // validUntil: validUntil.value, // Removed
             status: 'Active',
             certificateId: generateCertificateId({
                 type: certificateType.value
@@ -161,26 +183,230 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('/api/certificates', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(certificateData)
-            });
-
-            if (response.ok) {
-                const certificate = await response.json();
-                showNotification('Certificate generated successfully!', 'success');
-                updatePreviewContent(certificateData);
-                loadCertificates(); // Reload the certificate list
-            } else {
-                const errorText = await response.text();
-                throw new Error(`Failed to generate certificate: ${response.status} - ${errorText}`);
-            }
+            // Generate certificate locally (skip API call since it's not working)
+            showNotification('Generating certificate...', 'info');
+            updatePreviewContent(certificateData);
+            
+            // Wait a moment for the preview to update
+            setTimeout(async () => {
+                await downloadPDF();
+            }, 500);
+            
         } catch (error) {
             console.error('Error generating certificate:', error);
-            showNotification(`Error generating certificate: ${error.message}`, 'error');
+            showNotification('Error generating certificate', 'error');
+        }
+    }
+
+    async function downloadPDF() {
+        const certificateElement = document.querySelector('.certificate-template');
+        
+        if (!certificateElement) {
+            console.error('Certificate element not found');
+            showNotification('Certificate template not found', 'error');
+            return;
+        }
+
+        try {
+            // Prioritize JPG download for better quality and reliability
+            showNotification('Generating Full HD certificate...', 'info');
+            await generateJPGDownload(certificateElement);
+            
+        } catch (error) {
+            console.error('JPG generation failed, trying PDF fallback:', error);
+            showNotification('JPG failed, trying PDF...', 'info');
+            
+            try {
+                if (typeof html2pdf !== 'undefined') {
+                    await generatePDFDownload(certificateElement);
+                } else {
+                    throw new Error('PDF library not available');
+                }
+            } catch (pdfError) {
+                console.error('Both JPG and PDF generation failed:', pdfError);
+                showNotification('Error generating certificate download', 'error');
+            }
+        }
+    }
+
+    async function generatePDFDownload(certificateElement) {
+        // Enhanced PDF generation optimized for the new certificate design
+        const opt = {
+            margin: [8, 8, 8, 8], // Adequate margins to prevent cutting
+            filename: `Certificate_${studentName.value.replace(/\s+/g, '_') || 'Student'}.pdf`,
+            image: { 
+                type: 'jpeg', 
+                quality: 0.92
+            },
+            html2canvas: { 
+                scale: 2.5, // Higher scale for better quality
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                letterRendering: true,
+                width: 794,  // A4 portrait width
+                height: 1123, // A4 portrait height
+                onclone: function(clonedDoc) {
+                    // Optimize cloned document for PDF
+                    const clonedCert = clonedDoc.querySelector('.certificate-template');
+                    if (clonedCert) {
+                        clonedCert.style.maxHeight = 'none';
+                        clonedCert.style.overflow = 'visible';
+                        clonedCert.style.height = 'auto';
+                    }
+                    
+                    const clonedContainer = clonedDoc.querySelector('.certificate-container-new');
+                    if (clonedContainer) {
+                        clonedContainer.style.minHeight = '1050px'; // Ensure adequate height
+                        clonedContainer.style.height = '1050px';
+                        clonedContainer.style.overflow = 'visible';
+                        clonedContainer.style.padding = '20px';
+                    }
+                    
+                    // Ensure footer content is visible
+                    const clonedFooter = clonedDoc.querySelector('.certificate-footer-new');
+                    if (clonedFooter) {
+                        clonedFooter.style.marginTop = '20px';
+                        clonedFooter.style.paddingTop = '20px';
+                        clonedFooter.style.pageBreakInside = 'avoid';
+                    }
+                    
+                    // Ensure certificate info is visible
+                    const clonedInfo = clonedDoc.querySelector('.certificate-info-new');
+                    if (clonedInfo) {
+                        clonedInfo.style.minWidth = '180px';
+                        clonedInfo.style.fontSize = '12px';
+                    }
+                    
+                    // Ensure images are properly sized
+                    const images = clonedDoc.querySelectorAll('img');
+                    images.forEach(img => {
+                        img.style.maxWidth = '100%';
+                        img.style.height = 'auto';
+                    });
+                }
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait',
+                compress: true
+            },
+            pagebreak: { 
+                mode: ['avoid-all', 'css', 'legacy'] 
+            }
+        };
+
+        await html2pdf().set(opt).from(certificateElement).save();
+        showNotification('Certificate PDF downloaded successfully!', 'success');
+    }
+
+    async function generateJPGDownload(certificateElement) {
+        // Create a wrapper div with equal padding for proper spacing
+        const wrapper = document.createElement('div');
+        wrapper.style.padding = '60px';
+        wrapper.style.backgroundColor = '#ffffff';
+        wrapper.style.display = 'inline-block';
+        wrapper.style.boxSizing = 'border-box';
+        
+        // Clone the certificate element
+        const clonedCert = certificateElement.cloneNode(true);
+        
+        // Style the cloned certificate for optimal capture
+        clonedCert.style.width = '1000px';
+        clonedCert.style.height = 'auto';
+        clonedCert.style.minHeight = '1400px';
+        clonedCert.style.margin = '0';
+        clonedCert.style.display = 'block';
+        clonedCert.style.boxSizing = 'border-box';
+        
+        // Append cloned certificate to wrapper
+        wrapper.appendChild(clonedCert);
+        
+        // Temporarily add wrapper to body (hidden)
+        wrapper.style.position = 'absolute';
+        wrapper.style.left = '-9999px';
+        wrapper.style.top = '-9999px';
+        document.body.appendChild(wrapper);
+        
+        try {
+            // Enhanced Full HD JPG generation with equal border spacing
+            const canvas = await html2canvas(wrapper, {
+                scale: 3, // High scale for Full HD quality
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                letterRendering: true,
+                scrollX: 0,
+                scrollY: 0,
+                width: wrapper.offsetWidth,
+                height: wrapper.offsetHeight,
+                onclone: function(clonedDoc) {
+                    // Ensure footer content is fully visible
+                    const clonedFooter = clonedDoc.querySelector('.certificate-footer-new');
+                    if (clonedFooter) {
+                        clonedFooter.style.marginTop = '30px';
+                        clonedFooter.style.paddingTop = '25px';
+                        clonedFooter.style.position = 'relative';
+                        clonedFooter.style.pageBreakInside = 'avoid';
+                    }
+                    
+                    // Ensure certificate info is fully visible
+                    const clonedInfo = clonedDoc.querySelector('.certificate-info-new');
+                    if (clonedInfo) {
+                        clonedInfo.style.minWidth = '250px';
+                        clonedInfo.style.fontSize = '14px';
+                        clonedInfo.style.lineHeight = '1.5';
+                        clonedInfo.style.visibility = 'visible';
+                        clonedInfo.style.display = 'flex';
+                    }
+                    
+                    // Ensure signature area is visible
+                    const clonedSignature = clonedDoc.querySelector('.signature-area-new');
+                    if (clonedSignature) {
+                        clonedSignature.style.visibility = 'visible';
+                        clonedSignature.style.display = 'flex';
+                    }
+                    
+                    // Ensure all text is crisp and visible
+                    const allText = clonedDoc.querySelectorAll('*');
+                    allText.forEach(element => {
+                        element.style.webkitFontSmoothing = 'antialiased';
+                        element.style.mozOsxFontSmoothing = 'grayscale';
+                        element.style.textRendering = 'optimizeLegibility';
+                    });
+                    
+                    // Ensure images are properly sized and crisp
+                    const images = clonedDoc.querySelectorAll('img');
+                    images.forEach(img => {
+                        img.style.maxWidth = '100%';
+                        img.style.height = 'auto';
+                        img.style.imageRendering = 'crisp-edges';
+                        img.style.imageRendering = '-webkit-optimize-contrast';
+                    });
+                }
+            });
+
+            // Convert canvas to ultra high-quality JPG
+            const imgData = canvas.toDataURL('image/jpeg', 1.0); // Maximum quality (100%)
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = `Certificate_${studentName.value.replace(/\s+/g, '_') || 'Student'}_FullHD.jpg`;
+            link.href = imgData;
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Full HD Certificate JPG downloaded successfully!', 'success');
+            
+        } finally {
+            // Clean up - remove the temporary wrapper
+            document.body.removeChild(wrapper);
         }
     }
 
@@ -191,101 +417,48 @@ document.addEventListener('DOMContentLoaded', function() {
     function updatePreviewContent(data) {
         console.log('updatePreviewContent called with data:', data);
         
-        // Update student ID
-        const studentIdElement = document.getElementById('certificateId');
-        if (studentIdElement) {
-            studentIdElement.textContent = data.student.studentId;
-            console.log('Updated student ID to:', studentIdElement.textContent);
-        }
-        
         // Update certificate type
-        const certificateTypeElement = document.querySelector('.certificate-type-professional');
-        console.log('Certificate type element:', certificateTypeElement);
+        const certificateTypeElement = document.querySelector('.certificate-type-new');
         if (certificateTypeElement) {
             certificateTypeElement.textContent = `CERTIFICATE OF ${data.type.toUpperCase()}`;
-            console.log('Updated certificate type to:', certificateTypeElement.textContent);
-        }
-
-        // Update certificate ID
-        const certificateIdElement = document.getElementById('certificateId');
-        console.log('Certificate ID element:', certificateIdElement);
-        if (certificateIdElement) {
-             // Keep the placeholder or generate if needed elsewhere
-             // For preview, we can just show a placeholder or generated ID
-             certificateIdElement.textContent = `SIMT-${data.student.studentId}`;
-             console.log('Updated certificate ID to:', certificateIdElement.textContent);
         }
 
         // Update student name
-        const studentNameElement = document.querySelector('.student-name-professional');
-        console.log('Student name element:', studentNameElement);
+        const studentNameElement = document.querySelector('.student-name-new');
         if (studentNameElement) {
-            studentNameElement.textContent = data.student.name.toUpperCase(); // Assuming student name should be uppercase
-            console.log('Updated student name to:', studentNameElement.textContent);
+            studentNameElement.textContent = data.student.name || '[Student Name]';
         }
 
         // Update course name
-        const courseNameElement = document.querySelector('.course-name-professional');
-        console.log('Course name element:', courseNameElement);
+        const courseNameElement = document.querySelector('.course-name-new');
         if (courseNameElement) {
-            courseNameElement.textContent = data.student.courseName;
-            console.log('Updated course name to:', courseNameElement.textContent);
+            courseNameElement.textContent = data.student.courseName || '[Course Name]';
         }
 
-        // Update student ID in signature section
+        // Update certificate ID in footer
         const certificateStudentIdElement = document.getElementById('certificateStudentId');
-        console.log('Certificate student ID element:', certificateStudentIdElement);
         if (certificateStudentIdElement) {
-            certificateStudentIdElement.textContent = data.student.studentId || '[Student ID]';
-            console.log('Updated certificate student ID to:', certificateStudentIdElement.textContent);
+            certificateStudentIdElement.textContent = data.certificateId || data.student.studentId || '[Certificate ID]';
         }
 
-        // Update logo (using the new class)
-        const logoImg = document.querySelector('.professional-logo');
-        console.log('Logo element:', logoImg);
-        if (logoImg) {
-             // Assuming the logo path is correct in the HTML, no change needed here for path
-             // If you want to dynamically change logo based on institute, add logic here
-             console.log('Logo element found, path should be set in HTML');
+        // Update issue date
+        const issueDateElement = document.getElementById('issueDateNew');
+        if (issueDateElement) {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            issueDateElement.textContent = today.toLocaleDateString('en-US', options);
         }
 
-        // Remove updates for elements that no longer exist in the new design
-        const verificationIdElement = document.getElementById('verificationId');
-        if (verificationIdElement) verificationIdElement.textContent = ''; // Clear if it somehow exists
-
-        // Signature image, QR code, Watermark, old seal images are removed in HTML
-        // No need to update them here. The placeholder text in HTML can be kept or removed.
-
-         // Update completion details text (adjusting since date is removed)
-        const completionDetailsElement = document.querySelector('.completion-details-professional');
-        if (completionDetailsElement) {
-             // Removed date from this text
-             completionDetailsElement.textContent = 'has successfully completed the course';
-              console.log('Updated completion details to:', completionDetailsElement.textContent);
+        // Update signatory information (static for now)
+        const signatoryNameElement = document.querySelector('.signatory-name-new');
+        if (signatoryNameElement) {
+            signatoryNameElement.textContent = 'Aalekh';
         }
 
-         // Update signatory name and title (assuming static for now or needs input fields)
-         const signatoryNameElement = document.querySelector('.signatory-name-professional');
-         if(signatoryNameElement) {
-              signatoryNameElement.textContent = 'Aalekh'; // Static signatory name
-               console.log('Signatory name element found');
-         }
-
-         const signatoryTitleElement = document.querySelector('.signatory-title-professional');
-          if(signatoryTitleElement) {
-              signatoryTitleElement.textContent = 'Director'; // Static signatory title
-               console.log('Signatory title element found');
-         }
-
-         // Seals are image elements, their src is set in HTML. If dynamic update is needed,
-         // add logic similar to the logo update based on data.
-         const sealsSection = document.querySelector('.seals-section');
-         if (sealsSection) {
-              // console.log('Seals section found, images should be set in HTML or updated dynamically');
-              // If you have image elements with specific classes/IDs within sealsSection,
-              // you would select and update their src here based on your data.
-         }
-
+        const signatoryTitleElement = document.querySelector('.signatory-title-new');
+        if (signatoryTitleElement) {
+            signatoryTitleElement.textContent = 'Director';
+        }
     }
 
     function formatDate(dateString) {
@@ -304,66 +477,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // }
 
     async function downloadCertificate() {
-        const certificateElement = document.querySelector('.certificate-template');
-
-        if (!certificateElement) {
-            console.error('Certificate template element not found.');
-            showNotification('Error: Certificate template not found for download.', 'error');
-            return;
-        }
-
-        try {
-            // Show loading notification
-            showNotification('Generating PDF...', 'info');
-
-            // Use html2canvas to capture the preview with high quality
-            const canvas = await html2canvas(certificateElement, {
-                scale: 3, // Higher scale for better quality
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                width: certificateElement.offsetWidth,
-                height: certificateElement.offsetHeight
-            });
-
-            // Get canvas dimensions
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-
-            // Create PDF document
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            let position = 0;
-
-            // Add image to PDF
-            const imgData = canvas.toDataURL('image/png', 1.0);
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            // Add new pages if content is longer than one page
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
-            // Generate filename
-            const studentNameValue = studentName.value || 'certificate';
-            const certificateTypeValue = certificateType.value || 'completion';
-            const filename = `${studentNameValue}_${certificateTypeValue}_certificate.pdf`;
-
-            // Download the PDF
-            pdf.save(filename);
-            
-            showNotification('Certificate downloaded as PDF successfully!', 'success');
-        } catch (error) {
-            console.error('Error downloading certificate as PDF:', error);
-            showNotification(`Error downloading certificate: ${error.message}`, 'error');
-        }
+        // Use the same optimized downloadPDF function
+        await downloadPDF();
     }
 
     function printCertificate() {
@@ -481,6 +596,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load certificates when the page loads (Removed)
     // loadCertificates();
 
-    // Initial preview update
-    updatePreview();
+    // Don't call updatePreview on load to avoid auto-filling data
+    // updatePreview();
 });

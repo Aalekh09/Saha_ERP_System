@@ -4,17 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saha Institute of Management & Technology</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>Saha Institute of Management & Technology</h1>
-        <p>Welcome, <span id="username"></span></p>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Welcome, <span id="username"></span></p>
+            </div>
+        </div>
     </header>
 
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    
     <div class="main-container">
-        <div class="side-panel">
+        <div class="side-panel" id="sidePanel">
             <div class="admin-section">
                 <div class="admin-header">
                     <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
@@ -498,9 +510,24 @@
     </div>
 
     <div id="studentProfileModal" class="modal">
-        <div class="modal-content">
-            <!-- <span class="close-btn" id="closeStudentProfileModal">&times;</span> -->
-            <div id="studentProfileContent"></div>
+        <div class="modal-content professional-student-profile-modal">
+            <div class="modal-header professional-profile-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon-bg">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="modal-header-title">
+                        <h2><i class="fas fa-id-card-alt"></i> Student Profile</h2>
+                        <p class="modal-subtitle">Complete student information and academic details</p>
+                    </div>
+                </div>
+                <button class="close-btn" id="closeStudentProfileModal" title="Close Profile">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body professional-profile-body">
+                <div id="studentProfileContent"></div>
+            </div>
         </div>
     </div>
 
@@ -517,49 +544,95 @@
     </div>
 
     <div id="idCardModal" class="modal">
-        <div class="modal-content id-card-container">
-            <span class="close-btn" id="closeIdCardModal">&times;</span>
-            <div class="id-card">
-                <div class="id-card-header">
-                    <h2>Saha Institute of Management & Technology</h2>
-                </div>
-                <div class="id-card-body">
-                    <div class="student-details">
-                        <div class="detail-row">
-                            <span class="label">Name:</span>
-                            <span id="idCardName"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">ID:</span>
-                            <span id="idCardId"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Course:</span>
-                            <span id="idCardCourse"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Duration:</span>
-                            <span id="idCardDuration"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Valid Till:</span>
-                            <span id="idCardValidTill"></span>
-                        </div>
+        <div class="modal-content professional-id-card-modal">
+            <div class="modal-header professional-id-card-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon-bg">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <div class="modal-header-title">
+                        <h2><i class="fas fa-id-card"></i> Student ID Card</h2>
+                        <p class="modal-subtitle">Generate and download official student identification card</p>
                     </div>
                 </div>
-                <div class="id-card-footer">
-                    <div class="signature">
-                        <p>Authorized Signature</p>
-                    </div>
-                </div>
+                <button class="close-btn" id="closeIdCardModal" title="Close ID Card">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="id-card-actions">
-                <button id="downloadIdCard" class="btn-primary">
-                    <i class="fas fa-download"></i> Download ID Card
-                </button>
-                <button id="shareIdCard" class="btn-secondary">
-                    <i class="fas fa-share-alt"></i> Share
-                </button>
+            <div class="modal-body professional-id-card-body">
+                <div class="id-card-preview-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>ID Card Preview</h3>
+                    </div>
+                    <div class="id-card-wrapper">
+                        <div class="id-card professional-id-card">
+                            <div class="id-card-header">
+                                <div class="institute-logo">SIMT</div>
+                                <div class="institute-info">
+                                    <h2>Saha Institute of Management & Technology</h2>
+                                    <p>Excellence in Education & Technology</p>
+                                </div>
+                            </div>
+                            <div class="id-card-body">
+                                <div class="student-photo-placeholder">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="student-details">
+                                    <div class="detail-row">
+                                        <span class="label">Name:</span>
+                                        <span id="idCardName" class="value"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Student ID:</span>
+                                        <span id="idCardId" class="value"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Course:</span>
+                                        <span id="idCardCourse" class="value"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Duration:</span>
+                                        <span id="idCardDuration" class="value"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Valid Till:</span>
+                                        <span id="idCardValidTill" class="value"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="id-card-footer">
+                                <div class="signature-section">
+                                    <div class="signature-line"></div>
+                                    <p>Authorized Signature</p>
+                                </div>
+                                <div class="qr-code-placeholder">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="id-card-actions-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3>Actions</h3>
+                    </div>
+                    <div class="id-card-actions">
+                        <button id="downloadIdCard" class="btn-primary professional-action-btn">
+                            <i class="fas fa-download"></i>
+                            <span>Download ID Card</span>
+                        </button>
+                        <button id="shareIdCard" class="btn-secondary professional-action-btn">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Share ID Card</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -610,7 +683,7 @@
         </div>
     </div>
 
-    <script src="./js/script.js"></script>
+    <script src="js/script.js"></script>
     <script>
     // Sidebar submenu toggle for Certificates
     const certMenuBtn = document.getElementById('certificatesMenuBtn');

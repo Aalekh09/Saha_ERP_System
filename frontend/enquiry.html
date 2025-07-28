@@ -4,14 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saha Institute of Management & Technology - Enquiries</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>Saha Institute of Management & Technology</h1>
-        <p>Welcome, <span id="username"></span></p>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Welcome, <span id="username"></span></p>
+            </div>
+        </div>
     </header>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
     <div class="main-container">
         <div class="side-panel">
@@ -44,65 +56,86 @@
         <div class="content-panel">
             <!-- New Enquiry Panel -->
             <div id="enquiry-form-panel" class="tab-content active">
-                <div class="section-header">
-                    <h2>New Enquiry</h2>
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <h2><i class="fas fa-plus-circle"></i> New Enquiry</h2>
+                        <p class="subtitle">Capture new student enquiries and course interests</p>
+                    </div>
                 </div>
-                <div class="add-student-section">
-                    <form id="enquiryForm">
-                        <div class="form-group">
-                            <label for="name">Name:</label>
-                            <input type="text" id="name" name="name" required>
+                <div class="panel-content">
+                    <form id="enquiryForm" class="professional-form">
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-user"></i>
+                                <h3>Personal Information</h3>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="name">Full Name *</label>
+                                    <input type="text" id="name" name="name" required placeholder="Enter full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="fatherName">Father's Name *</label>
+                                    <input type="text" id="fatherName" name="fatherName" required placeholder="Enter father's name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number *</label>
+                                    <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter 10-digit mobile number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="enquiryDate">Date of Enquiry *</label>
+                                    <input type="date" id="enquiryDate" name="enquiryDate" required>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="fatherName">Father's Name:</label>
-                            <input type="text" id="fatherName" name="fatherName" required>
+
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-graduation-cap"></i>
+                                <h3>Course Information</h3>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="course">Course Interested In *</label>
+                                    <select id="course" name="course" required>
+                                        <option value="">Select Course</option>
+                                        <option value="Basic Computer">Basic Computer</option>
+                                        <option value="MS Office">MS Office</option>
+                                        <option value="Tally">Tally</option>
+                                        <option value="DTP">DTP</option>
+                                        <option value="Web Development">Web Development</option>
+                                        <option value="Programming">Programming</option>
+                                        <option value="Digital Marketing">University Course B.ed</option>
+                                        <option value="Spoken English">Spoken English</option>
+                                        <option value="AutoCAD">AutoCAD</option>
+                                        <option value="DCAA">DCAA</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="courseDuration">Preferred Duration *</label>
+                                    <select id="courseDuration" name="courseDuration" required>
+                                        <option value="">Select Duration</option>
+                                        <option value="1 Month">1 Month</option>
+                                        <option value="2 Months">2 Months</option>
+                                        <option value="3 Months">3 Months</option>
+                                        <option value="6 Months">6 Months</option>
+                                        <option value="1 Year">1 Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="takenBy">Taken By *</label>
+                                    <input type="text" id="takenBy" name="takenBy" required placeholder="Enter your name">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="remarks">Remarks</label>
+                                    <textarea id="remarks" name="remarks" rows="3" placeholder="Additional notes or comments"></textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="phoneNumber">Phone Number:</label>
-                            <input type="tel" id="phoneNumber" name="phoneNumber" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="enquiryDate">Date of Enquiry:</label>
-                            <input type="date" id="enquiryDate" name="enquiryDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="takenBy">Taken By:</label>
-                            <input type="text" id="takenBy" name="takenBy" required placeholder="Enter your name">
-                        </div>
-                        <div class="form-group">
-                            <label for="course">Course Interested In:</label>
-                            <select id="course" name="course" required>
-                                <option value="">Select Course</option>
-                                <option value="Basic Computer">Basic Computer</option>
-                                <option value="MS Office">MS Office</option>
-                                <option value="Tally">Tally</option>
-                                <option value="DTP">DTP</option>
-                                <option value="Web Development">Web Development</option>
-                                <option value="Programming">Programming</option>
-                                <option value="Digital Marketing">University Course B.ed</option>
-                                <option value="Spoken English">Spoken English</option>
-                                <option value="AutoCAD">AutoCAD</option>
-                                <option value="DCAA">DCAA</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="courseDuration">Preferred Duration:</label>
-                            <select id="courseDuration" name="courseDuration" required>
-                                <option value="">Select Duration</option>
-                                <option value="1 Month">1 Month</option>
-                                <option value="2 Months">2 Months</option>
-                                <option value="3 Months">3 Months</option>
-                                <option value="6 Months">6 Months</option>
-                                <option value="1 Year">1 Year</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="remarks">Remarks:</label>
-                            <textarea id="remarks" name="remarks" rows="3"></textarea>
-                        </div>
+
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn-primary">
                                 <i class="fas fa-save"></i> Submit Enquiry
                             </button>
                         </div>
@@ -112,48 +145,57 @@
 
             <!-- Enquiry List Panel -->
             <div id="enquiry-list-panel" class="tab-content">
-                <div class="section-header">
-                    <h2>Enquiries List</h2>
-                    <div class="filter-bar">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <h2><i class="fas fa-list"></i> Enquiries List</h2>
+                        <p class="subtitle">Manage and track all student enquiries</p>
+                    </div>
+                    <div class="panel-actions">
                         <div class="filter-controls">
                             <div class="date-filter">
                                 <label for="dateFilter">Filter by Date:</label>
                                 <input type="date" id="dateFilter" placeholder="Select date">
-                                <button id="clearDateFilter" class="btn-secondary filter-clear-btn" title="Clear date filter">
+                                <button id="clearDateFilter" title="Clear date filter">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
-                            <div class="filter-divider"></div>
-                            <div class="search-box">
-                                <input type="text" id="searchEnquiryInput" placeholder="Search enquiries...">
+                            <div class="search-container">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="searchEnquiryInput" placeholder="Search enquiries...">
+                                </div>
                             </div>
-                        </div>
-                        <div class="enquiry-stats">
-                            <span id="totalEnquiries">Total: 0</span>
-                            <span id="filteredEnquiries">Showing: 0</span>
                         </div>
                     </div>
                 </div>
-                <div class="students-section">
-                    <table id="enquiriesTable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Father's Name</th>
-                                <th>Date of Enquiry</th>
-                                <th>Taken By</th>
-                                <th>Phone Number</th>
-                                <th>Course</th>
-                                <th>Duration</th>
-                                <th>Remarks</th>
-                                <th>Status</th>
-                                <th>Feedback</th>
-                                <th>Actions</th>
-                                <th>Convert</th>
-                            </tr>
-                        </thead>
-                        <tbody id="enquiriesTableBody"></tbody>
-                    </table>
+                
+                <div class="panel-content">
+                    <div class="enquiry-stats">
+                        <span id="totalEnquiries">Total: 0</span>
+                        <span id="filteredEnquiries">Showing: 0</span>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="enquiriesTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Father's Name</th>
+                                    <th>Date of Enquiry</th>
+                                    <th>Taken By</th>
+                                    <th>Phone Number</th>
+                                    <th>Course</th>
+                                    <th>Duration</th>
+                                    <th>Remarks</th>
+                                    <th>Status</th>
+                                    <th>Feedback</th>
+                                    <th>Actions</th>
+                                    <th>Convert</th>
+                                </tr>
+                            </thead>
+                            <tbody id="enquiriesTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -163,32 +205,93 @@
         <span id="notificationMessage"></span>
     </div>
 
-    <!-- Feedback Modal -->
+    <!-- Professional Feedback Modal -->
     <div id="feedbackModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-btn" id="closeFeedbackModal">&times;</span>
-            <h2>Feedback Log</h2>
-            <div id="feedbackLog"></div>
-            <form id="feedbackForm">
-                <div class="form-group">
-                    <label for="feedbackDate">Date:</label>
-                    <input type="date" id="feedbackDate" required>
+        <div class="modal-content professional-feedback-modal">
+            <div class="modal-header professional-feedback-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon-bg">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="modal-header-title">
+                        <h2><i class="fas fa-clipboard-list"></i> Feedback Management</h2>
+                        <p class="modal-subtitle">Track communication history and add new feedback entries</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="feedbackTime">Time:</label>
-                    <input type="time" id="feedbackTime" required>
+                <button class="close-btn" id="closeFeedbackModal" title="Close Feedback Modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body professional-feedback-body">
+                <!-- Feedback History Section -->
+                <div class="feedback-history-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Communication History</h3>
+                    </div>
+                    <div class="feedback-log-container">
+                        <div id="feedbackLog" class="professional-feedback-log"></div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="feedbackText">Feedback:</label>
-                    <textarea id="feedbackText" rows="2" required></textarea>
+                
+                <!-- Add New Feedback Section -->
+                <div class="add-feedback-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3>Add New Feedback</h3>
+                    </div>
+                    
+                    <form id="feedbackForm" class="professional-feedback-form">
+                        <div class="form-grid-feedback">
+                            <div class="form-group">
+                                <label for="feedbackDate">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date
+                                </label>
+                                <input type="date" id="feedbackDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackTime">
+                                    <i class="fas fa-clock"></i>
+                                    Time
+                                </label>
+                                <input type="time" id="feedbackTime" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="feedbackText">
+                                <i class="fas fa-comment-dots"></i>
+                                Feedback Details
+                            </label>
+                            <textarea id="feedbackText" rows="4" required placeholder="Enter detailed feedback about the communication or follow-up..."></textarea>
+                            <div class="textarea-footer">
+                                <span class="char-count">0 characters</span>
+                                <span class="helpful-text">Be specific about the conversation and next steps</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions professional-feedback-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i>
+                                Add Feedback Entry
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="document.getElementById('feedbackForm').reset()">
+                                <i class="fas fa-eraser"></i>
+                                Clear Form
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Add Feedback</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <script src="./js/enquiry.js"></script>
+    <script src="js/enquiry.js"></script>
 </body>
 </html> 

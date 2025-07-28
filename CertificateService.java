@@ -31,7 +31,7 @@ public class CertificateService {
     public Certificate createCertificate(Certificate certificate) {
         try {
             // Set default status if not provided
-            if (certificate.getStatus() == null) {
+            if (certificate.getStatus() == null || certificate.getStatus().trim().isEmpty()) {
                 certificate.setStatus("Active");
             }
             
@@ -45,22 +45,26 @@ public class CertificateService {
                 certificate.setIssueDate(LocalDate.now());
             }
             
+            // Ensure student name is not null
+            if (certificate.getStudentName() == null || certificate.getStudentName().trim().isEmpty()) {
+                certificate.setStudentName("Unknown Student");
+            }
+            
             System.out.println("About to save certificate with type: " + certificate.getType());
             System.out.println("Status: " + certificate.getStatus());
             System.out.println("Issue date: " + certificate.getIssueDate());
+            System.out.println("Student name: " + certificate.getStudentName());
             System.out.println("Registration number: " + certificate.getRegistrationNumber());
             
-            // Note: We're not linking to existing students since registration number
-            // is not a field in the Student entity. The certificate will be created
-            // with the registration number stored in the certificate itself.
-            
+            // Save certificate without linking to Student entity
+            // Registration number is stored directly in Certificate entity
             Certificate savedCertificate = certificateRepository.save(certificate);
             System.out.println("Certificate saved successfully with ID: " + savedCertificate.getId());
             return savedCertificate;
         } catch (Exception e) {
             System.err.println("Error in CertificateService.createCertificate: " + e.getMessage());
             e.printStackTrace();
-            throw e;
+            throw new RuntimeException("Failed to create certificate: " + e.getMessage(), e);
         }
     }
 
@@ -103,4 +107,4 @@ public class CertificateService {
         Optional<Student> student = studentRepository.findById(studentId);
         return student.map(certificateRepository::findByStudent).orElse(List.of());
     }
-} 
+}

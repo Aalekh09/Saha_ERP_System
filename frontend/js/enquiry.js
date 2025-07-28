@@ -49,6 +49,44 @@ logoutBtn.onclick = () => {
 };
 header.appendChild(logoutBtn);
 
+// === Mobile Menu Functionality ===
+function initializeMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const sidePanel = document.querySelector('.side-panel');
+    
+    if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
+        // Toggle mobile menu
+        mobileMenuToggle.addEventListener('click', function() {
+            sidePanel.classList.toggle('mobile-active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.classList.toggle('mobile-menu-open');
+        });
+        
+        // Close menu when overlay is clicked
+        mobileMenuOverlay.addEventListener('click', function() {
+            sidePanel.classList.remove('mobile-active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.classList.remove('mobile-menu-open');
+        });
+        
+        // Close menu when a navigation item is clicked (on mobile)
+        const tabButtons = sidePanel.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidePanel.classList.remove('mobile-active');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.classList.remove('mobile-menu-open');
+                }
+            });
+        });
+    }
+}
+
+// Initialize mobile menu when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+
 // Show notification function
 function showNotification(message, isError = false) {
     notificationMessage.textContent = message;
@@ -425,13 +463,13 @@ async function loadFeedbackFromAPI(enquiryId) {
 
 function renderFeedbackLog(entries) {
     if (!entries.length) {
-        feedbackLog.innerHTML = '<p style="color:#888;">No feedback entries yet.</p>';
+        feedbackLog.innerHTML = '<p>No feedback entries yet. Add the first communication record below.</p>';
         return;
     }
     feedbackLog.innerHTML = entries.map(e => `
         <div class="feedback-entry">
-            <span class="feedback-datetime">${e.date} ${e.time}</span>
-            <span class="feedback-text">${e.feedback}</span>
+            <div class="feedback-datetime">${e.date} ${e.time}</div>
+            <div class="feedback-text">${e.feedback}</div>
         </div>
     `).join('');
 }
@@ -486,6 +524,144 @@ if (feedbackForm) {
     };
 }
 
+// Character counting for feedback textarea
+function initializeCharacterCounter() {
+    const feedbackTextarea = document.getElementById('feedbackText');
+    const charCountElement = document.querySelector('.char-count');
+    
+    if (feedbackTextarea && charCountElement) {
+        feedbackTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            charCountElement.textContent = `${currentLength} characters`;
+            
+            // Change color based on length
+            if (currentLength < 50) {
+                charCountElement.style.color = '#ef4444'; // Red for too short
+            } else if (currentLength < 100) {
+                charCountElement.style.color = '#f59e0b'; // Orange for moderate
+            } else {
+                charCountElement.style.color = '#10b981'; // Green for good length
+            }
+        });
+    }
+}
+
+// Enhanced feedback modal opening with animations
+function openFeedbackModal(enquiry) {
+    currentFeedbackEnquiryId = enquiry.id;
+    
+    // Load feedback from backend API
+    loadFeedbackFromAPI(enquiry.id);
+    
+    // Show modal with animation
+    feedbackModal.style.display = 'block';
+    setTimeout(() => {
+        feedbackModal.classList.add('show');
+    }, 10);
+    
+    // Reset form and initialize character counter
+    feedbackForm.reset();
+    initializeCharacterCounter();
+    
+    // Default date/time to now
+    const now = new Date();
+    feedbackDate.value = now.toISOString().split('T')[0];
+    feedbackTime.value = now.toTimeString().slice(0,5);
+    
+    // Focus on the feedback textarea
+    setTimeout(() => {
+        const feedbackTextarea = document.getElementById('feedbackText');
+        if (feedbackTextarea) {
+            feedbackTextarea.focus();
+        }
+    }, 300);
+}
+
+// Enhanced modal closing with animations
+function closeFeedbackModalWithAnimation() {
+    feedbackModal.classList.remove('show');
+    setTimeout(() => {
+        feedbackModal.style.display = 'none';
+        currentFeedbackEnquiryId = null;
+    }, 300);
+}
+
+// Update close modal handlers
+if (closeFeedbackModal) {
+    closeFeedbackModal.onclick = closeFeedbackModalWithAnimation;
+}
+
+window.onclick = function(event) {
+    if (event.target === feedbackModal) {
+        closeFeedbackModalWithAnimation();
+    }
+};
+
+// Enhanced form submission with better UX
+if (feedbackForm) {
+    feedbackForm.onsubmit = async function(e) {
+        e.preventDefault();
+        if (!currentFeedbackEnquiryId) return;
+        
+        const submitButton = this.querySelector('.btn-primary');
+        const originalText = submitButton.innerHTML;
+        
+        // Show loading state
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Feedback...';
+        submitButton.disabled = true;
+        
+        const entry = {
+            date: feedbackDate.value,
+            time: feedbackTime.value,
+            feedback: feedbackText.value
+        };
+        
+        try {
+            const response = await fetch(`${API_URL}/${currentFeedbackEnquiryId}/feedback`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(entry)
+            });
+            
+            if (response.ok) {
+                showNotification('Feedback added successfully!');
+                
+                // Reload feedback from API
+                await loadFeedbackFromAPI(currentFeedbackEnquiryId);
+                
+                // Refresh the enquiry list to show latest feedback
+                fetchEnquiries();
+                
+                // Reset form
+                feedbackForm.reset();
+                initializeCharacterCounter();
+                
+                // Set date/time to now for next entry
+                const now = new Date();
+                feedbackDate.value = now.toISOString().split('T')[0];
+                feedbackTime.value = now.toTimeString().slice(0,5);
+                
+                // Focus back on textarea for quick next entry
+                setTimeout(() => {
+                    const feedbackTextarea = document.getElementById('feedbackText');
+                    if (feedbackTextarea) {
+                        feedbackTextarea.focus();
+                    }
+                }, 100);
+            } else {
+                showNotification('Failed to add feedback', true);
+            }
+        } catch (error) {
+            console.error('Error adding feedback:', error);
+            showNotification('Error adding feedback', true);
+        } finally {
+            // Restore button state
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        }
+    };
+}
+
 // Initial load of enquiries
 fetchEnquiries();
 
@@ -496,4 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date().toISOString().split('T')[0];
         enquiryDateField.value = today;
     }
+    
+    // Initialize character counter when DOM is loaded
+    initializeCharacterCounter();
 });

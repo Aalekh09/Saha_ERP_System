@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate Generation - Saha Institute</title>
-    <link rel="stylesheet" href="./css/certificate.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/certificate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
     /* --- THEME OVERRIDE FOR CERTIFICATE.HTML --- */
 
@@ -238,14 +239,6 @@
                         <h2><i class="fas fa-certificate"></i> Certificate Generation</h2>
                         <p class="subtitle">Generate and manage student certificates</p>
                     </div>
-                    <div class="panel-actions">
-                        <div class="search-container">
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="searchCertificateInput" placeholder="Search by student name or ID...">
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="panel-content">
@@ -264,23 +257,16 @@
                                             </div>
                                             <div class="form-grid">
                                                 <div class="form-group">
-                                                    <label for="studentSelect">Select Student *</label>
-                                                    <select id="studentSelect" >
-                                                        <option value="">-- Select a student --</option>
-                                                        <!-- Options will be populated by JavaScript -->
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
                                                     <label for="studentName">Student Name *</label>
-                                                    <input type="text" id="studentName" name="studentName" required>
+                                                    <input type="text" id="studentName" name="studentName" required placeholder="Enter student's full name">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="courseName">Course Name *</label>
-                                                    <input type="text" id="courseName" name="courseName" required>
+                                                    <input type="text" id="courseName" name="courseName" required placeholder="Enter course name">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="studentIdInput">Student ID</label>
-                                                    <input type="text" id="studentIdInput" name="studentId">
+                                                    <input type="text" id="studentIdInput" name="studentId" placeholder="Enter student ID (optional)">
                                                 </div>
                                             </div>
                                         </div>
@@ -297,6 +283,7 @@
                                                         <option value="Completion">Course Completion</option>
                                                         <option value="Achievement">Achievement</option>
                                                         <option value="Participation">Participation</option>
+                                                        <option value="Excellence">Excellence</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -304,7 +291,7 @@
 
                                         <div class="form-actions">
                                             <button type="submit" class="btn-primary">
-                                                <i class="fas fa-save"></i>
+                                                <i class="fas fa-certificate"></i>
                                                 Generate Certificate
                                             </button>
                                             <button type="button" id="previewCertificate" class="btn-secondary">
@@ -331,34 +318,112 @@
                                 </div>
                             </div>
                             <div class="certificate-template">
-                                <div class="certificate-theme-border">
-                                    <!-- Main content area -->
-                                    <div class="theme-content-area">
-                                         <div class="certificate-header-professional">
-                                            <img src="./uploads/institute/logo.png" alt="Institute Logo" class="professional-logo">
-                                            <h1>Saha Institute of Management & Technology</h1>
-                                            <p class="certificate-type-professional">CERTIFICATE OF COMPLETION</p>
-                                        </div>
-
-                                        <div class="certificate-body-professional">
-                                            <p class="presentation-text-professional">This is to certify that</p>
-                                            <h2 class="student-name-professional">[Student Name]</h2>
-                                            <hr class="underline-professional">
-                                            <p class="completion-details-professional">
-                                                has successfully completed the course
-                                            </p>
-                                            <h3 class="course-name-professional">[Course Name]</h3>
-                                        </div>
-
-                                        <div class="certificate-footer-professional">
-                                            <div class="signature-section-professional">
-                                                <img src="./uploads/signatures/12210302882s-removebg-preview.png" alt="Signature" class="signature-image-professional">
-                                                <hr class="signature-line-professional">
-                                                <p class="signatory-name-professional">Aalekh</p>
-                                                <p class="signatory-title-professional">Director</p>
-                                                <p class="student-id-professional">Student ID: <span id="certificateStudentId">[Student ID]</span></p>
+                                <div class="certificate-container-new">
+                                    <!-- Certificate Border Frame -->
+                                    <div class="certificate-border-frame">
+                                        <div class="border-outer"></div>
+                                        <div class="border-gold"></div>
+                                        <div class="border-white"></div>
+                                        <div class="border-inner"></div>
+                                    </div>
+                                    
+                                    <!-- Decorative Header Border -->
+                                    <div class="certificate-header-border">
+                                        <div class="border-pattern-left"></div>
+                                        <div class="border-pattern-center"></div>
+                                        <div class="border-pattern-right"></div>
+                                    </div>
+                                    
+                                    <!-- Certificate Content -->
+                                    <div class="certificate-content-new">
+                                        <!-- Header Section -->
+                                        <div class="certificate-header-new">
+                                            <div class="logo-container-new">
+                                                <img src="./uploads/institute/logo.png" alt="Institute Logo" class="institute-logo-new">
+                                            </div>
+                                            <div class="institute-details-new">
+                                                <h1 class="institute-name-new">Saha Institute of Management & Technology</h1>
+                                                <div class="institute-subtitle-new">Center of Excellence in Education</div>
+                                                <div class="certificate-seal">
+                                                    <div class="seal-inner">
+                                                        <i class="fas fa-award"></i>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        
+                                        <!-- Certificate Title -->
+                                        <div class="certificate-title-new">
+                                            <div class="title-ornament-left"></div>
+                                            <h2 class="certificate-type-new">CERTIFICATE OF COMPLETION</h2>
+                                            <div class="title-ornament-right"></div>
+                                        </div>
+                                        
+                                        <!-- Certificate Body -->
+                                        <div class="certificate-body-new">
+                                            <div class="presentation-section-new">
+                                                <p class="presentation-text-new">This is to certify that</p>
+                                            </div>
+                                            
+                                            <div class="student-section-new">
+                                                <div class="student-name-container-new">
+                                                    <h3 class="student-name-new">[Student Name]</h3>
+                                                    <div class="name-decoration-new"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="achievement-section-new">
+                                                <p class="achievement-text-new">has successfully completed the comprehensive course</p>
+                                            </div>
+                                            
+                                            <div class="course-section-new">
+                                                <div class="course-name-container-new">
+                                                    <h4 class="course-name-new">[Course Name]</h4>
+                                                    <div class="course-decoration-new"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="completion-section-new">
+                                                <p class="completion-text-new">with distinction and dedication to academic excellence</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Certificate Footer -->
+                                        <div class="certificate-footer-new">
+                                            <div class="signature-area-new">
+                                                <div class="signature-block-new">
+                                                    <img src="./uploads/signatures/12210302882s-removebg-preview.png" alt="Director Signature" class="signature-img-new">
+                                                    <div class="signature-line-new"></div>
+                                                    <div class="signatory-info-new">
+                                                        <div class="signatory-name-new">Aalekh</div>
+                                                        <div class="signatory-title-new">Director</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="certificate-info-new">
+                                                <div class="info-item-new">
+                                                    <span class="info-label-new">Certificate ID:</span>
+                                                    <span id="certificateStudentId" class="info-value-new">[Certificate ID]</span>
+                                                </div>
+                                                <div class="info-item-new">
+                                                    <span class="info-label-new">Date Issued:</span>
+                                                    <span id="issueDateNew" class="info-value-new">[Date]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Decorative Footer Border -->
+                                    <div class="certificate-footer-border">
+                                        <div class="border-pattern-left"></div>
+                                        <div class="border-pattern-center"></div>
+                                        <div class="border-pattern-right"></div>
+                                    </div>
+                                    
+                                    <!-- Background Watermark -->
+                                    <div class="certificate-watermark-new">
+                                        <img src="./uploads/institute/logo.png" alt="Watermark" class="watermark-img-new">
                                     </div>
                                 </div>
                             </div>
@@ -371,7 +436,8 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="./js/certificate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/certificate.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const menuBtn = document.getElementById('certificatesMenuBtn');

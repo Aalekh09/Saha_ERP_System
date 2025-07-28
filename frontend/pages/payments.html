@@ -4,21 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payments - Saha Institute of Management & Technology</title>
-    <link rel="stylesheet" href="../css/pages/payments.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <header>
+        <h1>Saha Institute of Management & Technology</h1>
+        <p>Welcome, <span id="username"></span></p>
+    </header>
+
     <div class="main-container">
+        <div class="side-panel">
+            <div class="admin-section">
+                <div class="admin-header">
+                    <img src="../uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
+                    <div class="admin-info">
+                        <h3>Aalekh</h3>
+                        <span class="admin-role">Administrator</span>
+                    </div>
+                </div>
+                <div class="admin-menu">
+                    <button class="tab-btn" data-tab="teachers">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Teachers</span>
+                    </button>
+                </div>
+            </div>
+            <div class="student-section">
+                <h4>Student Management</h4>
+                <a href="../index.html" class="tab-btn">
+                    <i class="fas fa-list"></i>
+                    <span>List Students</span>
+                </a>
+                <a href="../index.html#add-panel" class="tab-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Student</span>
+                </a>
+                <a href="payments.html" class="tab-btn active">
+                    <i class="fas fa-money-bill"></i>
+                    <span>Payments</span>
+                </a>
+                <a href="reports.html" class="tab-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="attendance.html" class="tab-btn" id="attendanceLink">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+                <a href="../enquiry.html" class="tab-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Enquiries</span>
+                </a>
+                <a href="#" class="tab-btn" id="certificatesMenuBtn">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                    <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
+                </a>
+                <div id="certificatesSubMenu" style="display:none;flex-direction:column;margin-left:32px;">
+                    <a href="../certificate.html" class="tab-btn" id="digitalCertBtn">
+                        <i class="fas fa-desktop"></i>
+                        <span>Digital Certificate</span>
+                    </a>
+                    <a href="../hardcopy-certificate.html" class="tab-btn" id="hardcopyCertBtn">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Hardcopy Certificate</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
         <div class="content-panel">
             <div class="panel-header">
                 <div class="panel-title">
                     <h2><i class="fas fa-money-bill-wave"></i> Payment Management</h2>
                     <p class="subtitle">Track and manage student payments</p>
                 </div>
-                <div class="payment-actions" style="width:100%;display:flex;align-items:center;gap:1rem;background:#f8fafd;padding:1rem 1.5rem;border-radius:8px;box-shadow:0 2px 8px rgba(44,62,80,0.03);margin-top:1rem;">
-                    <div class="search-box" style="flex:1;display:flex;align-items:center;position:relative;">
-                        <i class="fas fa-search" style="position:absolute;left:15px;color:#888;"></i>
-                        <input type="text" id="searchPaymentInput" placeholder="Search payments..." style="width:100%;padding:10px 15px 10px 40px;border:1px solid #ddd;border-radius:6px;font-size:15px;">
+                <div class="panel-actions">
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchPaymentInput" placeholder="Search payments...">
+                        </div>
                     </div>
                     <button class="btn-primary" onclick="showAddPaymentModal()">
                         <i class="fas fa-plus"></i>

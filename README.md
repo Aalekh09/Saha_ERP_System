@@ -44,7 +44,7 @@
      mvnw.cmd spring-boot:run
      ```
 3. The backend will be available at:  
-   `http://localhost:4455/`
+   `https://aalekhapi.sahaedu.in/`
 
 ---
 
@@ -64,7 +64,7 @@
 ---
 
 ## Connecting Frontend and Backend
-- The frontend JavaScript is configured to call the backend at `http://localhost:4455/api/...`.
+- The frontend JavaScript is configured to call the backend at `https://aalekhapi.sahaedu.in/api/...`.
 - Make sure both servers are running at the same time.
 - If you change the backend port, update the API URLs in your JS files accordingly.
 

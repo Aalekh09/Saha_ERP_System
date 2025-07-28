@@ -1,30 +1,43 @@
-// === Device Check Overlay ===
-function showDeviceOverlay() {
-    if (document.getElementById('device-overlay')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'device-overlay';
-    overlay.innerHTML = `
-        <div class="device-message">
-            <div class="device-icon">💻</div>
-            <h2>Desktop Only</h2>
-            <p>This application is only available on laptops/desktops.<br>Mobile support is coming soon!</p>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-}
-function hideDeviceOverlay() {
-    const overlay = document.getElementById('device-overlay');
-    if (overlay) overlay.remove();
-}
-function checkDevice() {
-    if (window.innerWidth < 900) {
-        showDeviceOverlay();
-    } else {
-        hideDeviceOverlay();
+// === Mobile Support Enabled ===
+// Device check removed - Full mobile support now available
+
+// === Mobile Menu Functionality ===
+function initializeMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const sidePanel = document.getElementById('sidePanel');
+    
+    if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
+        // Toggle mobile menu
+        mobileMenuToggle.addEventListener('click', function() {
+            sidePanel.classList.toggle('mobile-active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.classList.toggle('mobile-menu-open');
+        });
+        
+        // Close menu when overlay is clicked
+        mobileMenuOverlay.addEventListener('click', function() {
+            sidePanel.classList.remove('mobile-active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.classList.remove('mobile-menu-open');
+        });
+        
+        // Close menu when a navigation item is clicked (on mobile)
+        const tabButtons = sidePanel.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidePanel.classList.remove('mobile-active');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.classList.remove('mobile-menu-open');
+                }
+            });
+        });
     }
 }
-window.addEventListener('resize', checkDevice);
-document.addEventListener('DOMContentLoaded', checkDevice);
+
+// Initialize mobile menu when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeMobileMenu);
 
 // === Server Status Overlay ===
 function showServerOverlay() {
@@ -74,7 +87,7 @@ if (username) {
 }
 
 // Dynamic API base URL for cross-device compatibility
-const API_BASE = 'https://aalekhapi.sahaedu.in';
+const API_BASE = window.location.protocol + '//' + "aalekhapi.sahaedu.in";
 // Replace all API URLs
 const API_URL = API_BASE + '/api/students';
 const PAYMENT_API_URL = API_BASE + '/api/payments';
@@ -284,8 +297,13 @@ function displayStudents(students) {
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="action-btn view-profile-btn primary" data-id="${student.id}" title="View Profile">
-                        <i class="fas fa-user"></i> <span>View Profile</span>
+                    <button class="action-btn professional-view-profile-btn" data-id="${student.id}" title="View Complete Student Profile">
+                        <i class="fas fa-user-circle"></i>
+                        <span>View Profile</span>
+                    </button>
+                    <button class="action-btn professional-id-card-btn" data-id="${student.id}" title="Generate & View Student ID Card">
+                        <i class="fas fa-id-badge"></i>
+                        <span>ID Card</span>
                     </button>
                     <button class="action-btn edit-btn" data-id="${student.id}" title="Edit Student">
                         <i class="fas fa-edit"></i>
@@ -295,9 +313,6 @@ function displayStudents(students) {
                     </button>
                     <button class="action-btn delete-btn" data-id="${student.id}" title="Delete Student">
                         <i class="fas fa-trash"></i>
-                    </button>
-                    <button class="action-btn id-card-btn" data-id="${student.id}" title="View ID Card">
-                        <i class="fas fa-id-card"></i>
                     </button>
                 </div>
             </td>
@@ -318,36 +333,73 @@ function displayStudents(students) {
             });
         }
 
-        // Payment event
+        // Payment event - Open Add New Payment modal with pre-filled details
         const paymentBtn = row.querySelector('.payment-btn');
         if (paymentBtn) {
             paymentBtn.addEventListener('click', () => {
-                // Switch to payments tab
+                // Switch to payments tab first
                 document.querySelector('[data-tab="payments"]').click();
-                // Show payment form
-                document.querySelector('.payment-form').style.display = 'block';
-                // Pre-select the student
-                const studentSelect = document.getElementById('studentSelect');
-                const option = new Option(toUpperCase(student.name), student.id);
-                option.setAttribute('data-phone', student.phoneNumber);
-                studentSelect.innerHTML = '';
-                studentSelect.appendChild(option);
+                
+                // Wait a moment for the tab to load, then open the modal
+                setTimeout(() => {
+                    // Open the Add New Payment modal
+                    const modal = document.getElementById('addPaymentModal');
+                    if (modal) {
+                        modal.style.display = 'block';
+                        
+                        // Pre-fill the student details
+                        const studentSelect = document.getElementById('studentSelect');
+                        if (studentSelect) {
+                            // Clear existing options
+                            studentSelect.innerHTML = '<option value="">Select Student</option>';
+                            
+                            // Add the selected student as an option
+                            const option = new Option(toUpperCase(student.name), student.id);
+                            option.setAttribute('data-phone', student.phoneNumber);
+                            option.selected = true;
+                            studentSelect.appendChild(option);
+                            
+                            // Show student summary if available
+                            const studentSummary = document.getElementById('selectedStudentSummary');
+                            const summaryName = document.getElementById('summaryStudentName');
+                            const summaryId = document.getElementById('summaryStudentId');
+                            
+                            if (studentSummary && summaryName && summaryId) {
+                                summaryName.textContent = toUpperCase(student.name);
+                                summaryId.textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+                                studentSummary.style.display = 'flex';
+                            }
+                        }
+                        
+                        // Pre-fill description with student's course
+                        const descriptionInput = document.getElementById('description');
+                        if (descriptionInput && student.courses) {
+                            descriptionInput.value = `Course fee payment - ${student.courses}`;
+                        }
+                        
+                        // Focus on amount input for quick entry
+                        const amountInput = document.getElementById('amount');
+                        if (amountInput) {
+                            setTimeout(() => amountInput.focus(), 300);
+                        }
+                    }
+                }, 100);
             });
         }
         
-        // ID Card event
-        const idCardBtn = row.querySelector('.id-card-btn');
-        if (idCardBtn) {
-            idCardBtn.addEventListener('click', () => {
-                console.log('ID Card button clicked for student:', student);
+        // Professional ID Card event
+        const professionalIdCardBtn = row.querySelector('.professional-id-card-btn');
+        if (professionalIdCardBtn) {
+            professionalIdCardBtn.addEventListener('click', () => {
+                console.log('Professional ID Card button clicked for student:', student);
                 showIdCard(student.id);
             });
         }
         
-        // View Profile button event
-        const viewProfileBtn = row.querySelector('.view-profile-btn');
-        if (viewProfileBtn) {
-            viewProfileBtn.addEventListener('click', () => {
+        // Professional View Profile button event
+        const professionalViewProfileBtn = row.querySelector('.professional-view-profile-btn');
+        if (professionalViewProfileBtn) {
+            professionalViewProfileBtn.addEventListener('click', () => {
                 showStudentProfile(student.id);
             });
         }
@@ -983,53 +1035,507 @@ async function fetchPaymentAndGenerateReceipt(paymentId) {
     }
 }
 
-// Generate and display receipt
+// Generate professional payment receipt
 function generateReceipt(payment) {
-    const receiptWindow = window.open('', '_blank');
-    receiptWindow.document.write(`
+    console.log('Generating professional receipt for:', payment);
+    
+    // Create professional receipt HTML
+    const receiptHTML = `
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Payment Receipt</title>
+            <meta charset="UTF-8">
+            <title>Payment Receipt - ${payment.receiptNumber}</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                .receipt { border: 1px solid #ccc; padding: 20px; max-width: 600px; margin: 0 auto; }
-                .header { text-align: center; margin-bottom: 20px; }
-                .details { margin: 20px 0; }
-                .details div { margin: 10px 0; }
-                .footer { text-align: center; margin-top: 40px; }
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    line-height: 1.6;
+                    color: #2c3e50;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 100vh;
+                    padding: 20px;
+                }
+                
+                .receipt-container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    background: #ffffff;
+                    border-radius: 20px;
+                    overflow: hidden;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+                    position: relative;
+                }
+                
+                .receipt-container::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 6px;
+                    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+                }
+                
+                .header {
+                    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                    color: white;
+                    padding: 40px;
+                    text-align: center;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .header::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    right: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                    animation: float 6s ease-in-out infinite;
+                }
+                
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px) rotate(0deg); }
+                    50% { transform: translateY(-20px) rotate(180deg); }
+                }
+                
+                .institute-logo {
+                    width: 80px;
+                    height: 80px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 50%;
+                    margin: 0 auto 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    font-weight: bold;
+                    color: white;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                }
+                
+                .institute-name {
+                    font-size: 2.2rem;
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                }
+                
+                .institute-tagline {
+                    font-size: 1rem;
+                    opacity: 0.9;
+                    margin-bottom: 15px;
+                    font-weight: 300;
+                }
+                
+                .institute-address {
+                    font-size: 0.9rem;
+                    opacity: 0.8;
+                    line-height: 1.4;
+                }
+                
+                .receipt-badge {
+                    background: linear-gradient(135deg, #f093fb, #f5576c);
+                    color: white;
+                    padding: 12px 30px;
+                    border-radius: 50px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    margin: 20px auto 0;
+                    display: inline-block;
+                    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+                }
+                
+                .receipt-meta {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 30px;
+                    padding: 40px;
+                    background: #f8f9fa;
+                    border-bottom: 1px solid #e9ecef;
+                }
+                
+                .meta-card {
+                    background: white;
+                    padding: 25px;
+                    border-radius: 15px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    border-left: 4px solid #667eea;
+                }
+                
+                .meta-label {
+                    font-size: 0.85rem;
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 8px;
+                    font-weight: 600;
+                }
+                
+                .meta-value {
+                    font-size: 1.3rem;
+                    font-weight: 700;
+                    color: #2c3e50;
+                }
+                
+                .receipt-number {
+                    color: #667eea;
+                    font-family: 'Courier New', monospace;
+                }
+                
+                .payment-details {
+                    padding: 40px;
+                }
+                
+                .section-title {
+                    font-size: 1.4rem;
+                    font-weight: 700;
+                    color: #2c3e50;
+                    margin-bottom: 25px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .section-icon {
+                    width: 35px;
+                    height: 35px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 1rem;
+                }
+                
+                .details-grid {
+                    display: grid;
+                    gap: 20px;
+                }
+                
+                .detail-item {
+                    display: grid;
+                    grid-template-columns: 200px 1fr;
+                    gap: 20px;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 12px;
+                    border-left: 4px solid #e9ecef;
+                    transition: all 0.3s ease;
+                }
+                
+                .detail-item:hover {
+                    border-left-color: #667eea;
+                    transform: translateX(5px);
+                }
+                
+                .detail-label {
+                    font-weight: 600;
+                    color: #495057;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                .detail-value {
+                    font-weight: 500;
+                    color: #2c3e50;
+                }
+                
+                .amount-highlight {
+                    background: linear-gradient(135deg, #28a745, #20c997);
+                    color: white;
+                    border-left-color: #28a745 !important;
+                    font-size: 1.1rem;
+                }
+                
+                .amount-highlight .detail-value {
+                    color: white;
+                    font-weight: 700;
+                    font-size: 1.3rem;
+                }
+                
+                .payment-summary {
+                    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                    padding: 30px 40px;
+                    border-top: 1px solid #dee2e6;
+                }
+                
+                .summary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 15px 0;
+                    border-bottom: 1px solid #dee2e6;
+                }
+                
+                .summary-row:last-child {
+                    border-bottom: none;
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: #28a745;
+                }
+                
+                .footer {
+                    background: #2c3e50;
+                    color: white;
+                    padding: 40px;
+                    text-align: center;
+                }
+                
+                .thank-you {
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    margin-bottom: 15px;
+                }
+                
+                .footer-note {
+                    opacity: 0.8;
+                    margin-bottom: 20px;
+                }
+                
+                .signature-section {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 30px;
+                    padding-top: 30px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.2);
+                }
+                
+                .signature-box {
+                    text-align: center;
+                    flex: 1;
+                }
+                
+                .signature-line {
+                    width: 150px;
+                    height: 1px;
+                    background: rgba(255, 255, 255, 0.5);
+                    margin: 40px auto 10px;
+                }
+                
+                .signature-label {
+                    font-size: 0.9rem;
+                    opacity: 0.8;
+                }
+                
+                .generated-info {
+                    margin-top: 20px;
+                    padding-top: 20px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.2);
+                    font-size: 0.85rem;
+                    opacity: 0.7;
+                }
+                
+                .print-button {
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 50px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    margin: 20px;
+                    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+                    transition: all 0.3s ease;
+                }
+                
+                .print-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+                }
+                
                 @media print {
-                    .no-print { display: none; }
+                    body {
+                        background: white;
+                        padding: 0;
+                    }
+                    .receipt-container {
+                        box-shadow: none;
+                        border-radius: 0;
+                    }
+                    .header::before {
+                        display: none;
+                    }
+                    .print-button {
+                        display: none;
+                    }
+                }
+                
+                @media (max-width: 768px) {
+                    .receipt-meta {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                        padding: 30px 20px;
+                    }
+                    
+                    .payment-details {
+                        padding: 30px 20px;
+                    }
+                    
+                    .detail-item {
+                        grid-template-columns: 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .signature-section {
+                        flex-direction: column;
+                        gap: 30px;
+                    }
                 }
             </style>
         </head>
         <body>
-            <div class="receipt">
+            <div class="receipt-container">
                 <div class="header">
-                    <h1>Saha Institute of Management & Technology</h1>
-                    <h2>Payment Receipt</h2>
+                    <div class="institute-logo">SIMT</div>
+                    <h1 class="institute-name">Saha Institute of Management & Technology</h1>
+                    <p class="institute-tagline">Excellence in Education & Technology</p>
+                    <p class="institute-address">
+                        House No. 2219, Sector 3, Faridabad, Haryana<br>
+                        Phone: +91 9871261719 | Email: sahaedu@gmail.com
+                    </p>
+                    <div class="receipt-badge">Payment Receipt</div>
                 </div>
-                <div class="details">
-                    <div><strong>Receipt No:</strong> ${payment.receiptNumber}</div>
-                    <div><strong>Date:</strong> ${new Date(payment.paymentDate).toLocaleString()}</div>
-                    <div><strong>Student Name:</strong> ${payment.student.name}</div>
-                    <div><strong>Student Phone:</strong> ${payment.student.phoneNumber}</div>
-                    <div><strong>Amount:</strong> ₹${payment.amount}</div>
-                    <div><strong>Payment Method:</strong> ${payment.paymentMethod}</div>
-                    <div><strong>Description:</strong> ${payment.description}</div>
-                    <div><strong>Status:</strong> ${payment.status}</div>
+                
+                <div class="receipt-meta">
+                    <div class="meta-card">
+                        <div class="meta-label">Receipt Number</div>
+                        <div class="meta-value receipt-number">${payment.receiptNumber}</div>
+                    </div>
+                    <div class="meta-card">
+                        <div class="meta-label">Payment Date</div>
+                        <div class="meta-value">${new Date(payment.paymentDate).toLocaleDateString('en-IN', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</div>
+                    </div>
                 </div>
+                
+                <div class="payment-details">
+                    <h2 class="section-title">
+                        <div class="section-icon">👤</div>
+                        Payment Details
+                    </h2>
+                    
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>👨‍🎓</span> Student Name
+                            </div>
+                            <div class="detail-value">${payment.student.name}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>📞</span> Student Phone
+                            </div>
+                            <div class="detail-value">${payment.student.phoneNumber || 'N/A'}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>💳</span> Payment Method
+                            </div>
+                            <div class="detail-value">${payment.paymentMethod}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>📝</span> Description
+                            </div>
+                            <div class="detail-value">${payment.description}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">
+                                <span>✅</span> Status
+                            </div>
+                            <div class="detail-value">${payment.status || 'Completed'}</div>
+                        </div>
+                        
+                        <div class="detail-item amount-highlight">
+                            <div class="detail-label">
+                                <span>💰</span> Amount Paid
+                            </div>
+                            <div class="detail-value">₹${parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-summary">
+                    <div class="summary-row">
+                        <span>Payment Status:</span>
+                        <span style="color: #28a745; font-weight: 600;">✅ Completed</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Transaction ID:</span>
+                        <span style="font-family: 'Courier New', monospace;">${payment.receiptNumber}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total Amount Received:</span>
+                        <span>₹${parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </div>
+                </div>
+                
                 <div class="footer">
-                    <p>Thank you for your payment!</p>
-                    <p>This is a computer-generated receipt and does not require a signature.</p>
+                    <div class="thank-you">🙏 Thank you for your payment!</div>
+                    <div class="footer-note">
+                        This is a computer-generated receipt and does not require a physical signature.
+                    </div>
+                    
+                    <div class="signature-section">
+                        <div class="signature-box">
+                            <div class="signature-line"></div>
+                            <div class="signature-label">Student Signature</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="signature-line"></div>
+                            <div class="signature-label">Authorized Signature</div>
+                        </div>
+                    </div>
+                    
+                    <div class="generated-info">
+                        Generated on: ${new Date().toLocaleString('en-IN')}<br>
+                        System: SIMT Student Management System v2.0
+                    </div>
                 </div>
-                <div class="no-print" style="text-align: center; margin-top: 20px;">
-                    <button onclick="window.print()">Print Receipt</button>
-                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="print-button" onclick="window.print()">🖨️ Print Receipt</button>
             </div>
         </body>
         </html>
-    `);
+    `;
+    
+    // Create and download the receipt as HTML file
+    const blob = new Blob([receiptHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Receipt_${payment.receiptNumber}_${payment.student.name.replace(/\s+/g, '_')}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // Also open receipt in new window for immediate viewing
+    const receiptWindow = window.open('', '_blank');
+    receiptWindow.document.write(receiptHTML);
+    receiptWindow.document.close();
 }
 
 // Initialize payments when payments tab is clicked
@@ -1659,63 +2165,93 @@ document.head.appendChild(chartScript);
 
 // Function to display student profile in a modal
 async function showStudentProfile(studentId) {
-    // Debug: log the studentId and allStudents
-    console.log('Looking for studentId:', studentId, 'in', allStudents);
-
     const student = allStudents.find(s => String(s.id) === String(studentId));
     const modal = document.getElementById('studentProfileModal');
     const profileContent = document.getElementById('studentProfileContent');
 
     if (!student) {
         if (profileContent) {
-            profileContent.innerHTML = '<div style="padding:2rem;text-align:center;color:#c00;">Student not found.</div>';
+            profileContent.innerHTML = '<div class="error-message">Student not found.</div>';
         }
         if (modal) modal.style.display = 'flex';
         return;
     }
 
+    // Calculate fee progress
+    const totalFee = parseFloat(student.totalCourseFee) || 0;
+    const paidAmount = parseFloat(student.paidAmount) || 0;
+    const remainingAmount = totalFee - paidAmount;
+    const progress = totalFee > 0 ? (paidAmount / totalFee) * 100 : 0;
+
     profileContent.innerHTML = `
-        <div class="profile-modal-card">
-            <div class="profile-header">
-                <div class="profile-avatar">${student.name ? student.name.charAt(0).toUpperCase() : '?'}</div>
-                <div class="profile-main-info">
-                    <div class="profile-name">${student.name || '-'}</div>
-                    <div class="profile-id-status">
-                        <span class="profile-id">ID: STU${String(student.id).padStart(4, '0')}</span>
-                        <span class="profile-status ${student.status === 'active' ? 'active' : 'inactive'}">
-                            <i class="fas fa-circle"></i> ${student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : '-'}
-                        </span>
+        <div class="compact-profile-card">
+            <div class="profile-header-compact">
+                <div class="profile-avatar-compact">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="profile-main-info-compact">
+                    <h3 class="profile-name-compact">${student.name || 'N/A'}</h3>
+                    <div class="profile-id-compact">ID: STU${String(student.id).padStart(4, '0')}</div>
+                    <div class="profile-course-compact">${student.courses || 'No Course'}</div>
+                </div>
+                <div class="profile-status-compact">
+                    <div class="fee-progress-compact">
+                        <div class="progress-bar-compact">
+                            <div class="progress-fill-compact" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="progress-text-compact">${progress.toFixed(0)}% Paid</div>
                     </div>
                 </div>
             </div>
-            <span class="close-btn" id="closeStudentProfileModal">&times;</span>
-            <hr class="profile-divider" />
-            <div class="profile-section">
-                <h4><i class="fas fa-user"></i> Personal</h4>
-                <div class="profile-row"><b>Father's Name:</b> ${student.fatherName || '-'}</div>
-                <div class="profile-row"><b>Mother's Name:</b> ${student.motherName || '-'}</div>
-                <div class="profile-row"><b>Date of Birth:</b> ${student.dob || '-'}</div>
-            </div>
-            <div class="profile-section">
-                <h4><i class="fas fa-address-book"></i> Contact</h4>
-                <div class="profile-row"><b>Phone Number:</b> ${student.phoneNumber || '-'}</div>
-                <div class="profile-row"><b>Email Address:</b> ${student.email || '-'}</div>
-                <div class="profile-row"><b>Address:</b> ${student.address || '-'}</div>
-            </div>
-            <div class="profile-section">
-                <h4><i class="fas fa-graduation-cap"></i> Course</h4>
-                <div class="profile-row"><b>Course(s):</b> ${student.courses || '-'}</div>
-                <div class="profile-row"><b>Course Duration:</b> ${student.courseDuration || '-'}</div>
-                <div class="profile-row"><b>Total Course Fee:</b> ₹${formatCurrency(student.totalCourseFee) || 'N/A'}</div>
-            </div>
-            <div class="profile-section">
-                <h4><i class="fas fa-rupee-sign"></i> Fee Status</h4>
-                <div class="profile-row"><b>Paid Amount:</b> ₹${formatCurrency(student.paidAmount) || '0.00'}</div>
-                <div class="profile-row"><b>Remaining Amount:</b> ₹${formatCurrency((student.totalCourseFee || 0) - (student.paidAmount || 0))}</div>
+            
+            <div class="profile-details-grid">
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-user"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Personal Info</div>
+                        <div class="detail-value">Father: ${student.fatherName || 'N/A'}</div>
+                        <div class="detail-value">Mother: ${student.motherName || 'N/A'}</div>
+                        <div class="detail-value">DOB: ${student.dob || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-phone"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Contact Info</div>
+                        <div class="detail-value">Phone: ${student.phoneNumber || 'N/A'}</div>
+                        <div class="detail-value">Email: ${student.email || 'N/A'}</div>
+                        <div class="detail-value">Address: ${student.address || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Academic Info</div>
+                        <div class="detail-value">Course: ${student.courses || 'N/A'}</div>
+                        <div class="detail-value">Duration: ${student.courseDuration || 'N/A'}</div>
+                        <div class="detail-value">Joined: ${student.admissionDate || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-card fee-card">
+                    <div class="detail-icon"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Fee Status</div>
+                        <div class="detail-value">Total: ₹${formatCurrency(totalFee)}</div>
+                        <div class="detail-value">Paid: ₹${formatCurrency(paidAmount)}</div>
+                        <div class="detail-value ${remainingAmount > 0 ? 'pending' : 'completed'}">
+                            Remaining: ₹${formatCurrency(remainingAmount)}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
+    
     modal.style.display = 'flex';
+    
     // Ensure close button works
     const closeBtn = document.getElementById('closeStudentProfileModal');
     if (closeBtn) {
