@@ -11,129 +11,25 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/certificate.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-    /* --- THEME OVERRIDE FOR CERTIFICATE.HTML --- */
 
-    /* Global Theme */
-    body {
-        font-family: 'Inter', sans-serif !important;
-        background: #f4f7fb !important;
-    }
-
-    /* Header Override */
-    header {
-        background: #fff !important;
-        color: #2c3e50 !important;
-        padding: 24px 40px 18px 40px !important;
-        box-shadow: 0 2px 8px rgba(44,62,80,0.07) !important;
-        border-radius: 0 !important;
-        margin-bottom: 0;
-    }
-    header h1 {
-        font-weight: 700;
-        letter-spacing: 0.5px;
-    }
-
-    /* Side Panel Override */
-    .side-panel {
-        background: #fff !important;
-        color: #2c3e50 !important;
-        border-radius: 0 !important;
-        box-shadow: 0 4px 24px rgba(44,62,80,0.10);
-        padding: 32px 20px;
-        margin: 0;
-        width: 260px;
-        flex-shrink: 0;
-    }
-
-    .admin-section, .menu-section {
-        border-bottom: none !important;
-    }
-
-    .admin-section {
-        display: block !important;
-        border-bottom: 1px solid #e1e4e8 !important;
-        padding-bottom: 18px;
-    }
-    .admin-menu {
-        margin-top: 16px;
-    }
-
-    .admin-info h3, .menu-section h4 {
-        color: #2c3e50 !important;
-    }
-    
-    .admin-role {
-        color: #7b8a8b !important;
-    }
-
-    /* Tab Buttons Override */
-    .tab-btn {
-        background: none !important;
-        color: #2c3e50 !important;
-        font-weight: 500;
-        transition: background 0.2s, color 0.2s;
-    }
-    .tab-btn:hover {
-        background: #f3f6fa !important;
-        color: #2980ef !important;
-    }
-    .tab-btn.active {
-        background: #2980ef !important;
-        color: #fff !important;
-    }
-    
-    /* Icons Override */
-    .tab-btn i.fas {
-        color: #3498db !important;
-    }
-    .tab-btn:hover i.fas {
-        color: #2980ef !important;
-    }
-    .tab-btn.active i.fas {
-        color: #fff !important;
-    }
-    #certificatesMenuBtn i.fa-chevron-down {
-        color: #2c3e50 !important; /* Keep chevron dark */
-    }
-    
-    /* Submenu Padding */
-    #certificatesSubMenu {
-        padding-left: 20px;
-    }
-
-    /* Card & Form Styles (from previous step, ensuring consistency) */
-    .card {
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(44,62,80,0.13);
-        padding: 56px 40px 40px 40px;
-        margin: 0;
-    }
-    .professional-form .form-group input,
-    .professional-form .form-group select {
-        padding: 10px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 15px;
-        background: #f9fafb;
-    }
-    .professional-form .form-actions button {
-        border-radius: 6px;
-        padding: 12px 24px;
-        font-size: 16px;
-        font-weight: 600;
-    }
-    </style>
 </head>
 <body>
     <header>
-        <h1>Saha Institute of Management & Technology</h1>
-        <p>Welcome, <span id="username"></span></p>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Welcome, <span id="username"></span></p>
+            </div>
+        </div>
     </header>
 
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
     <div class="main-container">
-        <div class="side-panel">
+        <div class="side-panel" id="sidePanel">
             <div class="admin-section">
                 <div class="admin-header">
                     <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
@@ -143,26 +39,22 @@
                     </div>
                 </div>
                 <div class="admin-menu">
-                    <button class="tab-btn" onclick="window.location.href='index.html'">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <span>Teachers</span>
-                    </button>
                 </div>
             </div>
             <div class="student-section">
                 <h4>Student Management</h4>
-                <button class="tab-btn" onclick="window.location.href='index.html'">
+                <a href="index.html" class="tab-btn">
                     <i class="fas fa-list"></i>
                     <span>List Students</span>
-                </button>
-                <button class="tab-btn" onclick="window.location.href='index.html#add-panel'">
+                </a>
+                <a href="index.html#add-panel" class="tab-btn">
                     <i class="fas fa-user-plus"></i>
                     <span>Add Student</span>
-                </button>
-                <button class="tab-btn" onclick="window.location.href='payments.html'">
+                </a>
+                <a href="index.html#payments-panel" class="tab-btn">
                     <i class="fas fa-money-bill"></i>
                     <span>Payments</span>
-                </button>
+                </a>
                 <a href="pages/reports.html" class="tab-btn">
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span>
@@ -176,7 +68,7 @@
                     <span>Certificates</span>
                     <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
                 </a>
-                <div id="certificatesSubMenu" style="display: block; flex-direction: column; padding-left: 20px;">
+                <div id="certificatesSubMenu" style="display:block;flex-direction:column;margin-left:32px;">
                     <a href="certificate.html" class="tab-btn active" id="digitalCertBtn">
                         <i class="fas fa-desktop"></i>
                         <span>Digital Certificate</span>
@@ -508,6 +400,24 @@
     <script src="js/certificate.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu functionality
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const sidePanel = document.getElementById('sidePanel');
+
+        if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidePanel.classList.toggle('mobile-open');
+                mobileMenuOverlay.classList.toggle('active');
+            });
+
+            mobileMenuOverlay.addEventListener('click', function() {
+                sidePanel.classList.remove('mobile-open');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        }
+
+        // Certificates submenu functionality
         const menuBtn = document.getElementById('certificatesMenuBtn');
         const subMenu = document.getElementById('certificatesSubMenu');
         if(menuBtn && subMenu) {
