@@ -945,4 +945,140 @@
     font-size: 3rem;
     margin-bottom: var(--spacing-md);
     color: var(--border-color);
+}/* 
+Bulk Certificate Upload Styles */
+.bulk-upload-section {
+    margin-top: 20px;
+}
+
+.upload-instructions ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.upload-instructions li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.upload-instructions li:last-child {
+    border-bottom: none;
+}
+
+.file-upload-container {
+    position: relative;
+}
+
+.upload-dropzone {
+    border: 2px dashed #3498db;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.upload-dropzone:hover {
+    border-color: #2980b9;
+    background: #e3f2fd;
+}
+
+.upload-dropzone.dragover {
+    border-color: #27ae60;
+    background: #e8f5e8;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #3498db;
+    margin-bottom: 15px;
+}
+
+.upload-text p {
+    margin: 5px 0;
+    color: #2c3e50;
+}
+
+.file-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #e8f5e8;
+    border: 1px solid #27ae60;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.file-details {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.btn-remove {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.btn-remove:hover {
+    background: #c0392b;
+}
+
+.bulk-actions {
+    text-align: center;
+}
+
+.progress-container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #27ae60);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .certificate-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .upload-dropzone {
+        padding: 30px 15px;
+    }
+    
+    .upload-icon {
+        font-size: 36px;
+    }
 }

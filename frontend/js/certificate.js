@@ -599,3 +599,449 @@ document.addEventListener('DOMContentLoaded', function() {
     // Don't call updatePreview on load to avoid auto-filling data
     // updatePreview();
 });
+// ===== BULK CERTIFICATE GENERATION FUNCTIONALITY =====
+
+// Initialize bulk certificate functionality
+function initializeBulkCertificates() {
+    const bulkExcelFile = document.getElementById('bulkExcelFile');
+    const uploadDropzone = document.getElementById('uploadDropzone');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFileBtn = document.getElementById('removeFile');
+    const processBulkBtn = document.getElementById('processBulkCertificates');
+    const downloadSampleBtn = document.getElementById('downloadSampleExcel');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+
+    let uploadedFile = null;
+
+    // Download sample Excel file
+    if (downloadSampleBtn) {
+        downloadSampleBtn.addEventListener('click', downloadSampleExcelFile);
+    }
+
+    // File upload handling
+    if (uploadDropzone && bulkExcelFile) {
+        uploadDropzone.addEventListener('click', () => bulkExcelFile.click());
+        
+        uploadDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadDropzone.classList.add('dragover');
+        });
+        
+        uploadDropzone.addEventListener('dragleave', () => {
+            uploadDropzone.classList.remove('dragover');
+        });
+        
+        uploadDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadDropzone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        bulkExcelFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+    }
+
+    // Remove file
+    if (removeFileBtn) {
+        removeFileBtn.addEventListener('click', () => {
+            uploadedFile = null;
+            bulkExcelFile.value = '';
+            fileInfo.style.display = 'none';
+            uploadDropzone.style.display = 'block';
+            processBulkBtn.disabled = true;
+        });
+    }
+
+    // Process bulk certificates
+    if (processBulkBtn) {
+        processBulkBtn.addEventListener('click', processBulkCertificates);
+    }
+
+    function handleFileUpload(file) {
+        // Validate file type
+        const allowedTypes = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please upload a valid Excel file (.xlsx or .xls)');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size should be less than 5MB');
+            return;
+        }
+
+        uploadedFile = file;
+        fileName.textContent = file.name;
+        fileSize.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+        
+        uploadDropzone.style.display = 'none';
+        fileInfo.style.display = 'flex';
+        processBulkBtn.disabled = false;
+    }
+
+    async function processBulkCertificates() {
+        if (!uploadedFile) {
+            alert('Please upload an Excel file first');
+            return;
+        }
+
+        try {
+            processBulkBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            progressText.textContent = 'Reading Excel file...';
+            progressFill.style.width = '10%';
+
+            // Read Excel file
+            const studentData = await readExcelFile(uploadedFile);
+            
+            if (studentData.length === 0) {
+                throw new Error('No valid data found in Excel file');
+            }
+
+            progressText.textContent = `Processing ${studentData.length} certificates...`;
+            progressFill.style.width = '30%';
+
+            // Generate certificates
+            const certificates = await generateBulkCertificates(studentData);
+            
+            progressText.textContent = 'Creating ZIP file...';
+            progressFill.style.width = '80%';
+
+            // Create ZIP file
+            await createAndDownloadZip(certificates);
+            
+            progressFill.style.width = '100%';
+            progressText.textContent = 'Complete! ZIP file downloaded.';
+
+            // Reset after 3 seconds
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                progressFill.style.width = '0%';
+                processBulkBtn.disabled = false;
+            }, 3000);
+
+        } catch (error) {
+            console.error('Error processing bulk certificates:', error);
+            alert('Error processing certificates: ' + error.message);
+            progressContainer.style.display = 'none';
+            processBulkBtn.disabled = false;
+        }
+    }
+
+    async function readExcelFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    // Process data (skip header row if exists)
+                    const studentData = [];
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (row[0] && row[1]) { // Name and Course are required
+                            studentData.push({
+                                name: row[0].toString().trim(),
+                                course: row[1].toString().trim(),
+                                studentId: row[2] ? row[2].toString().trim() : '',
+                                certificateType: row[3] ? row[3].toString().trim() : 'Completion'
+                            });
+                        }
+                    }
+                    
+                    resolve(studentData);
+                } catch (error) {
+                    reject(new Error('Failed to read Excel file: ' + error.message));
+                }
+            };
+            reader.onerror = () => reject(new Error('Failed to read file'));
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    async function generateBulkCertificates(studentData) {
+        const certificates = [];
+        
+        for (let i = 0; i < studentData.length; i++) {
+            const student = studentData[i];
+            
+            // Update progress
+            const progress = 30 + (i / studentData.length) * 50;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Generating certificate ${i + 1} of ${studentData.length}...`;
+            
+            // Generate certificate image
+            const certificateBlob = await generateCertificateImage(student);
+            
+            certificates.push({
+                name: student.name,
+                course: student.course,
+                blob: certificateBlob,
+                filename: `Certificate_${student.name.replace(/[^a-zA-Z0-9]/g, '_')}_${student.course.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`
+            });
+            
+            // Small delay to prevent browser freezing
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        return certificates;
+    }
+
+    async function generateCertificateImage(student) {
+        // Create a temporary certificate element with the same design as preview
+        const tempCertificate = createCertificateElement(student);
+        document.body.appendChild(tempCertificate);
+        
+        try {
+            // Use html2canvas to convert to image
+            const canvas = await html2canvas(tempCertificate, {
+                width: 1200,
+                height: 850,
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff'
+            });
+            
+            // Convert canvas to blob
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/jpeg', 0.95);
+            });
+        } finally {
+            // Clean up temporary element
+            document.body.removeChild(tempCertificate);
+        }
+    }
+
+    function createCertificateElement(student) {
+        const currentDate = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        const certificateElement = document.createElement('div');
+        certificateElement.style.position = 'absolute';
+        certificateElement.style.left = '-9999px';
+        certificateElement.style.width = '1200px';
+        certificateElement.style.height = '850px';
+        certificateElement.style.background = '#ffffff';
+        
+        certificateElement.innerHTML = `
+            <div class="certificate-container-new" style="width: 1200px; height: 850px; position: relative; background: #ffffff; font-family: 'Inter', sans-serif;">
+                <!-- Certificate Border Frame -->
+                <div class="certificate-border-frame" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                    <div class="border-outer" style="position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px; border: 8px solid #2c3e50; border-radius: 15px;"></div>
+                    <div class="border-gold" style="position: absolute; top: 35px; left: 35px; right: 35px; bottom: 35px; border: 3px solid #f39c12; border-radius: 10px;"></div>
+                    <div class="border-white" style="position: absolute; top: 45px; left: 45px; right: 45px; bottom: 45px; border: 2px solid #ecf0f1; border-radius: 8px;"></div>
+                    <div class="border-inner" style="position: absolute; top: 55px; left: 55px; right: 55px; bottom: 55px; border: 1px solid #bdc3c7; border-radius: 6px;"></div>
+                </div>
+                
+                <!-- Certificate Content -->
+                <div class="certificate-content-new" style="position: absolute; top: 80px; left: 80px; right: 80px; bottom: 80px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <!-- Header Section -->
+                    <div class="certificate-header-new" style="text-align: center; margin-bottom: 40px;">
+                        <div class="institute-details-new">
+                            <h1 class="institute-name-new" style="font-size: 42px; font-weight: 700; color: #2c3e50; margin: 0 0 10px 0; letter-spacing: 2px;">Saha Institute of Management & Technology</h1>
+                            <div class="institute-subtitle-new" style="font-size: 18px; color: #7f8c8d; margin-bottom: 20px;">Center of Excellence in Education</div>
+                            <div class="certificate-seal" style="display: inline-block; width: 80px; height: 80px; background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <div class="seal-inner" style="color: white; font-size: 32px;">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Certificate Title -->
+                    <div class="certificate-title-new" style="text-align: center; margin: 30px 0;">
+                        <h2 class="certificate-type-new" style="font-size: 48px; font-weight: 700; color: #e74c3c; margin: 0; letter-spacing: 3px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">CERTIFICATE OF ${student.certificateType.toUpperCase()}</h2>
+                    </div>
+                    
+                    <!-- Certificate Body -->
+                    <div class="certificate-body-new" style="text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="presentation-section-new" style="margin-bottom: 25px;">
+                            <p class="presentation-text-new" style="font-size: 24px; color: #2c3e50; margin: 0;">This is to certify that</p>
+                        </div>
+                        
+                        <div class="student-section-new" style="margin: 30px 0;">
+                            <div class="student-name-container-new">
+                                <h3 class="student-name-new" style="font-size: 52px; font-weight: 700; color: #27ae60; margin: 0; text-decoration: underline; text-decoration-color: #3498db; text-underline-offset: 10px;">${student.name}</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-section-new" style="margin: 25px 0;">
+                            <p class="achievement-text-new" style="font-size: 24px; color: #2c3e50; margin: 0;">has successfully completed the comprehensive course</p>
+                        </div>
+                        
+                        <div class="course-section-new" style="margin: 30px 0;">
+                            <div class="course-name-container-new">
+                                <h4 class="course-name-new" style="font-size: 36px; font-weight: 600; color: #8e44ad; margin: 0; font-style: italic;">${student.course}</h4>
+                            </div>
+                        </div>
+                        
+                        <div class="completion-section-new" style="margin-top: 25px;">
+                            <p class="completion-text-new" style="font-size: 20px; color: #2c3e50; margin: 0; font-style: italic;">with distinction and dedication to academic excellence</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Certificate Footer -->
+                    <div class="certificate-footer-new" style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;">
+                        <div class="signature-area-new">
+                            <div class="signature-block-new" style="text-align: center;">
+                                <div class="signature-line-new" style="width: 200px; height: 2px; background: #2c3e50; margin: 0 auto 10px;"></div>
+                                <div class="signatory-info-new">
+                                    <div class="signatory-name-new" style="font-size: 18px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Aalekh</div>
+                                    <div class="signatory-title-new" style="font-size: 14px; color: #7f8c8d;">Director</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="certificate-info-new" style="text-align: right;">
+                            <div class="info-item-new" style="margin-bottom: 8px;">
+                                <span class="info-label-new" style="font-size: 14px; color: #7f8c8d;">Certificate ID: </span>
+                                <span class="info-value-new" style="font-size: 14px; color: #2c3e50; font-weight: 600;">${student.studentId || 'SIMT-' + Date.now().toString().substr(-6)}</span>
+                            </div>
+                            <div class="info-item-new">
+                                <span class="info-label-new" style="font-size: 14px; color: #7f8c8d;">Date Issued: </span>
+                                <span class="info-value-new" style="font-size: 14px; color: #2c3e50; font-weight: 600;">${currentDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Background Watermark -->
+                <div class="certificate-watermark-new" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; z-index: 0;">
+                    <div style="width: 300px; height: 300px; background: #2c3e50; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-graduation-cap" style="font-size: 150px; color: #ffffff;"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        return certificateElement;
+    }
+
+    async function createAndDownloadZip(certificates) {
+        // Create ZIP file using JSZip
+        const zip = new JSZip();
+        
+        certificates.forEach(cert => {
+            zip.file(cert.filename, cert.blob);
+        });
+        
+        // Generate ZIP file
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        
+        // Download ZIP file
+        const url = URL.createObjectURL(zipBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `SIMT_Certificates_${new Date().toISOString().split('T')[0]}.zip`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function downloadSampleExcelFile() {
+        // Create sample data
+        const sampleData = [
+            ['Student Name', 'Course Name', 'Student ID', 'Certificate Type'],
+            ['John Doe', 'Web Development', 'STU001', 'Completion'],
+            ['Jane Smith', 'Data Science', 'STU002', 'Excellence'],
+            ['Mike Johnson', 'Digital Marketing', 'STU003', 'Participation'],
+            ['Sarah Wilson', 'Graphic Design', 'STU004', 'Achievement']
+        ];
+
+        // Create workbook and worksheet
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(sampleData);
+        
+        // Set column widths
+        ws['!cols'] = [
+            { width: 20 }, // Student Name
+            { width: 25 }, // Course Name
+            { width: 15 }, // Student ID
+            { width: 18 }  // Certificate Type
+        ];
+        
+        XLSX.utils.book_append_sheet(wb, ws, 'Students');
+        
+        // Download file
+        XLSX.writeFile(wb, 'SIMT_Certificate_Sample.xlsx');
+    }
+}
+
+// Initialize bulk certificates when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add required libraries
+    loadRequiredLibraries().then(() => {
+        initializeBulkCertificates();
+    });
+});
+
+// Load required libraries
+function loadRequiredLibraries() {
+    return new Promise((resolve) => {
+        let loadedCount = 0;
+        const totalLibraries = 3;
+        
+        function checkComplete() {
+            loadedCount++;
+            if (loadedCount === totalLibraries) {
+                resolve();
+            }
+        }
+        
+        // Load XLSX library
+        if (!window.XLSX) {
+            const xlsxScript = document.createElement('script');
+            xlsxScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+            xlsxScript.onload = checkComplete;
+            document.head.appendChild(xlsxScript);
+        } else {
+            checkComplete();
+        }
+        
+        // Load JSZip library
+        if (!window.JSZip) {
+            const jszipScript = document.createElement('script');
+            jszipScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+            jszipScript.onload = checkComplete;
+            document.head.appendChild(jszipScript);
+        } else {
+            checkComplete();
+        }
+        
+        // Load html2canvas library
+        if (!window.html2canvas) {
+            const html2canvasScript = document.createElement('script');
+            html2canvasScript.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+            html2canvasScript.onload = checkComplete;
+            document.head.appendChild(html2canvasScript);
+        } else {
+            checkComplete();
+        }
+    });
+}
