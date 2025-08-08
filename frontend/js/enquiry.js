@@ -37,6 +37,9 @@ let currentFeedbackEnquiryId = null;
 // Store all enquiries for filtering
 let allEnquiries = [];
 
+// Global pagination instance for enquiries
+let enquiriesPagination = null;
+
 // Add logout button to header
 const header = document.querySelector('header');
 const logoutBtn = document.createElement('button');
@@ -196,27 +199,38 @@ async function fetchEnquiries() {
     }
 }
 
-// Display enquiries in table
-function displayEnquiries(enquiries) {
-    enquiriesTableBody.innerHTML = '';
+// Initialize enquiries pagination
+function initializeEnquiriesPagination() {
+    enquiriesPagination = new TablePagination({
+        containerId: 'enquiries-panel',
+        tableId: 'enquiriesTable',
+        data: [],
+        pageSize: 10,
+        renderRow: renderEnquiryRow,
+        searchFilter: (enquiry, searchTerm) => {
+            const term = searchTerm.toLowerCase();
+            return (enquiry.name && enquiry.name.toLowerCase().includes(term)) ||
+                   (enquiry.fatherName && enquiry.fatherName.toLowerCase().includes(term)) ||
+                   (enquiry.phoneNumber && enquiry.phoneNumber.includes(term)) ||
+                   (enquiry.course && enquiry.course.toLowerCase().includes(term)) ||
+                   (enquiry.takenBy && enquiry.takenBy.toLowerCase().includes(term));
+        }
+    });
     
-    if (enquiries.length === 0) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td colspan="12" style="text-align: center; padding: 20px; color: #666;">
-                No enquiries found matching the current filters
-            </td>
-        `;
-        enquiriesTableBody.appendChild(row);
-        return;
+    window.enquiries_panelPagination = enquiriesPagination;
+    
+    // Connect search input
+    if (searchEnquiryInput) {
+        searchEnquiryInput.addEventListener('input', (e) => {
+            enquiriesPagination.search(e.target.value);
+        });
     }
-    
-    enquiries.forEach(enquiry => {
-        const row = document.createElement('tr');
-        // We'll load the latest feedback asynchronously
-        let latestFeedbackHtml = '<span style="color:#aaa;">Loading...</span>';
-        
-        row.innerHTML = `
+}
+
+// Render a single enquiry row for pagination
+function renderEnquiryRow(enquiry, index) {
+    const row = `
+        <tr>
             <td>${enquiry.name}</td>
             <td>${enquiry.fatherName || ''}</td>
             <td>${new Date(enquiry.dateOfEnquiry).toLocaleDateString()}</td>
@@ -232,7 +246,7 @@ function displayEnquiries(enquiries) {
             </td>
             <td class="mobile-hide">
                 <div class="latest-feedback-cell" id="feedback-${enquiry.id}">
-                    ${latestFeedbackHtml}
+                    <span style="color:#aaa;">Loading...</span>
                 </div>
                 <button class="action-btn feedback-btn" data-id="${enquiry.id}" title="View/Add Feedback" style="margin-top:6px;">
                     <i class="fas fa-comments"></i>
@@ -258,34 +272,78 @@ function displayEnquiries(enquiries) {
                     <input type="checkbox" class="convert-checkbox" data-id="${enquiry.id}" title="Mark as Confirmed">
                 ` : ''}
             </td>
-        `;
-        
-        // Load latest feedback for this enquiry
-        loadLatestFeedbackForEnquiry(enquiry.id);
-        
-        // Feedback button logic
-        const feedbackBtn = row.querySelector('.feedback-btn');
-        if (feedbackBtn) {
-            feedbackBtn.addEventListener('click', () => openFeedbackModal(enquiry));
-        }
-        
-        const convertBtn = row.querySelector('.convert-btn');
-        if (convertBtn) {
-            convertBtn.addEventListener('click', () => convertToStudent(enquiry.id));
-        }
-        
-        const reverseBtn = row.querySelector('.reverse-btn');
-        if (reverseBtn) {
-            reverseBtn.addEventListener('click', () => reverseConversion(enquiry.id));
-        }
+        </tr>
+    `;
+    
+    // Load latest feedback for this enquiry after rendering
+    setTimeout(() => loadLatestFeedbackForEnquiry(enquiry.id), 100);
+    
+    return row;
+}
 
-        // Add event listener for the new checkbox
-        const convertCheckbox = row.querySelector('.convert-checkbox');
-        if (convertCheckbox) {
-            convertCheckbox.addEventListener('change', async (e) => {
+// Display enquiries in table
+function displayEnquiries(enquiries) {
+    // Store all enquiries globally
+    allEnquiries = enquiries;
+    
+    // Initialize pagination if not already done
+    if (!enquiriesPagination) {
+        initializeEnquiriesPagination();
+    }
+    
+    // Update pagination with new data
+    enquiriesPagination.updateData(enquiries);
+    
+    // Add event listeners after pagination renders
+    setTimeout(() => {
+        addEnquiryEventListeners();
+    }, 200);
+}
+
+// Add event listeners to enquiry action buttons
+function addEnquiryEventListeners() {
+    // Feedback buttons
+    document.querySelectorAll('.feedback-btn').forEach(btn => {
+        if (!btn.hasAttribute('data-listener-attached')) {
+            btn.addEventListener('click', (e) => {
+                const enquiryId = e.currentTarget.getAttribute('data-id');
+                const enquiry = allEnquiries.find(enq => enq.id == enquiryId);
+                if (enquiry) openFeedbackModal(enquiry);
+            });
+            btn.setAttribute('data-listener-attached', 'true');
+        }
+    });
+    
+    // Convert buttons
+    document.querySelectorAll('.convert-btn').forEach(btn => {
+        if (!btn.hasAttribute('data-listener-attached')) {
+            btn.addEventListener('click', (e) => {
+                const enquiryId = e.currentTarget.getAttribute('data-id');
+                convertToStudent(enquiryId);
+            });
+            btn.setAttribute('data-listener-attached', 'true');
+        }
+    });
+    
+    // Reverse buttons
+    document.querySelectorAll('.reverse-btn').forEach(btn => {
+        if (!btn.hasAttribute('data-listener-attached')) {
+            btn.addEventListener('click', (e) => {
+                const enquiryId = e.currentTarget.getAttribute('data-id');
+                reverseConversion(enquiryId);
+            });
+            btn.setAttribute('data-listener-attached', 'true');
+        }
+    });
+    
+    // Convert checkboxes
+    document.querySelectorAll('.convert-checkbox').forEach(checkbox => {
+        if (!checkbox.hasAttribute('data-listener-attached')) {
+            checkbox.addEventListener('change', async (e) => {
                 if (e.target.checked) {
+                    const enquiryId = e.target.getAttribute('data-id');
                     try {
-                        const response = await fetch(`${API_URL}/${enquiry.id}/convert`, {
+                        const response = await fetch(`${API_URL}/${enquiryId}/convert`, {
                             method: 'POST'
                         });
                         if (response.ok) {
@@ -302,11 +360,11 @@ function displayEnquiries(enquiries) {
                     }
                 }
             });
+            checkbox.setAttribute('data-listener-attached', 'true');
         }
-        
-        enquiriesTableBody.appendChild(row);
     });
 }
+
 
 async function loadLatestFeedbackForEnquiry(enquiryId) {
     try {

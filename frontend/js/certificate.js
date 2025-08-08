@@ -82,31 +82,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Global pagination instance for certificate students
+    let certificateStudentsPagination = null;
+
+    // Initialize certificate students pagination
+    function initializeCertificateStudentsPagination() {
+        certificateStudentsPagination = new TablePagination({
+            containerId: 'dashboard-panel',
+            tableId: 'studentsTable',
+            data: [],
+            pageSize: 10,
+            renderRow: (student, index) => `
+                <tr>
+                    <td>${student.name}</td>
+                    <td>${student.rollNumber || '-'}</td>
+                    <td>${student.course || '-'}</td>
+                    <td>${student.email || '-'}</td>
+                    <td>${student.phone || '-'}</td>
+                    <td>
+                        <button class="btn-icon" onclick="viewStudent('${student.id}')" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-icon" onclick="editStudent('${student.id}')" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `,
+            searchFilter: (student, searchTerm) => {
+                const term = searchTerm.toLowerCase();
+                return (student.name && student.name.toLowerCase().includes(term)) ||
+                       (student.rollNumber && student.rollNumber.toLowerCase().includes(term)) ||
+                       (student.course && student.course.toLowerCase().includes(term)) ||
+                       (student.email && student.email.toLowerCase().includes(term)) ||
+                       (student.phone && student.phone.includes(term));
+            }
+        });
+        
+        window.dashboard_panelPagination = certificateStudentsPagination;
+    }
+
     // Function to display student list
     function displayStudentList(students) {
-        const dashboardPanel = document.getElementById('dashboard-panel');
-        if (!dashboardPanel) return;
-
-        const tableBody = dashboardPanel.querySelector('tbody');
-        if (!tableBody) return;
-
-        tableBody.innerHTML = students.map(student => `
-            <tr>
-                <td>${student.name}</td>
-                <td>${student.rollNumber || '-'}</td>
-                <td>${student.course || '-'}</td>
-                <td>${student.email || '-'}</td>
-                <td>${student.phone || '-'}</td>
-                <td>
-                    <button class="btn-icon" onclick="viewStudent('${student.id}')" title="View">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn-icon" onclick="editStudent('${student.id}')" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        // Initialize pagination if not already done
+        if (!certificateStudentsPagination) {
+            initializeCertificateStudentsPagination();
+        }
+        
+        // Update pagination with new data
+        certificateStudentsPagination.updateData(students);
     }
 
     // Set default dates

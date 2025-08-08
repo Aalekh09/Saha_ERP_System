@@ -40,7 +40,7 @@ function initializeMobileMenu() {
 document.addEventListener('DOMContentLoaded', initializeMobileMenu);
 
 // File upload preview functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('tenthClassDocument');
     const filePreview = document.getElementById('filePreview');
     const fileName = document.getElementById('fileName');
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const removeFileBtn = document.getElementById('removeFile');
 
     if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
                 // Validate file size (5MB)
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (removeFileBtn) {
-        removeFileBtn.addEventListener('click', function() {
+        removeFileBtn.addEventListener('click', function () {
             fileInput.value = '';
             filePreview.style.display = 'none';
         });
@@ -278,6 +278,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // You might need to add similar logic for other tabs when they become active initially
 });
 
+// Global pagination instances
+let studentsPagination = null;
+let paymentsPagination = null;
+
+// Global data arrays
+let allPayments = [];
+let allTeachers = [];
+
+// Additional pagination instances
+let teachersPagination = null;
+
 // Fetch and display students
 async function fetchStudents() {
     console.log('Fetching students...');
@@ -288,10 +299,52 @@ async function fetchStudents() {
         console.log('Received students:', students);
         // Store fetched students in the global variable
         allStudents = students;
-        displayStudents(students);
+
+        // Initialize pagination if not already done
+        if (!studentsPagination) {
+            initializeStudentsPagination();
+        }
+
+        // Update pagination with new data
+        studentsPagination.updateData(students);
+
+        // Update stats
+        updateStats(students);
     } catch (error) {
         console.error('Error fetching students:', error);
         showNotification('Error fetching students', true);
+    }
+}
+
+// Initialize students pagination
+function initializeStudentsPagination() {
+    studentsPagination = new TablePagination({
+        containerId: 'list-panel',
+        tableId: 'studentsTable',
+        data: [],
+        pageSize: 10,
+        renderRow: renderStudentRow,
+        searchFilter: (student, searchTerm) => {
+            const term = searchTerm.toLowerCase();
+            return (
+                student.name?.toLowerCase().includes(term) ||
+                student.email?.toLowerCase().includes(term) ||
+                student.phoneNumber?.includes(term) ||
+                student.courses?.toLowerCase().includes(term) ||
+                String(student.id).includes(term)
+            );
+        }
+    });
+
+    // Make it globally accessible
+    window.list_panelPagination = studentsPagination;
+
+    // Connect search input
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            studentsPagination.search(e.target.value);
+        });
     }
 }
 
@@ -301,32 +354,15 @@ function toUpperCase(text) {
     return text.toUpperCase();
 }
 
-// Display students in table, with filtering
-function displayStudents(students) {
-    console.log('Displaying students:', students);
-    const tbody = document.querySelector('#studentsTable tbody');
-    if (!tbody) {
-        console.error('Could not find students table body element');
-        return;
-    }
-    tbody.innerHTML = '';
+// Render a single student row for pagination
+function renderStudentRow(student, index) {
+    // Calculate fee progress
+    const totalFee = parseFloat(student.totalCourseFee) || 0;
+    const paidAmount = parseFloat(student.paidAmount) || 0;
+    const progress = totalFee > 0 ? (paidAmount / totalFee) * 100 : 0;
 
-    // Sort students alphabetically by name
-    students.sort((a, b) => a.name.localeCompare(b.name));
-
-    // Update stats
-    updateStats(students);
-
-    students.forEach(student => {
-        console.log('Creating row for student:', student);
-        const row = document.createElement('tr');
-
-        // Calculate fee progress
-        const totalFee = parseFloat(student.totalCourseFee) || 0;
-        const paidAmount = parseFloat(student.paidAmount) || 0;
-        const progress = totalFee > 0 ? (paidAmount / totalFee) * 100 : 0;
-
-        row.innerHTML = `
+    const row = `
+        <tr>
             <td>
                 <div class="student-info">
                     <div class="student-avatar">
@@ -388,104 +424,127 @@ function displayStudents(students) {
                     </button>
                 </div>
             </td>
-        `;
+        </tr>
+    `;
 
-        // Delete event
-        const deleteBtn = row.querySelector('.delete-btn');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => deleteStudent(student.id));
-        }
+    // Add event listeners after the row is inserted
+    setTimeout(() => {
+        attachStudentRowEventListeners(student);
+    }, 0);
 
-        // Edit event
-        const editBtn = row.querySelector('.edit-btn');
-        if (editBtn) {
-            editBtn.addEventListener('click', () => {
-                console.log('Edit button clicked for student:', student);
-                loadEditStudent(student);
-            });
-        }
+    return row;
+}
 
-        // Payment event - Open Add New Payment modal with pre-filled details
-        const paymentBtn = row.querySelector('.payment-btn');
-        if (paymentBtn) {
-            paymentBtn.addEventListener('click', () => {
-                // Switch to payments tab first
-                document.querySelector('[data-tab="payments"]').click();
+// Attach event listeners to student row buttons
+function attachStudentRowEventListeners(student) {
+    // Delete event
+    const deleteBtn = document.querySelector(`[data-id="${student.id}"].delete-btn`);
+    if (deleteBtn && !deleteBtn.hasAttribute('data-listener-attached')) {
+        deleteBtn.addEventListener('click', () => deleteStudent(student.id));
+        deleteBtn.setAttribute('data-listener-attached', 'true');
+    }
 
-                // Wait a moment for the tab to load, then open the modal
-                setTimeout(() => {
-                    // Open the Add New Payment modal
-                    const modal = document.getElementById('addPaymentModal');
-                    if (modal) {
-                        modal.style.display = 'block';
+    // Edit event
+    const editBtn = document.querySelector(`[data-id="${student.id}"].edit-btn`);
+    if (editBtn && !editBtn.hasAttribute('data-listener-attached')) {
+        editBtn.addEventListener('click', () => {
+            console.log('Edit button clicked for student:', student);
+            loadEditStudent(student);
+        });
+        editBtn.setAttribute('data-listener-attached', 'true');
+    }
 
-                        // Pre-fill the student details
-                        const studentSelect = document.getElementById('studentSelect');
-                        if (studentSelect) {
-                            // Clear existing options
-                            studentSelect.innerHTML = '<option value="">Select Student</option>';
+    // Payment event
+    const paymentBtn = document.querySelector(`[data-id="${student.id}"].payment-btn`);
+    if (paymentBtn && !paymentBtn.hasAttribute('data-listener-attached')) {
+        paymentBtn.addEventListener('click', () => {
+            // Switch to payments tab first
+            document.querySelector('[data-tab="payments"]').click();
 
-                            // Add the selected student as an option
-                            const option = new Option(toUpperCase(student.name), student.id);
-                            option.setAttribute('data-phone', student.phoneNumber);
-                            option.selected = true;
-                            studentSelect.appendChild(option);
+            // Wait a moment for the tab to load, then open the modal
+            setTimeout(() => {
+                // Open the Add New Payment modal
+                const modal = document.getElementById('addPaymentModal');
+                if (modal) {
+                    modal.style.display = 'block';
 
-                            // Show student summary if available
-                            const studentSummary = document.getElementById('selectedStudentSummary');
-                            const summaryName = document.getElementById('summaryStudentName');
-                            const summaryId = document.getElementById('summaryStudentId');
+                    // Pre-fill the student details
+                    const studentSelect = document.getElementById('studentSelect');
+                    if (studentSelect) {
+                        // Clear existing options
+                        studentSelect.innerHTML = '<option value="">Select Student</option>';
 
-                            if (studentSummary && summaryName && summaryId) {
-                                summaryName.textContent = toUpperCase(student.name);
-                                summaryId.textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
-                                studentSummary.style.display = 'flex';
-                            }
-                        }
+                        // Add the selected student as an option
+                        const option = new Option(toUpperCase(student.name), student.id);
+                        option.setAttribute('data-phone', student.phoneNumber);
+                        option.selected = true;
+                        studentSelect.appendChild(option);
 
-                        // Pre-fill description with student's course
-                        const descriptionInput = document.getElementById('description');
-                        if (descriptionInput && student.courses) {
-                            descriptionInput.value = `Course fee payment - ${student.courses}`;
-                        }
+                        // Show student summary if available
+                        const studentSummary = document.getElementById('selectedStudentSummary');
+                        const summaryName = document.getElementById('summaryStudentName');
+                        const summaryId = document.getElementById('summaryStudentId');
 
-                        // Focus on amount input for quick entry
-                        const amountInput = document.getElementById('amount');
-                        if (amountInput) {
-                            setTimeout(() => amountInput.focus(), 300);
+                        if (studentSummary && summaryName && summaryId) {
+                            summaryName.textContent = toUpperCase(student.name);
+                            summaryId.textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+                            studentSummary.style.display = 'flex';
                         }
                     }
-                }, 100);
-            });
-        }
 
-        // Professional ID Card event
-        const professionalIdCardBtn = row.querySelector('.professional-id-card-btn');
-        if (professionalIdCardBtn) {
-            professionalIdCardBtn.addEventListener('click', () => {
-                console.log('Professional ID Card button clicked for student:', student);
-                showIdCard(student.id);
-            });
-        }
+                    // Pre-fill description with student's course
+                    const descriptionInput = document.getElementById('description');
+                    if (descriptionInput && student.courses) {
+                        descriptionInput.value = `Course fee payment - ${student.courses}`;
+                    }
+                }
+            }, 100);
+        });
+        paymentBtn.setAttribute('data-listener-attached', 'true');
+    }
 
-        // Professional View Profile button event
-        const professionalViewProfileBtn = row.querySelector('.professional-view-profile-btn');
-        if (professionalViewProfileBtn) {
-            professionalViewProfileBtn.addEventListener('click', () => {
-                showStudentProfile(student.id);
-            });
-        }
+    // Profile view event
+    const profileBtn = document.querySelector(`[data-id="${student.id}"].professional-view-profile-btn`);
+    if (profileBtn && !profileBtn.hasAttribute('data-listener-attached')) {
+        profileBtn.addEventListener('click', () => {
+            showStudentProfile(student.id);
+        });
+        profileBtn.setAttribute('data-listener-attached', 'true');
+    }
 
-        // Clickable student name event
-        const studentNameSpan = row.querySelector('.student-name.clickable');
-        if (studentNameSpan) {
-            studentNameSpan.addEventListener('click', () => {
-                showStudentProfile(student.id);
-            });
-        }
+    // ID Card event
+    const idCardBtn = document.querySelector(`[data-id="${student.id}"].professional-id-card-btn`);
+    if (idCardBtn && !idCardBtn.hasAttribute('data-listener-attached')) {
+        idCardBtn.addEventListener('click', () => {
+            generateIDCard(student.id);
+        });
+        idCardBtn.setAttribute('data-listener-attached', 'true');
+    }
 
-        tbody.appendChild(row);
-    });
+    // Student name click event
+    const studentNameSpan = document.querySelector(`[data-id="${student.id}"].student-name`);
+    if (studentNameSpan && !studentNameSpan.hasAttribute('data-listener-attached')) {
+        studentNameSpan.addEventListener('click', () => {
+            showStudentProfile(student.id);
+        });
+        studentNameSpan.setAttribute('data-listener-attached', 'true');
+    }
+}
+
+// Legacy function for backward compatibility - now just updates stats
+function displayStudents(students) {
+    console.log('Displaying students:', students);
+
+    // Sort students alphabetically by name
+    students.sort((a, b) => a.name.localeCompare(b.name));
+
+    // Update stats
+    updateStats(students);
+
+    // The actual table rendering is now handled by pagination
+    if (studentsPagination) {
+        studentsPagination.updateData(students);
+    }
 }
 
 // Update stats
@@ -591,7 +650,7 @@ studentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const tenthClassDocumentFile = document.getElementById('tenthClassDocument').files[0];
-    
+
     // Check file size (5MB limit)
     if (tenthClassDocumentFile && tenthClassDocumentFile.size > 5 * 1024 * 1024) {
         showNotification('File size must be less than 5MB', true);
@@ -644,7 +703,7 @@ studentForm.addEventListener('submit', async (e) => {
             formData.append('courseDuration', document.getElementById('courseDuration').value);
             formData.append('totalCourseFee', parseFloat(document.getElementById('totalCourseFee').value) || 0);
             formData.append('admissionDate', document.getElementById('admissionDate').value);
-            
+
             if (tenthClassDocumentFile) {
                 formData.append('tenthClassDocument', tenthClassDocumentFile);
             }
@@ -1054,74 +1113,74 @@ async function fetchPayments() {
     }
 }
 
-// Display payments in table
-function displayPayments(payments) {
-    const filterText = document.getElementById('paymentSearchInput').value.toLowerCase();
-    paymentsTableBody.innerHTML = '';
+// Initialize payments pagination
+function initializePaymentsPagination() {
+    paymentsPagination = new TablePagination({
+        containerId: 'payments-panel',
+        tableId: 'paymentsTable',
+        data: [],
+        pageSize: 10,
+        renderRow: renderPaymentRow,
+        searchFilter: (payment, searchTerm) => {
+            const term = searchTerm.toLowerCase();
+            return (payment.receiptNumber && payment.receiptNumber.toLowerCase().includes(term)) ||
+                (payment.student && payment.student.name && payment.student.name.toLowerCase().includes(term)) ||
+                (payment.amount && payment.amount.toString().includes(term)) ||
+                (payment.paymentMethod && payment.paymentMethod.toLowerCase().includes(term)) ||
+                (payment.status && payment.status.toLowerCase().includes(term));
+        }
+    });
 
-    if (!Array.isArray(payments) || payments.length === 0) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td colspan="7" style="text-align: center; padding: 20px;">
-                No payments found
-            </td>
-        `;
-        paymentsTableBody.appendChild(row);
-        return;
+    // Make it globally accessible
+    window.payments_panelPagination = paymentsPagination;
+
+    // Connect search input
+    const searchInput = document.getElementById('paymentSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            paymentsPagination.search(e.target.value);
+        });
     }
+}
 
-    const filteredPayments = payments.filter(p =>
-        (p.receiptNumber && p.receiptNumber.toLowerCase().includes(filterText)) ||
-        (p.student && p.student.name && p.student.name.toLowerCase().includes(filterText)) ||
-        (p.amount && p.amount.toString().includes(filterText)) ||
-        (p.paymentMethod && p.paymentMethod.toLowerCase().includes(filterText)) ||
-        (p.status && p.status.toLowerCase().includes(filterText))
-    );
-
-    if (filteredPayments.length === 0) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td colspan="7" style="text-align: center; padding: 20px;">
-                No payments match your search criteria
-            </td>
-        `;
-        paymentsTableBody.appendChild(row);
-        return;
-    }
-
-    filteredPayments.forEach(payment => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
+// Render a single payment row for pagination
+function renderPaymentRow(payment, index) {
+    return `
+        <tr>
             <td>${payment.receiptNumber || 'N/A'}</td>
             <td>${payment.student ? payment.student.name : 'N/A'}</td>
             <td>₹${payment.amount || 0}</td>
             <td>${payment.paymentMethod || 'N/A'}</td>
             <td>${payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : 'N/A'}</td>
-            <td>${payment.status || 'N/A'}</td>
             <td>
-                <button class="view-receipt-btn" data-id="${payment.id}">
-                    <i class="fas fa-receipt"></i> View Receipt
-                </button>
-                <button class="delete-payment-btn" data-id="${payment.id}">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
+                <span class="status-badge ${payment.status ? payment.status.toLowerCase() : 'pending'}">${payment.status || 'Pending'}</span>
             </td>
-        `;
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon" onclick="fetchPaymentAndGenerateReceipt(${payment.id})" title="Generate Receipt">
+                        <i class="fas fa-receipt"></i>
+                    </button>
+                    <button class="btn-icon btn-danger" onclick="deletePayment(${payment.id})" title="Delete Payment">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
+}
 
-        const viewReceiptBtn = row.querySelector('.view-receipt-btn');
-        viewReceiptBtn.addEventListener('click', () => {
-            fetchPaymentAndGenerateReceipt(payment.id);
-        });
+// Display payments in table
+function displayPayments(payments) {
+    // Store all payments globally
+    allPayments = payments;
 
-        const deletePaymentBtn = row.querySelector('.delete-payment-btn');
-        deletePaymentBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to delete this payment?')) {
-                deletePayment(payment.id);
-            }
-        });
+    // Initialize pagination if not already done
+    if (!paymentsPagination) {
+        initializePaymentsPagination();
+    }
 
-        paymentsTableBody.appendChild(row);
-    });
+    // Update pagination with new data
+    paymentsPagination.updateData(payments);
 }
 
 // Generate receipt for a payment
@@ -1676,6 +1735,62 @@ function hideTeacherForm() {
     document.getElementById('teacher-form').style.display = 'none';
 }
 
+// Initialize teachers pagination
+function initializeTeachersPagination() {
+    teachersPagination = new TablePagination({
+        containerId: 'teachers-panel',
+        tableId: 'teachersTable',
+        data: [],
+        pageSize: 10,
+        renderRow: renderTeacherRow,
+        searchFilter: (teacher, searchTerm) => {
+            const term = searchTerm.toLowerCase();
+            return (teacher.name && teacher.name.toLowerCase().includes(term)) ||
+                (teacher.email && teacher.email.toLowerCase().includes(term)) ||
+                (teacher.phoneNumber && teacher.phoneNumber.includes(term)) ||
+                (teacher.qualification && teacher.qualification.toLowerCase().includes(term)) ||
+                (teacher.specialization && teacher.specialization.toLowerCase().includes(term));
+        }
+    });
+
+    window.teachers_panelPagination = teachersPagination;
+}
+
+// Render a single teacher row for pagination
+function renderTeacherRow(teacher, index) {
+    return `
+        <tr>
+            <td>
+                <img src="${teacher.photoUrl || '/uploads/teachers/default-teacher.png'}" 
+                     alt="${teacher.name}" 
+                     class="teacher-photo"
+                     onerror="this.src='/uploads/teachers/default-teacher.png'">
+            </td>
+            <td>${teacher.name}</td>
+            <td>${teacher.email}</td>
+            <td>${teacher.phoneNumber}</td>
+            <td>${teacher.qualification}</td>
+            <td>${teacher.specialization}</td>
+            <td>${new Date(teacher.joiningDate).toLocaleDateString()}</td>
+            <td>₹${teacher.salary.toLocaleString()}</td>
+            <td>
+                <span class="teacher-status status-${teacher.status.toLowerCase()}">
+                    ${teacher.status}
+                </span>
+            </td>
+            <td class="teacher-role">${teacher.role}</td>
+            <td class="teacher-actions">
+                <button class="edit-teacher-btn" onclick="editTeacher(${teacher.id})">
+                    Edit
+                </button>
+                <button class="delete-teacher-btn" onclick="deleteTeacher(${teacher.id})">
+                    Delete
+                </button>
+            </td>
+        </tr>
+    `;
+}
+
 function loadTeachers() {
     fetch('http://localhost:4455/api/teachers')
         .then(response => {
@@ -1686,41 +1801,16 @@ function loadTeachers() {
             return response.json();
         })
         .then(teachers => {
-            const tableBody = document.getElementById('teachersTableBody');
-            tableBody.innerHTML = '';
-            teachers.forEach(teacher => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <img src="${teacher.photoUrl || '/uploads/teachers/default-teacher.png'}" 
-                             alt="${teacher.name}" 
-                             class="teacher-photo"
-                             onerror="this.src='/uploads/teachers/default-teacher.png'">
-                    </td>
-                    <td>${teacher.name}</td>
-                    <td>${teacher.email}</td>
-                    <td>${teacher.phoneNumber}</td>
-                    <td>${teacher.qualification}</td>
-                    <td>${teacher.specialization}</td>
-                    <td>${new Date(teacher.joiningDate).toLocaleDateString()}</td>
-                    <td>₹${teacher.salary.toLocaleString()}</td>
-                    <td>
-                        <span class="teacher-status status-${teacher.status.toLowerCase()}">
-                            ${teacher.status}
-                        </span>
-                    </td>
-                    <td class="teacher-role">${teacher.role}</td>
-                    <td class="teacher-actions">
-                        <button class="edit-teacher-btn" onclick="editTeacher(${teacher.id})">
-                            Edit
-                        </button>
-                        <button class="delete-teacher-btn" onclick="deleteTeacher(${teacher.id})">
-                            Delete
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
+            // Store all teachers globally
+            allTeachers = teachers;
+
+            // Initialize pagination if not already done
+            if (!teachersPagination) {
+                initializeTeachersPagination();
+            }
+
+            // Update pagination with new data
+            teachersPagination.updateData(teachers);
         })
         .catch(error => {
             // Suppress error notification for 404 or invalid JSON
@@ -2315,12 +2405,12 @@ async function showStudentProfile(studentId) {
                     <div class="detail-content">
                         <div class="detail-label">Documents</div>
                         <div class="detail-value">
-                            ${student.tenthClassDocument ? 
-                                `<a href="${API_BASE}/api/students/document/${student.tenthClassDocument}" target="_blank" class="document-link">
+                            ${student.tenthClassDocument ?
+            `<a href="${API_BASE}/api/students/document/${student.tenthClassDocument}" target="_blank" class="document-link">
                                     <i class="fas fa-download"></i> 10th Class Document
-                                </a>` : 
-                                '<span class="no-document">No 10th class document uploaded</span>'
-                            }
+                                </a>` :
+            '<span class="no-document">No 10th class document uploaded</span>'
+        }
                         </div>
                     </div>
                 </div>
