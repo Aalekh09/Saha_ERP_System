@@ -26,6 +26,11 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
+        
+        // Add resource handler for uploaded documents
+        String currentDir = System.getProperty("user.dir");
+        registry.addResourceHandler("/uploads/documents/**")
+                .addResourceLocations("file:" + currentDir + "/frontend/uploads/documents/");
     }
 
     @Bean

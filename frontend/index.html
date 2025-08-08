@@ -265,6 +265,30 @@
                             </div>
                         </div>
 
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-file-upload"></i>
+                                <h3>Document Upload</h3>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="tenthClassDocument">10th Class Document</label>
+                                    <input type="file" id="tenthClassDocument" accept=".pdf,.jpg,.jpeg,.png" placeholder="Upload 10th class certificate/marksheet">
+                                    <small class="form-text">Upload 10th class certificate or marksheet (PDF, JPG, PNG - Max 5MB)</small>
+                                    <div id="filePreview" class="file-preview" style="display: none;">
+                                        <div class="file-info">
+                                            <i class="fas fa-file"></i>
+                                            <span id="fileName"></span>
+                                            <span id="fileSize"></span>
+                                        </div>
+                                        <button type="button" id="removeFile" class="btn-remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                             <button type="submit" id="submitBtn" class="btn-primary">
                                 <i class="fas fa-save"></i> Add Student

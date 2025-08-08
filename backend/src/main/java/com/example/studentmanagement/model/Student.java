@@ -36,6 +36,9 @@ public class Student {
     private BigDecimal remainingAmount;
 
     private LocalDate admissionDate;
+    
+    // Document upload field
+    private String tenthClassDocument; // Path to uploaded 10th class document
 
     // Link to Enquiry if student was added from an enquiry
     private Long enquiryId;
@@ -175,5 +178,13 @@ public class Student {
 
     public void setBatches(Set<Batch> batches) {
         this.batches = batches;
+    }
+
+    public String getTenthClassDocument() {
+        return tenthClassDocument;
+    }
+
+    public void setTenthClassDocument(String tenthClassDocument) {
+        this.tenthClassDocument = tenthClassDocument;
     }
 } 

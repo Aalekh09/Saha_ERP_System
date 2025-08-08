@@ -39,6 +39,53 @@ function initializeMobileMenu() {
 // Initialize mobile menu when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeMobileMenu);
 
+// File upload preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('tenthClassDocument');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFileBtn = document.getElementById('removeFile');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification('File size must be less than 5MB', true);
+                    fileInput.value = '';
+                    filePreview.style.display = 'none';
+                    return;
+                }
+
+                // Show file preview
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                filePreview.style.display = 'flex';
+            } else {
+                filePreview.style.display = 'none';
+            }
+        });
+    }
+
+    if (removeFileBtn) {
+        removeFileBtn.addEventListener('click', function() {
+            fileInput.value = '';
+            filePreview.style.display = 'none';
+        });
+    }
+});
+
+// Helper function to format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
 // === Server Status Overlay ===
 function showServerOverlay() {
     if (document.getElementById('server-overlay')) return;
@@ -78,6 +125,31 @@ document.addEventListener('DOMContentLoaded', () => {
 if (!localStorage.getItem('isLoggedIn')) {
     window.location.replace('login.html');
     throw new Error('Not logged in');
+}
+
+// Auto-cleanup missing document references on page load (run once)
+if (!localStorage.getItem('documentsCleanedUp')) {
+    setTimeout(async () => {
+        try {
+            const response = await fetch(`${API_BASE}/api/students/cleanup-missing-documents`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                const result = await response.text();
+                console.log('Document cleanup result:', result);
+                localStorage.setItem('documentsCleanedUp', 'true');
+                // Refresh student list if cleanup found issues
+                if (result.includes('Cleaned up') && !result.includes('Cleaned up 0')) {
+                    console.log('Refreshing student list after cleanup...');
+                    if (typeof fetchStudents === 'function') {
+                        fetchStudents();
+                    }
+                }
+            }
+        } catch (error) {
+            console.log('Document cleanup error:', error);
+        }
+    }, 2000); // Run after 2 seconds to let the page load
 }
 
 // Set username from localStorage
@@ -498,6 +570,11 @@ document.getElementById('cancelEditBtn').addEventListener('click', () => {
 function resetForm() {
     document.getElementById('studentForm').reset();
     document.getElementById('studentId').value = '';
+    // Clear file input
+    const fileInput = document.getElementById('tenthClassDocument');
+    if (fileInput) {
+        fileInput.value = '';
+    }
     editingStudentId = null;
     submitBtn.textContent = 'Add Student';
     cancelEditBtn.style.display = 'none';
@@ -513,25 +590,33 @@ function resetForm() {
 studentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const studentData = {
-        name: toUpperCase(document.getElementById('name').value),
-        fatherName: toUpperCase(document.getElementById('fatherName').value),
-        motherName: toUpperCase(document.getElementById('motherName').value),
-        dob: document.getElementById('dob').value,
-        email: toUpperCase(document.getElementById('email').value),
-        phoneNumber: document.getElementById('phoneNumber').value,
-        address: toUpperCase(document.getElementById('address').value),
-        courses: toUpperCase(document.getElementById('courses').value),
-        courseDuration: document.getElementById('courseDuration').value,
-        totalCourseFee: parseFloat(document.getElementById('totalCourseFee').value) || 0,
-        paidAmount: 0,
-        remainingAmount: parseFloat(document.getElementById('totalCourseFee').value) || 0,
-        admissionDate: document.getElementById('admissionDate').value
-    };
+    const tenthClassDocumentFile = document.getElementById('tenthClassDocument').files[0];
+    
+    // Check file size (5MB limit)
+    if (tenthClassDocumentFile && tenthClassDocumentFile.size > 5 * 1024 * 1024) {
+        showNotification('File size must be less than 5MB', true);
+        return;
+    }
 
     try {
         if (editingStudentId) {
-            // Update existing student
+            // Update existing student (without file upload for now)
+            const studentData = {
+                name: toUpperCase(document.getElementById('name').value),
+                fatherName: toUpperCase(document.getElementById('fatherName').value),
+                motherName: toUpperCase(document.getElementById('motherName').value),
+                dob: document.getElementById('dob').value,
+                email: toUpperCase(document.getElementById('email').value),
+                phoneNumber: document.getElementById('phoneNumber').value,
+                address: toUpperCase(document.getElementById('address').value),
+                courses: toUpperCase(document.getElementById('courses').value),
+                courseDuration: document.getElementById('courseDuration').value,
+                totalCourseFee: parseFloat(document.getElementById('totalCourseFee').value) || 0,
+                paidAmount: 0,
+                remainingAmount: parseFloat(document.getElementById('totalCourseFee').value) || 0,
+                admissionDate: document.getElementById('admissionDate').value
+            };
+
             const response = await fetch(`${API_URL}/${editingStudentId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -546,11 +631,27 @@ studentForm.addEventListener('submit', async (e) => {
             fetchStudents();
             showNotification('Student updated successfully!');
         } else {
-            // Add new student
-            const response = await fetch(API_URL, {
+            // Add new student with file upload
+            const formData = new FormData();
+            formData.append('name', toUpperCase(document.getElementById('name').value));
+            formData.append('fatherName', toUpperCase(document.getElementById('fatherName').value));
+            formData.append('motherName', toUpperCase(document.getElementById('motherName').value));
+            formData.append('dob', document.getElementById('dob').value);
+            formData.append('email', toUpperCase(document.getElementById('email').value));
+            formData.append('phoneNumber', document.getElementById('phoneNumber').value);
+            formData.append('address', toUpperCase(document.getElementById('address').value));
+            formData.append('courses', toUpperCase(document.getElementById('courses').value));
+            formData.append('courseDuration', document.getElementById('courseDuration').value);
+            formData.append('totalCourseFee', parseFloat(document.getElementById('totalCourseFee').value) || 0);
+            formData.append('admissionDate', document.getElementById('admissionDate').value);
+            
+            if (tenthClassDocumentFile) {
+                formData.append('tenthClassDocument', tenthClassDocumentFile);
+            }
+
+            const response = await fetch(`${API_URL}/with-document`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(studentData)
+                body: formData
             });
 
             if (!response.ok) {
@@ -2205,6 +2306,21 @@ async function showStudentProfile(studentId) {
                         <div class="detail-value">Paid: ₹${formatCurrency(paidAmount)}</div>
                         <div class="detail-value ${remainingAmount > 0 ? 'pending' : 'completed'}">
                             Remaining: ₹${formatCurrency(remainingAmount)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Documents</div>
+                        <div class="detail-value">
+                            ${student.tenthClassDocument ? 
+                                `<a href="${API_BASE}/api/students/document/${student.tenthClassDocument}" target="_blank" class="document-link">
+                                    <i class="fas fa-download"></i> 10th Class Document
+                                </a>` : 
+                                '<span class="no-document">No 10th class document uploaded</span>'
+                            }
                         </div>
                     </div>
                 </div>

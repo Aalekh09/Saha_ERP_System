@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Document Upload</title>
+</head>
+<body>
+    <h1>Test Document Upload</h1>
+    
+    <h2>Test Simple Upload</h2>
+    <form id="testForm" enctype="multipart/form-data">
+        <input type="file" id="testFile" name="file" accept=".pdf,.jpg,.jpeg,.png">
+        <button type="submit">Test Upload</button>
+    </form>
+    
+    <h2>Test Student Creation with Document</h2>
+    <form id="studentForm" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Name" required><br><br>
+        <input type="text" name="fatherName" placeholder="Father Name" required><br><br>
+        <input type="text" name="motherName" placeholder="Mother Name" required><br><br>
+        <input type="date" name="dob" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="text" name="phoneNumber" placeholder="Phone" required><br><br>
+        <input type="text" name="address" placeholder="Address" required><br><br>
+        <input type="text" name="courses" placeholder="Course" required><br><br>
+        <input type="text" name="courseDuration" placeholder="Duration" required><br><br>
+        <input type="number" name="totalCourseFee" placeholder="Fee" required><br><br>
+        <input type="date" name="admissionDate" required><br><br>
+        <input type="file" name="tenthClassDocument" accept=".pdf,.jpg,.jpeg,.png"><br><br>
+        <button type="submit">Create Student</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        const API_BASE = 'http://localhost:4455';
+        
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const file = document.getElementById('testFile').files[0];
+            if (!file) {
+                alert('Please select a file');
+                return;
+            }
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/students/test-upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.text();
+                document.getElementById('result').innerHTML = '<h3>Test Upload Result:</h3><pre>' + result + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<h3>Error:</h3><pre>' + error.message + '</pre>';
+            }
+        });
+        
+        document.getElementById('studentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/students/with-document`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                document.getElementById('result').innerHTML = '<h3>Student Creation Result:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<h3>Error:</h3><pre>' + error.message + '</pre>';
+            }
+        });
+    </script>
+</body>
+</html>
