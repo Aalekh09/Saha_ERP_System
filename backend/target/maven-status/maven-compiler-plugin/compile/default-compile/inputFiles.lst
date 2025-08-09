@@ -1,4 +1,5 @@
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\controller\CertificateController.java
+E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\service\DashboardService.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\model\Attendance.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\repository\FeedbackRepository.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\service\EnquiryService.java
@@ -7,6 +8,7 @@ E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\service\StudentService.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\StudentManagementApplication.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\repository\StudentRepository.java
+E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\controller\DashboardController.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\config\WebConfig.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\school\student\model\TeacherRole.java
 E:\PROJECT\Saha\Full Stack Project Saha Institute ERP\backend\src\main\java\com\example\studentmanagement\controller\PaymentController.java

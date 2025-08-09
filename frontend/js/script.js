@@ -516,7 +516,7 @@ function attachStudentRowEventListeners(student) {
     const idCardBtn = document.querySelector(`[data-id="${student.id}"].professional-id-card-btn`);
     if (idCardBtn && !idCardBtn.hasAttribute('data-listener-attached')) {
         idCardBtn.addEventListener('click', () => {
-            generateIDCard(student.id);
+            showIdCard(student.id);
         });
         idCardBtn.setAttribute('data-listener-attached', 'true');
     }

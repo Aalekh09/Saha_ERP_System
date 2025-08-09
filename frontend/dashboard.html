@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Saha Institute of Management & Technology</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>📊 Dashboard - Saha Institute of Management & Technology</h1>
+                <p>Welcome back, <span id="username"></span> 👋</p>
+            </div>
+            <div class="header-actions">
+                <button class="refresh-btn" id="refreshDashboard" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <div class="last-updated">
+                    Last updated: <span id="lastUpdated">--</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    
+    <div class="main-container">
+        <div class="side-panel" id="sidePanel">
+            <div class="admin-section">
+                <div class="admin-header">
+                    <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
+                    <div class="admin-info">
+                        <h3>Aalekh</h3>
+                        <span class="admin-role">Administrator</span>
+                    </div>
+                </div>
+            </div>
+            <div class="student-section">
+                <h4>Navigation</h4>
+                <a href="dashboard.html" class="tab-btn active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="index.html" class="tab-btn">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+                <a href="enquiry.html" class="tab-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Enquiries</span>
+                </a>
+                <a href="pages/reports.html" class="tab-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="certificate.html" class="tab-btn">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card" id="totalStudentsCard">
+                    <div class="kpi-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="totalStudents">
+                            <span class="loading-skeleton">--</span>
+                        </div>
+                        <div class="kpi-label">👨‍🎓 Total Students</div>
+                        <div class="kpi-trend" id="studentsTrend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card" id="monthlyRevenueCard">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="monthlyRevenue">
+                            <span class="loading-skeleton">--</span>
+                        </div>
+                        <div class="kpi-label">💰 Monthly Revenue</div>
+                        <div class="kpi-trend" id="revenueTrend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card" id="pendingFeesCard">
+                    <div class="kpi-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="pendingFees">
+                            <span class="loading-skeleton">--</span>
+                        </div>
+                        <div class="kpi-label">⏰ Pending Fees</div>
+                        <div class="kpi-trend" id="pendingTrend">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card" id="newEnquiriesCard">
+                    <div class="kpi-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="newEnquiries">
+                            <span class="loading-skeleton">--</span>
+                        </div>
+                        <div class="kpi-label">📞 New Enquiries</div>
+                        <div class="kpi-trend" id="enquiriesTrend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Student Enrollment Trend</h3>
+                        <div class="chart-actions">
+                            <select id="enrollmentPeriod">
+                                <option value="7">Last 7 days</option>
+                                <option value="30" selected>Last 30 days</option>
+                                <option value="90">Last 3 months</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="enrollmentChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Revenue Overview</h3>
+                        <div class="chart-actions">
+                            <select id="revenuePeriod">
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="daily">Daily</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions & Recent Activity -->
+            <div class="dashboard-bottom">
+                <div class="quick-actions-card">
+                    <h3>🚀 Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <button class="quick-action-btn" onclick="navigateToAddStudent()">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add Student</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="navigateToEnquiry()">
+                            <i class="fas fa-phone-plus"></i>
+                            <span>New Enquiry</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="openPaymentModal()">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Record Payment</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="navigateToCertificate()">
+                            <i class="fas fa-certificate"></i>
+                            <span>Generate Certificate</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity-card">
+                    <h3>📈 Recent Activity</h3>
+                    <div class="activity-list" id="recentActivity">
+                        <div class="activity-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading recent activities...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -2,102 +2,126 @@ document.addEventListener('DOMContentLoaded', () => {
     const notification = document.getElementById('notification');
     const notificationMessage = document.getElementById('notificationMessage');
     const loginForm = document.getElementById('loginForm');
-    const studentLoginForm = document.getElementById('studentLoginForm');
-    const adminOption = document.getElementById('adminOption');
-    const studentOption = document.getElementById('studentOption');
-    const adminLoginBox = document.getElementById('adminLoginBox');
-    const studentLoginBox = document.getElementById('studentLoginBox');
-    const backBtn = document.getElementById('backBtn');
-    const studentBackBtn = document.getElementById('studentBackBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const btnLoader = document.querySelector('.btn-loader');
+    const btnText = loginBtn.querySelector('span');
+    const btnIcon = loginBtn.querySelector('i:not(.fa-spinner)');
 
     // Show notification function
     function showNotification(message, isError = false) {
         notificationMessage.textContent = message;
-        notification.className = 'notification' + (isError ? ' error' : '');
+        notification.className = 'notification' + (isError ? ' error' : ' success');
         notification.classList.add('show');
         
         setTimeout(() => {
             notification.classList.remove('show');
-        }, 3000);
+        }, 4000);
     }
 
-    // Show login box and hide options
-    function showLoginBox(box) {
-        document.querySelector('.login-options').style.display = 'none';
-        box.style.display = 'block';
+    // Show loading state
+    function showLoading() {
+        loginBtn.disabled = true;
+        btnIcon.style.display = 'none';
+        btnText.style.display = 'none';
+        btnLoader.style.display = 'inline-block';
+        loginBtn.classList.add('loading');
     }
 
-    // Show options and hide login box
-    function showOptions() {
-        document.querySelector('.login-options').style.display = 'flex';
-        adminLoginBox.style.display = 'none';
-        studentLoginBox.style.display = 'none';
-    }
-
-    // Event Listeners for login options
-    if (adminOption) {
-        adminOption.addEventListener('click', () => {
-            showLoginBox(adminLoginBox);
-        });
-    }
-
-    if (studentOption) {
-        studentOption.addEventListener('click', () => {
-            showLoginBox(studentLoginBox);
-        });
-    }
-
-    // Back button handlers
-    if (backBtn) {
-        backBtn.addEventListener('click', showOptions);
-    }
-
-    if (studentBackBtn) {
-        studentBackBtn.addEventListener('click', showOptions);
+    // Hide loading state
+    function hideLoading() {
+        loginBtn.disabled = false;
+        btnIcon.style.display = 'inline-block';
+        btnText.style.display = 'inline-block';
+        btnLoader.style.display = 'none';
+        loginBtn.classList.remove('loading');
     }
 
     // Handle admin login form submission
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Validate inputs
+            if (!username || !password) {
+                showNotification('Please enter both username and password', true);
+                return;
+            }
+
+            // Show loading state
+            showLoading();
+
+            // Simulate API call delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
             // Check credentials
             if (username === 'aalekh' && password === '0001') {
                 // Store login state
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', username);
                 localStorage.setItem('userType', 'admin');
+                localStorage.setItem('loginTime', new Date().toISOString());
                 
-                // Redirect to index.html with add panel
-                window.location.href = 'index.html?panel=add';
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                }
+
+                showNotification('Login successful! Redirecting to dashboard...', false);
+                
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
             }
             else if (username === 'saha' && password === '1994') {
                 // Store login state
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', username);
                 localStorage.setItem('userType', 'admin');
+                localStorage.setItem('loginTime', new Date().toISOString());
                 
-                // Redirect to index.html with add panel
-                window.location.href = 'index.html?panel=add';
-            }else {
-                showNotification('Invalid username or password', true);
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                }
+
+                showNotification('Login successful! Redirecting to dashboard...', false);
+                
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                hideLoading();
+                showNotification('Invalid username or password. Please try again.', true);
+                
+                // Clear password field for security
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
             }
         });
     }
 
-    // Handle student login form submission
-    if (studentLoginForm) {
-        studentLoginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const studentId = document.getElementById('studentUsername').value;
-            const password = document.getElementById('studentPassword').value;
-            
-            // For now, just show a message that student login is not implemented
-            showNotification('Student login functionality coming soon!', true);
-        });
+    // Auto-focus username field on page load
+    const usernameField = document.getElementById('username');
+    if (usernameField) {
+        usernameField.focus();
     }
+
+    // Check if user is already logged in
+    if (localStorage.getItem('isLoggedIn') === 'true' && localStorage.getItem('rememberMe') === 'true') {
+        showNotification('You are already logged in. Redirecting...', false);
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 2000);
+    }
+
+    // Add enter key support for form fields
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && (e.target.id === 'username' || e.target.id === 'password')) {
+            loginForm.dispatchEvent(new Event('submit'));
+        }
+    });
 }); 
