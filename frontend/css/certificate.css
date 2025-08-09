@@ -1081,4 +1081,797 @@ Bulk Certificate Upload Styles */
     .upload-icon {
         font-size: 36px;
     }
+}/* Profes
+sional Certificate Layout Redesign */
+.professional-certificate-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem;
+    max-width: 100%;
+}
+
+/* Certificate Details Section (Top) */
+.certificate-details-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+/* Single Certificate Card */
+.single-certificate-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.single-certificate-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Bulk Certificate Card */
+.bulk-certificate-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.bulk-certificate-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Headers */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f1f3f4;
+    position: relative;
+}
+
+.card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+}
+
+.header-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.header-content h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.header-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Professional Certificate Form */
+.professional-certificate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.professional-certificate-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.professional-certificate-form .form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.professional-certificate-form .form-group label i {
+    color: var(--primary-color);
+    width: 16px;
+}
+
+.professional-certificate-form .form-group input,
+.professional-certificate-form .form-group select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.professional-certificate-form .form-group input:focus,
+.professional-certificate-form .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-outline {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-outline:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+/* Bulk Upload Area */
+.bulk-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.upload-instructions h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-instructions h4 i {
+    color: var(--primary-color);
+}
+
+.format-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.requirement-item .column {
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 80px;
+}
+
+.requirement-item .description {
+    color: var(--text-secondary);
+}
+
+.btn-sample {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: flex-start;
+}
+
+.btn-sample:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* File Upload Section */
+.file-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.upload-dropzone {
+    border: 2px dashed #cbd5e0;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.upload-dropzone:hover {
+    border-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.upload-dropzone.dragover {
+    border-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.1);
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.upload-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.upload-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+}
+
+.file-details {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.file-details i {
+    font-size: 1.5rem;
+    color: #059669;
+}
+
+.file-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.file-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.file-size {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.btn-remove {
+    padding: 0.5rem;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-remove:hover {
+    background: #dc2626;
+    color: white;
+}
+
+.bulk-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.progress-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.progress-info span {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Certificate Preview Section (Bottom) */
+.certificate-preview-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f1f3f4;
+    position: relative;
+}
+
+.preview-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+}
+
+.preview-title h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.preview-title h3 i {
+    color: var(--primary-color);
+}
+
+.preview-title p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.preview-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-action {
+    padding: 0.75rem 1rem;
+    background: white;
+    color: var(--text-primary);
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.btn-action:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.certificate-preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 600px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.certificate-template {
+    max-width: 100%;
+    transform: scale(0.8);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.certificate-template:hover {
+    transform: scale(0.85);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .certificate-template {
+        transform: scale(0.7);
+    }
+}
+
+@media (max-width: 768px) {
+    .professional-certificate-layout {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+    
+    .certificate-details-section,
+    .certificate-preview-section {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .preview-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn-action {
+        justify-content: center;
+    }
+    
+    .certificate-template {
+        transform: scale(0.6);
+    }
+    
+    .certificate-preview-container {
+        min-height: 400px;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .certificate-template {
+        transform: scale(0.5);
+    }
+    
+    .certificate-preview-container {
+        min-height: 300px;
+    }
+    
+    .preview-title h3 {
+        font-size: 1.25rem;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .header-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}/* 
+Fullscreen Modal Styles */
+.fullscreen-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.fullscreen-overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.fullscreen-content {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.fullscreen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+
+.fullscreen-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.fullscreen-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.fullscreen-certificate {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    overflow: auto;
+}
+
+.fullscreen-certificate .certificate-container-new {
+    transform: scale(1);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Certificate Notification Styles */
+.certificate-notification {
+    font-family: 'Inter', sans-serif;
+}
+
+.certificate-notification .notification-content {
+    font-size: 0.95rem;
+}
+
+.certificate-notification .notification-content i {
+    font-size: 1.1rem;
+}
+
+/* Enhanced Button Hover Effects */
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.btn-outline:active {
+    transform: translateY(0);
+}
+
+.btn-action:active {
+    transform: translateY(0);
+}
+
+/* Loading States */
+.btn-primary.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-primary.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Enhanced Focus States */
+.professional-certificate-form .form-group input:focus,
+.professional-certificate-form .form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Improved Accessibility */
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-outline:focus,
+.btn-action:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .fullscreen-modal {
+        position: static;
+        background: white;
+    }
+    
+    .fullscreen-overlay {
+        background: white;
+        padding: 0;
+    }
+    
+    .fullscreen-header {
+        display: none;
+    }
+    
+    .fullscreen-certificate {
+        background: white;
+        padding: 0;
+    }
+    
+    .certificate-container-new {
+        transform: none !important;
+        box-shadow: none !important;
+    }
 }

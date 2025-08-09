@@ -71,7 +71,7 @@
                     <i class="fas fa-question-circle"></i>
                     <span>Enquiries</span>
                 </a>
-                <a href="#" class="tab-btn" id="certificatesMenuBtn">
+                <a href="certificate.html" class="tab-btn" id="certificatesMenuBtn">
                     <i class="fas fa-certificate"></i>
                     <span>Certificates</span>
                     <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
@@ -307,15 +307,24 @@
         const menuBtn = document.getElementById('certificatesMenuBtn');
         const subMenu = document.getElementById('certificatesSubMenu');
         if(menuBtn && subMenu) {
-            menuBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const isVisible = subMenu.style.display === 'block';
-                subMenu.style.display = isVisible ? 'none' : 'block';
-                this.querySelector('.fa-chevron-down').style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+            // Show submenu on hover instead of click
+            menuBtn.addEventListener('mouseenter', function() {
+                subMenu.style.display = 'block';
+                this.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
             });
-            // Ensure chevron is pointing correctly on page load
+            
+            // Hide submenu when mouse leaves the entire certificates section
+            const certificatesSection = menuBtn.parentElement;
+            certificatesSection.addEventListener('mouseleave', function() {
+                // Always keep submenu visible on certificate pages
+                // subMenu.style.display = 'none';
+                // menuBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+            });
+            
+            // Ensure chevron is pointing correctly on page load and submenu is visible
             menuBtn.querySelector('.fa-chevron-down').style.transition = 'transform 0.3s';
             menuBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+            subMenu.style.display = 'block';
         }
     });
     </script>

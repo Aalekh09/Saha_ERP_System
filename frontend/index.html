@@ -67,7 +67,7 @@
                     <i class="fas fa-question-circle"></i>
                     <span>Enquiries</span>
                 </a>
-                <a href="#" class="tab-btn" id="certificatesMenuBtn">
+                <a href="certificate.html" class="tab-btn" id="certificatesMenuBtn">
                     <i class="fas fa-certificate"></i>
                     <span>Certificates</span>
                     <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
@@ -663,12 +663,22 @@
     const certMenuBtn = document.getElementById('certificatesMenuBtn');
     const certSubMenu = document.getElementById('certificatesSubMenu');
     if (certMenuBtn && certSubMenu) {
-        certMenuBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            certSubMenu.style.display = certSubMenu.style.display === 'flex' ? 'none' : 'flex';
+        // Show submenu on hover instead of click
+        certMenuBtn.addEventListener('mouseenter', function() {
+            certSubMenu.style.display = 'flex';
         });
-        // Optionally, open submenu if on certificate or hardcopy certificate page
-        if (window.location.pathname.includes('certificate.html')) {
+        
+        // Hide submenu when mouse leaves the entire certificates section
+        const certificatesSection = certMenuBtn.parentElement;
+        certificatesSection.addEventListener('mouseleave', function() {
+            // Only hide if we're not on a certificate page
+            if (!window.location.pathname.includes('certificate')) {
+                certSubMenu.style.display = 'none';
+            }
+        });
+        
+        // Always show submenu if on certificate or hardcopy certificate page
+        if (window.location.pathname.includes('certificate')) {
             certSubMenu.style.display = 'flex';
         }
     }

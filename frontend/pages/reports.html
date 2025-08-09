@@ -68,7 +68,7 @@
                     <i class="fas fa-question-circle"></i>
                     <span>Enquiries</span>
                 </a>
-                <a href="#" class="tab-btn" id="certificatesMenuBtn">
+                <a href="../certificate.html" class="tab-btn" id="certificatesMenuBtn">
                     <i class="fas fa-certificate"></i>
                     <span>Certificates</span>
                     <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
@@ -208,7 +208,29 @@
     <script src="../js/pagination.js"></script>
     <script src="../js/pages/reports.js"></script>
     <script>
-
-</script>
+        // Certificates submenu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.getElementById('certificatesMenuBtn');
+            const subMenu = document.getElementById('certificatesSubMenu');
+            
+            if(menuBtn && subMenu) {
+                // Show submenu on hover instead of click
+                menuBtn.addEventListener('mouseenter', function() {
+                    subMenu.style.display = 'flex';
+                    this.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+                });
+                
+                // Hide submenu when mouse leaves the entire certificates section
+                const certificatesSection = menuBtn.parentElement;
+                certificatesSection.addEventListener('mouseleave', function() {
+                    subMenu.style.display = 'none';
+                    menuBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+                });
+                
+                // Ensure chevron has transition
+                menuBtn.querySelector('.fa-chevron-down').style.transition = 'transform 0.3s';
+            }
+        });
+    </script>
 </body>
 </html> 
