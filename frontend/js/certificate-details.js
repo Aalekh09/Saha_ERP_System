@@ -35,7 +35,7 @@ async function loadCertificateDetails(certificateId) {
         
         console.log('Loading certificate details for ID:', certificateId);
         
-        const response = await fetch(`http://localhost:4455/api/certificates/${certificateId}`);
+        const response = await fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/certificates/${certificateId}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

@@ -6,7 +6,7 @@
 class App {
     constructor() {
         this.config = {
-            API_BASE_URL: window.location.protocol + '//' + "localhost:4455",
+            API_BASE_URL: window.location.protocol + '//' + window.location.hostname + ':4455',
             VERSION: '2.0',
             DEBUG: false
         };

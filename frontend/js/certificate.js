@@ -13,7 +13,7 @@ if (username) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize variables
     const certificateForm = document.getElementById('certificateForm');
     const studentName = document.getElementById('studentName');
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Live Preview Function
     function updateLivePreview() {
         console.log('updateLivePreview called');
-        
+
         const studentNameValue = studentName ? studentName.value.trim() : '';
         const courseNameValue = courseName ? courseName.value.trim() : '';
         const certificateTypeValue = certificateType ? certificateType.value : 'Completion';
@@ -200,12 +200,12 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showNotification('Generating certificate...', 'info');
             updateLivePreview();
-            
+
             // Wait a moment for the preview to update
             setTimeout(async () => {
                 await downloadCertificate();
             }, 500);
-            
+
         } catch (error) {
             console.error('Error generating certificate:', error);
             showNotification('Error generating certificate', 'error');
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Download Certificate Function
     async function downloadCertificate() {
         const certificateElement = document.querySelector('.certificate-template');
-        
+
         if (!certificateElement) {
             console.error('Certificate element not found');
             showNotification('Certificate template not found', 'error');
@@ -239,10 +239,10 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.style.backgroundColor = '#ffffff';
         wrapper.style.display = 'inline-block';
         wrapper.style.boxSizing = 'border-box';
-        
+
         // Clone the certificate element
         const clonedCert = certificateElement.cloneNode(true);
-        
+
         // Style the cloned certificate
         clonedCert.style.width = '1000px';
         clonedCert.style.height = 'auto';
@@ -250,15 +250,15 @@ document.addEventListener('DOMContentLoaded', function() {
         clonedCert.style.margin = '0';
         clonedCert.style.display = 'block';
         clonedCert.style.boxSizing = 'border-box';
-        
+
         wrapper.appendChild(clonedCert);
-        
+
         // Temporarily add wrapper to body (hidden)
         wrapper.style.position = 'absolute';
         wrapper.style.left = '-9999px';
         wrapper.style.top = '-9999px';
         document.body.appendChild(wrapper);
-        
+
         try {
             const canvas = await html2canvas(wrapper, {
                 scale: 3,
@@ -275,20 +275,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Convert canvas to JPG
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            
+
             // Create download link
             const link = document.createElement('a');
             const studentNameForFile = studentName ? studentName.value.replace(/\s+/g, '_') : 'Student';
             link.download = `Certificate_${studentNameForFile}_FullHD.jpg`;
             link.href = imgData;
-            
+
             // Trigger download
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showNotification('Certificate downloaded successfully!', 'success');
-            
+
         } finally {
             // Clean up
             document.body.removeChild(wrapper);
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const printWindow = window.open('', '_blank');
-            
+
             printWindow.document.write(`
                 <html>
                     <head>
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove existing notifications
         const existingNotifications = document.querySelectorAll('.certificate-notification');
         existingNotifications.forEach(notif => notif.remove());
-        
+
         const notification = document.createElement('div');
         notification.className = `certificate-notification ${type}`;
         notification.innerHTML = `
@@ -381,16 +381,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span>${message}</span>
             </div>
         `;
-        
+
         // Add styles
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
             padding: 16px 24px;
-            background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 
-                         type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
-                         'linear-gradient(135deg, #3b82f6, #2563eb)'};
+            background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' :
+                type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+                    'linear-gradient(135deg, #3b82f6, #2563eb)'};
             color: white;
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -400,21 +400,21 @@ document.addEventListener('DOMContentLoaded', function() {
             transition: transform 0.3s ease;
             backdrop-filter: blur(10px);
         `;
-        
+
         const content = notification.querySelector('.notification-content');
         content.style.cssText = `
             display: flex;
             align-items: center;
             gap: 12px;
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Trigger animation
         setTimeout(() => {
             notification.style.transform = 'translateX(0)';
         }, 100);
-        
+
         // Remove notification after 4 seconds
         setTimeout(() => {
             notification.style.transform = 'translateX(120%)';
@@ -451,16 +451,16 @@ function initializeBulkCertificates() {
     // File upload handling
     if (uploadDropzone && bulkExcelFile) {
         uploadDropzone.addEventListener('click', () => bulkExcelFile.click());
-        
+
         uploadDropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadDropzone.classList.add('dragover');
         });
-        
+
         uploadDropzone.addEventListener('dragleave', () => {
             uploadDropzone.classList.remove('dragover');
         });
-        
+
         uploadDropzone.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadDropzone.classList.remove('dragover');
@@ -499,7 +499,7 @@ function initializeBulkCertificates() {
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'application/vnd.ms-excel'
         ];
-        
+
         if (!allowedTypes.includes(file.type)) {
             alert('Please upload a valid Excel file (.xlsx or .xls)');
             return;
@@ -514,7 +514,7 @@ function initializeBulkCertificates() {
         uploadedFile = file;
         fileName.textContent = file.name;
         fileSize.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
-        
+
         uploadDropzone.style.display = 'none';
         fileInfo.style.display = 'flex';
         processBulkBtn.disabled = false;
@@ -531,18 +531,18 @@ function initializeBulkCertificates() {
 
         // Create CSV content
         const csvContent = sampleData.map(row => row.join(',')).join('\n');
-        
+
         // Create download link
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = 'Certificate_Sample_Template.csv';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         window.URL.revokeObjectURL(url);
     }
 
@@ -553,7 +553,7 @@ function initializeBulkCertificates() {
 // ebug function to check if all elements exist
 function debugCertificateElements() {
     console.log('=== Certificate Elements Debug ===');
-    
+
     const elements = {
         'studentName': document.getElementById('studentName'),
         'courseName': document.getElementById('courseName'),
@@ -565,15 +565,15 @@ function debugCertificateElements() {
         'certificateStudentId': document.getElementById('certificateStudentId'),
         'issueDateNew': document.getElementById('issueDateNew')
     };
-    
+
     Object.entries(elements).forEach(([name, element]) => {
         console.log(`${name}:`, element ? '✓ Found' : '✗ Missing');
     });
-    
+
     console.log('=== End Debug ===');
 }
 
 // Call debug function when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     setTimeout(debugCertificateElements, 1000);
 });

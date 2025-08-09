@@ -109,7 +109,7 @@ function hideServerOverlay() {
 async function checkServer() {
     try {
         // Try a lightweight API endpoint
-        const res = await fetch('http://localhost:4455/api/reports/monthly-student-admissions', { method: 'GET' });
+        const res = await fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/reports/monthly-student-admissions`, { method: 'GET' });
         if (!res.ok) throw new Error('Not OK');
         hideServerOverlay();
     } catch (e) {
@@ -159,7 +159,7 @@ if (username) {
 }
 
 // Dynamic API base URL for cross-device compatibility
-const API_BASE = window.location.protocol + '//' + "localhost:4455";
+const API_BASE = window.location.protocol + '//' + window.location.hostname + ':4455';
 // Replace all API URLs
 const API_URL = API_BASE + '/api/students';
 const PAYMENT_API_URL = API_BASE + '/api/payments';
@@ -1792,7 +1792,7 @@ function renderTeacherRow(teacher, index) {
 }
 
 function loadTeachers() {
-    fetch('http://localhost:4455/api/teachers')
+    fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/teachers`)
         .then(response => {
             if (!response.ok) {
                 // If 404, suppress error notification
@@ -1822,7 +1822,7 @@ function loadTeachers() {
 }
 
 function editTeacher(id) {
-    fetch(`http://localhost:4455/api/teachers/${id}`)
+    fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/teachers/${id}`)
         .then(response => response.json())
         .then(teacher => {
             document.getElementById('teacherId').value = teacher.id;
@@ -1847,7 +1847,7 @@ function editTeacher(id) {
 
 function deleteTeacher(id) {
     if (confirm('Are you sure you want to delete this teacher?')) {
-        fetch(`http://localhost:4455/api/teachers/${id}`, {
+        fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/teachers/${id}`, {
             method: 'DELETE'
         })
             .then(response => {
@@ -1895,7 +1895,7 @@ if (teacherFormEl) {
             formData.append('photo', photoFile);
         }
 
-        const url = teacherId ? `http://localhost:4455/api/teachers/${teacherId}` : `http://localhost:4455/api/teachers`;
+        const url = teacherId ? `${window.location.protocol}//${window.location.hostname}:4455/api/teachers/${teacherId}` : `${window.location.protocol}//${window.location.hostname}:4455/api/teachers`;
         const method = teacherId ? 'PUT' : 'POST';
 
         fetch(url, {
@@ -2047,7 +2047,7 @@ async function loadReports() {
         console.log('Loading reports...');
 
         // Fetch enquiries
-        const enquiriesResponse = await fetch('http://localhost:4455/api/enquiries');
+        const enquiriesResponse = await fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/enquiries`);
         if (!enquiriesResponse.ok) {
             throw new Error(`Failed to fetch enquiries: ${enquiriesResponse.status}`);
         }

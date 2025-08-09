@@ -11,7 +11,7 @@ if (username) {
 }
 
 // Dynamic API base URL for cross-device compatibility
-const API_BASE = window.location.protocol + '//' + "localhost:4455";
+const API_BASE = window.location.protocol + '//' + window.location.hostname + ':4455';
 const API_URL = API_BASE + '/api/enquiries';
 
 const enquiryForm = document.getElementById('enquiryForm');
@@ -736,8 +736,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize character counter when DOM is loaded
     initializeCharacterCounter();
-});/
-    / Initialize feedback modal scrolling functionality
+});
+    // / Initialize feedback modal scrolling functionality
 function initializeFeedbackModalScrolling() {
     const modalBody = document.querySelector('.professional-feedback-body');
     if (!modalBody) return;

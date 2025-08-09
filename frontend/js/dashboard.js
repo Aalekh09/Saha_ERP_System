@@ -12,7 +12,7 @@ if (username) {
 }
 
 // Dynamic API base URL
-const API_BASE = window.location.protocol + '//' + "localhost:4455";
+const API_BASE = window.location.protocol + '//' + window.location.hostname + ':4455';
 
 // Dashboard state
 let dashboardData = {
