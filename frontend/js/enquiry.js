@@ -57,26 +57,26 @@ function initializeMobileMenu() {
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
     const sidePanel = document.querySelector('.side-panel');
-    
+
     if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
         // Toggle mobile menu
-        mobileMenuToggle.addEventListener('click', function() {
+        mobileMenuToggle.addEventListener('click', function () {
             sidePanel.classList.toggle('mobile-active');
             mobileMenuOverlay.classList.toggle('active');
             document.body.classList.toggle('mobile-menu-open');
         });
-        
+
         // Close menu when overlay is clicked
-        mobileMenuOverlay.addEventListener('click', function() {
+        mobileMenuOverlay.addEventListener('click', function () {
             sidePanel.classList.remove('mobile-active');
             mobileMenuOverlay.classList.remove('active');
             document.body.classList.remove('mobile-menu-open');
         });
-        
+
         // Close menu when a navigation item is clicked (on mobile)
         const tabButtons = sidePanel.querySelectorAll('.tab-btn');
         tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 if (window.innerWidth <= 768) {
                     sidePanel.classList.remove('mobile-active');
                     mobileMenuOverlay.classList.remove('active');
@@ -95,7 +95,7 @@ function showNotification(message, isError = false) {
     notificationMessage.textContent = message;
     notification.className = 'notification' + (isError ? ' error' : '');
     notification.classList.add('show');
-    
+
     setTimeout(() => {
         notification.classList.remove('show');
     }, 3000);
@@ -105,10 +105,10 @@ function showNotification(message, isError = false) {
 tabButtons.forEach(button => {
     button.addEventListener('click', () => {
         const tabId = button.getAttribute('data-tab');
-        
+
         tabButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
-        
+
         tabContents.forEach(content => {
             content.classList.remove('active');
             if (content.id === `${tabId}-panel`) {
@@ -141,9 +141,9 @@ if (clearDateFilter) {
 function applyFilters() {
     const selectedDate = dateFilter.value;
     const searchTerm = searchEnquiryInput.value.toLowerCase();
-    
+
     let filteredEnquiries = allEnquiries;
-    
+
     // Apply date filter
     if (selectedDate) {
         filteredEnquiries = filteredEnquiries.filter(enquiry => {
@@ -151,7 +151,7 @@ function applyFilters() {
             return enquiryDate === selectedDate;
         });
     }
-    
+
     // Apply search filter
     if (searchTerm) {
         filteredEnquiries = filteredEnquiries.filter(enquiry => {
@@ -159,14 +159,14 @@ function applyFilters() {
             const fatherName = (enquiry.fatherName || '').toLowerCase();
             const phone = enquiry.phoneNumber.toLowerCase();
             const remarks = (enquiry.remarks || '').toLowerCase();
-            
-            return name.includes(searchTerm) || 
-                   fatherName.includes(searchTerm) || 
-                   phone.includes(searchTerm) || 
-                   remarks.includes(searchTerm);
+
+            return name.includes(searchTerm) ||
+                fatherName.includes(searchTerm) ||
+                phone.includes(searchTerm) ||
+                remarks.includes(searchTerm);
         });
     }
-    
+
     displayEnquiries(filteredEnquiries);
     updateStats(allEnquiries.length, filteredEnquiries.length);
 }
@@ -210,15 +210,15 @@ function initializeEnquiriesPagination() {
         searchFilter: (enquiry, searchTerm) => {
             const term = searchTerm.toLowerCase();
             return (enquiry.name && enquiry.name.toLowerCase().includes(term)) ||
-                   (enquiry.fatherName && enquiry.fatherName.toLowerCase().includes(term)) ||
-                   (enquiry.phoneNumber && enquiry.phoneNumber.includes(term)) ||
-                   (enquiry.course && enquiry.course.toLowerCase().includes(term)) ||
-                   (enquiry.takenBy && enquiry.takenBy.toLowerCase().includes(term));
+                (enquiry.fatherName && enquiry.fatherName.toLowerCase().includes(term)) ||
+                (enquiry.phoneNumber && enquiry.phoneNumber.includes(term)) ||
+                (enquiry.course && enquiry.course.toLowerCase().includes(term)) ||
+                (enquiry.takenBy && enquiry.takenBy.toLowerCase().includes(term));
         }
     });
-    
+
     window.enquiries_panelPagination = enquiriesPagination;
-    
+
     // Connect search input
     if (searchEnquiryInput) {
         searchEnquiryInput.addEventListener('input', (e) => {
@@ -274,10 +274,10 @@ function renderEnquiryRow(enquiry, index) {
             </td>
         </tr>
     `;
-    
+
     // Load latest feedback for this enquiry after rendering
     setTimeout(() => loadLatestFeedbackForEnquiry(enquiry.id), 100);
-    
+
     return row;
 }
 
@@ -285,15 +285,15 @@ function renderEnquiryRow(enquiry, index) {
 function displayEnquiries(enquiries) {
     // Store all enquiries globally
     allEnquiries = enquiries;
-    
+
     // Initialize pagination if not already done
     if (!enquiriesPagination) {
         initializeEnquiriesPagination();
     }
-    
+
     // Update pagination with new data
     enquiriesPagination.updateData(enquiries);
-    
+
     // Add event listeners after pagination renders
     setTimeout(() => {
         addEnquiryEventListeners();
@@ -313,7 +313,7 @@ function addEnquiryEventListeners() {
             btn.setAttribute('data-listener-attached', 'true');
         }
     });
-    
+
     // Convert buttons
     document.querySelectorAll('.convert-btn').forEach(btn => {
         if (!btn.hasAttribute('data-listener-attached')) {
@@ -324,7 +324,7 @@ function addEnquiryEventListeners() {
             btn.setAttribute('data-listener-attached', 'true');
         }
     });
-    
+
     // Reverse buttons
     document.querySelectorAll('.reverse-btn').forEach(btn => {
         if (!btn.hasAttribute('data-listener-attached')) {
@@ -335,7 +335,7 @@ function addEnquiryEventListeners() {
             btn.setAttribute('data-listener-attached', 'true');
         }
     });
-    
+
     // Convert checkboxes
     document.querySelectorAll('.convert-checkbox').forEach(checkbox => {
         if (!checkbox.hasAttribute('data-listener-attached')) {
@@ -396,7 +396,7 @@ async function loadLatestFeedbackForEnquiry(enquiryId) {
 // Handle form submission
 enquiryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     try {
         const formData = {
             name: document.getElementById('name').value,
@@ -501,7 +501,7 @@ function openFeedbackModal(enquiry) {
     // Default date/time to now
     const now = new Date();
     feedbackDate.value = now.toISOString().split('T')[0];
-    feedbackTime.value = now.toTimeString().slice(0,5);
+    feedbackTime.value = now.toTimeString().slice(0, 5);
 }
 
 async function loadFeedbackFromAPI(enquiryId) {
@@ -539,7 +539,7 @@ if (closeFeedbackModal) {
     };
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target === feedbackModal) {
         feedbackModal.style.display = 'none';
         currentFeedbackEnquiryId = null;
@@ -547,7 +547,7 @@ window.onclick = function(event) {
 };
 
 if (feedbackForm) {
-    feedbackForm.onsubmit = async function(e) {
+    feedbackForm.onsubmit = async function (e) {
         e.preventDefault();
         if (!currentFeedbackEnquiryId) return;
         const entry = {
@@ -571,7 +571,7 @@ if (feedbackForm) {
                 // Set date/time to now for next entry
                 const now = new Date();
                 feedbackDate.value = now.toISOString().split('T')[0];
-                feedbackTime.value = now.toTimeString().slice(0,5);
+                feedbackTime.value = now.toTimeString().slice(0, 5);
             } else {
                 showNotification('Failed to add feedback', true);
             }
@@ -586,12 +586,12 @@ if (feedbackForm) {
 function initializeCharacterCounter() {
     const feedbackTextarea = document.getElementById('feedbackText');
     const charCountElement = document.querySelector('.char-count');
-    
+
     if (feedbackTextarea && charCountElement) {
-        feedbackTextarea.addEventListener('input', function() {
+        feedbackTextarea.addEventListener('input', function () {
             const currentLength = this.value.length;
             charCountElement.textContent = `${currentLength} characters`;
-            
+
             // Change color based on length
             if (currentLength < 50) {
                 charCountElement.style.color = '#ef4444'; // Red for too short
@@ -607,25 +607,28 @@ function initializeCharacterCounter() {
 // Enhanced feedback modal opening with animations
 function openFeedbackModal(enquiry) {
     currentFeedbackEnquiryId = enquiry.id;
-    
+
     // Load feedback from backend API
     loadFeedbackFromAPI(enquiry.id);
-    
+
     // Show modal with animation
     feedbackModal.style.display = 'block';
     setTimeout(() => {
         feedbackModal.classList.add('show');
     }, 10);
-    
+
     // Reset form and initialize character counter
     feedbackForm.reset();
     initializeCharacterCounter();
-    
+
     // Default date/time to now
     const now = new Date();
     feedbackDate.value = now.toISOString().split('T')[0];
-    feedbackTime.value = now.toTimeString().slice(0,5);
-    
+    feedbackTime.value = now.toTimeString().slice(0, 5);
+
+    // Initialize scroll handling for the modal body
+    initializeFeedbackModalScrolling();
+
     // Focus on the feedback textarea
     setTimeout(() => {
         const feedbackTextarea = document.getElementById('feedbackText');
@@ -649,7 +652,7 @@ if (closeFeedbackModal) {
     closeFeedbackModal.onclick = closeFeedbackModalWithAnimation;
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target === feedbackModal) {
         closeFeedbackModalWithAnimation();
     }
@@ -657,48 +660,48 @@ window.onclick = function(event) {
 
 // Enhanced form submission with better UX
 if (feedbackForm) {
-    feedbackForm.onsubmit = async function(e) {
+    feedbackForm.onsubmit = async function (e) {
         e.preventDefault();
         if (!currentFeedbackEnquiryId) return;
-        
+
         const submitButton = this.querySelector('.btn-primary');
         const originalText = submitButton.innerHTML;
-        
+
         // Show loading state
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Feedback...';
         submitButton.disabled = true;
-        
+
         const entry = {
             date: feedbackDate.value,
             time: feedbackTime.value,
             feedback: feedbackText.value
         };
-        
+
         try {
             const response = await fetch(`${API_URL}/${currentFeedbackEnquiryId}/feedback`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(entry)
             });
-            
+
             if (response.ok) {
                 showNotification('Feedback added successfully!');
-                
+
                 // Reload feedback from API
                 await loadFeedbackFromAPI(currentFeedbackEnquiryId);
-                
+
                 // Refresh the enquiry list to show latest feedback
                 fetchEnquiries();
-                
+
                 // Reset form
                 feedbackForm.reset();
                 initializeCharacterCounter();
-                
+
                 // Set date/time to now for next entry
                 const now = new Date();
                 feedbackDate.value = now.toISOString().split('T')[0];
-                feedbackTime.value = now.toTimeString().slice(0,5);
-                
+                feedbackTime.value = now.toTimeString().slice(0, 5);
+
                 // Focus back on textarea for quick next entry
                 setTimeout(() => {
                     const feedbackTextarea = document.getElementById('feedbackText');
@@ -730,7 +733,80 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date().toISOString().split('T')[0];
         enquiryDateField.value = today;
     }
-    
+
     // Initialize character counter when DOM is loaded
     initializeCharacterCounter();
+});/
+    / Initialize feedback modal scrolling functionality
+function initializeFeedbackModalScrolling() {
+    const modalBody = document.querySelector('.professional-feedback-body');
+    if (!modalBody) return;
+
+    // Function to check scroll position and update indicators
+    function updateScrollIndicators() {
+        const scrollTop = modalBody.scrollTop;
+        const scrollHeight = modalBody.scrollHeight;
+        const clientHeight = modalBody.clientHeight;
+
+        // Add scrolled class if scrolled down
+        if (scrollTop > 10) {
+            modalBody.classList.add('scrolled');
+        } else {
+            modalBody.classList.remove('scrolled');
+        }
+
+        // Add has-more class if there's more content below
+        if (scrollTop + clientHeight < scrollHeight - 10) {
+            modalBody.classList.add('has-more');
+        } else {
+            modalBody.classList.remove('has-more');
+        }
+    }
+
+    // Add scroll event listener
+    modalBody.addEventListener('scroll', updateScrollIndicators);
+
+    // Initial check
+    setTimeout(updateScrollIndicators, 100);
+
+    // Smooth scroll to top when modal opens
+    modalBody.scrollTop = 0;
+
+    // Add touch scroll support for mobile
+    modalBody.style.webkitOverflowScrolling = 'touch';
+    modalBody.style.overscrollBehavior = 'contain';
+}
+
+// Enhanced modal backdrop click handling
+window.onclick = function (event) {
+    if (event.target === feedbackModal) {
+        closeFeedbackModalWithAnimation();
+    }
+};
+
+// Prevent modal from closing when clicking inside the modal content
+document.addEventListener('click', function (event) {
+    const modalContent = document.querySelector('.professional-feedback-modal');
+    if (modalContent && modalContent.contains(event.target)) {
+        event.stopPropagation();
+    }
 });
+
+// Add keyboard navigation for modal
+document.addEventListener('keydown', function (event) {
+    if (feedbackModal.style.display === 'block') {
+        if (event.key === 'Escape') {
+            closeFeedbackModalWithAnimation();
+        }
+    }
+});
+
+// Improve mobile scrolling experience
+if ('ontouchstart' in window) {
+    // Add momentum scrolling for iOS
+    const modalBody = document.querySelector('.professional-feedback-body');
+    if (modalBody) {
+        modalBody.style.webkitOverflowScrolling = 'touch';
+        modalBody.style.overscrollBehavior = 'contain';
+    }
+}

@@ -27,6 +27,18 @@ class TablePagination {
         const container = document.getElementById(this.containerId);
         if (!container) return;
         
+        // Wrap existing table in table-wrapper if not already wrapped
+        const tableContainer = container.querySelector('.table-container');
+        if (tableContainer) {
+            const table = tableContainer.querySelector('table');
+            if (table && !table.parentElement.classList.contains('table-wrapper')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-wrapper';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            }
+        }
+        
         // Create pagination container if it doesn't exist
         let paginationContainer = container.querySelector('.pagination-container');
         if (!paginationContainer) {
@@ -52,7 +64,13 @@ class TablePagination {
                     </div>
                 </div>
             `;
-            container.appendChild(paginationContainer);
+            
+            // Append to table container if it exists, otherwise to main container
+            if (tableContainer) {
+                tableContainer.appendChild(paginationContainer);
+            } else {
+                container.appendChild(paginationContainer);
+            }
             
             // Add event listener for page size change
             const pageSizeSelect = document.getElementById(`${this.containerId}-pageSize`);

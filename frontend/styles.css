@@ -3942,7 +3942,8 @@ a Professional Feedback Modal Styles */
 .professional-feedback-modal {
     max-width: 900px;
     width: 95%;
-    margin: 1% auto;
+    max-height: 90vh;
+    margin: 2% auto;
     background: var(--surface-color);
     border-radius: 24px;
     box-shadow:
@@ -3954,6 +3955,8 @@ a Professional Feedback Modal Styles */
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .professional-feedback-modal::before {
@@ -4079,6 +4082,30 @@ a Professional Feedback Modal Styles */
     display: flex;
     flex-direction: column;
     gap: 32px;
+    max-height: 70vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Professional Scrollbar for Feedback Modal */
+.professional-feedback-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.professional-feedback-body::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 4px;
+}
+
+.professional-feedback-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.professional-feedback-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #f093fb);
+    width: 10px;
 }
 
 /* Feedback History Section */
@@ -4451,7 +4478,6 @@ a Professional Feedback Modal Styles */
         width: 98%;
         margin: 2% auto;
         max-height: 95vh;
-        overflow-y: auto;
         border-radius: 16px;
     }
 
@@ -4478,6 +4504,8 @@ a Professional Feedback Modal Styles */
     .professional-feedback-body {
         padding: 24px 20px;
         gap: 24px;
+        max-height: calc(95vh - 140px);
+        overflow-y: auto;
     }
 
     .form-grid-feedback {
@@ -4513,6 +4541,8 @@ a Professional Feedback Modal Styles */
 
     .professional-feedback-body {
         padding: 20px 16px;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
     }
 
     .feedback-entry {
@@ -7342,5 +7372,98 @@ ssional Admin Login Page Styles */
     
     .professional-login-btn {
         padding: 0.875rem;
+    }
+}/* En
+hanced Feedback Modal Scrolling */
+.professional-feedback-modal {
+    -webkit-overflow-scrolling: touch;
+}
+
+.professional-feedback-body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Scroll indicators for feedback modal */
+.professional-feedback-body::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.professional-feedback-body.scrolled::before {
+    opacity: 1;
+}
+
+.professional-feedback-body::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.professional-feedback-body.has-more::after {
+    opacity: 1;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 480px) {
+    .professional-feedback-modal {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .professional-feedback-header {
+        flex-shrink: 0;
+    }
+    
+    .professional-feedback-body {
+        flex: 1;
+        max-height: none;
+        height: calc(100vh - 120px);
+        overflow-y: auto;
+        padding: 20px 16px;
+    }
+    
+    /* Improve touch scrolling on iOS */
+    .professional-feedback-body {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+}
+
+/* Ensure modal backdrop doesn't interfere with scrolling */
+.modal {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for very small screens */
+@media (max-width: 320px) {
+    .professional-feedback-body {
+        padding: 16px 12px;
+    }
+    
+    .feedback-history-section,
+    .add-feedback-section {
+        padding: 12px;
     }
 }
