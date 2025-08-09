@@ -243,7 +243,7 @@
 
 .institute-name-new {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
+    font-size: 3.2rem;
     font-weight: 700;
     color: #1e3a8a;
     margin: 0 0 8px 0;
@@ -313,7 +313,7 @@
 
 .certificate-type-new {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
+    font-size: 3.2rem;
     font-weight: 700;
     color: #1e3a8a;
     margin: 0;
@@ -332,13 +332,50 @@
     padding: 20px 0;
 }
 
+/* Presentation Text Styles */
+.presentation-text {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.8rem;
+    color: #475569;
+    font-style: italic;
+    margin: 0;
+    font-weight: 600;
+}
+
+.presentation-subtext {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.6rem;
+    color: #64748b;
+    font-style: italic;
+    margin: 0;
+    font-weight: 500;
+}
+
+.course-text {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.7rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.completion-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    color: #64748b;
+    margin: 0;
+    font-style: italic;
+    font-weight: 500;
+}
+
 .presentation-section-new {
     margin-bottom: 25px;
 }
 
 .presentation-text-new {
     font-family: 'Crimson Text', serif;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: #475569;
     font-style: italic;
     margin: 0;
@@ -354,7 +391,7 @@
 
 .student-name-new {
     font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
+    font-size: 4.8rem;
     font-weight: 700;
     color: #1e3a8a;
     margin: 0 0 15px 0;
@@ -398,7 +435,7 @@
 
 .achievement-text-new {
     font-family: 'Crimson Text', serif;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     color: #475569;
     margin: 0;
     line-height: 1.6;
@@ -414,7 +451,7 @@
 
 .course-name-new {
     font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
+    font-size: 3.6rem;
     font-weight: 600;
     color: #1e3a8a;
     margin: 0 0 12px 0;
@@ -436,7 +473,7 @@
 
 .completion-text-new {
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: #64748b;
     margin: 0;
     font-style: italic;
@@ -483,7 +520,7 @@
 
 .signatory-name-new {
     font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: #1e3a8a;
     margin: 0 0 4px 0;
@@ -491,7 +528,7 @@
 
 .signatory-title-new {
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
+    font-size: 1.3rem;
     color: #64748b;
     margin: 0;
     text-transform: uppercase;
@@ -1873,5 +1910,485 @@ Fullscreen Modal Styles */
     .certificate-container-new {
         transform: none !important;
         box-shadow: none !important;
+    }
+}/* Art
+ Deco Certificate Design */
+.art-deco-certificate {
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
+    position: relative;
+    padding: 60px;
+    box-sizing: border-box;
+    font-family: 'Playfair Display', serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+/* Certificate Borders */
+.certificate-outer-border {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    border: 3px solid #2c3e50;
+    z-index: 1;
+}
+
+.certificate-inner-border {
+    position: absolute;
+    top: 35px;
+    left: 35px;
+    right: 35px;
+    bottom: 35px;
+    border: 1px solid #2c3e50;
+    z-index: 1;
+}
+
+/* Top Art Deco Ornament */
+.top-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 30px;
+    z-index: 2;
+    position: relative;
+}
+
+.ornament-left,
+.ornament-right {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    position: relative;
+}
+
+.ornament-left::before,
+.ornament-right::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    width: 16px;
+    height: 16px;
+    background: #d4af37;
+    transform: rotate(45deg);
+}
+
+.ornament-left::before {
+    right: 10px;
+}
+
+.ornament-right::before {
+    left: 10px;
+}
+
+.ornament-center {
+    margin: 0 20px;
+    position: relative;
+}
+
+.center-diamond {
+    width: 40px;
+    height: 40px;
+    background: #d4af37;
+    transform: rotate(45deg);
+    position: relative;
+    border: 2px solid #b8941f;
+}
+
+.center-diamond::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: 20px;
+    height: 20px;
+    background: #f8f8f8;
+    border: 1px solid #d4af37;
+}
+
+.center-lines {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+}
+
+.center-lines::before,
+.center-lines::after {
+    content: '';
+    position: absolute;
+    background: #d4af37;
+}
+
+.center-lines::before {
+    top: 50%;
+    left: -20px;
+    right: -20px;
+    height: 1px;
+    transform: translateY(-50%);
+}
+
+.center-lines::after {
+    left: 50%;
+    top: -20px;
+    bottom: -20px;
+    width: 1px;
+    transform: translateX(-50%);
+}
+
+/* Certificate Title Section */
+.certificate-title-section {
+    margin-bottom: 40px;
+    z-index: 2;
+    position: relative;
+}
+
+.certificate-main-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    letter-spacing: 8px;
+    font-family: 'Playfair Display', serif;
+}
+
+.title-underline {
+    width: 200px;
+    height: 3px;
+    background: #d4af37;
+    margin: 0 auto 15px;
+    position: relative;
+}
+
+.title-underline::before,
+.title-underline::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    background: #d4af37;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.title-underline::before {
+    left: -15px;
+}
+
+.title-underline::after {
+    right: -15px;
+}
+
+.certificate-type-new {
+    font-size: 24px;
+    font-weight: 400;
+    color: #2c3e50;
+    margin: 0;
+    letter-spacing: 4px;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Presentation Section */
+.presentation-section {
+    margin-bottom: 50px;
+    z-index: 2;
+    position: relative;
+}
+
+.presentation-text {
+    font-size: 14px;
+    color: #5a6c7d;
+    margin: 0 0 5px 0;
+    letter-spacing: 2px;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+}
+
+.presentation-subtext {
+    font-size: 14px;
+    color: #5a6c7d;
+    margin: 0;
+    letter-spacing: 2px;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Student Name Section */
+.student-name-section {
+    margin-bottom: 30px;
+    z-index: 2;
+    position: relative;
+}
+
+.student-name-new {
+    font-size: 42px;
+    font-weight: 400;
+    color: #2c3e50;
+    margin: 0 0 15px 0;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    line-height: 1.2;
+}
+
+.name-underline {
+    width: 400px;
+    height: 1px;
+    background: #2c3e50;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Institute Section */
+.institute-section {
+    margin-bottom: 40px;
+    z-index: 2;
+    position: relative;
+}
+
+.institute-name-new {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    letter-spacing: 1px;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+}
+
+/* Course Description */
+.course-description {
+    margin-bottom: 60px;
+    z-index: 2;
+    position: relative;
+    max-width: 600px;
+}
+
+.course-text {
+    font-size: 16px;
+    color: #5a6c7d;
+    margin: 0 0 20px 0;
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+}
+
+.course-name-new {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+}
+
+.completion-text {
+    font-size: 16px;
+    color: #5a6c7d;
+    margin: 0;
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Signature Section */
+.signature-section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 40px;
+    z-index: 2;
+    position: relative;
+}
+
+.signature-left,
+.signature-right {
+    text-align: center;
+    flex: 1;
+}
+
+.signature-line {
+    width: 150px;
+    height: 1px;
+    background: #2c3e50;
+    margin: 0 auto 10px;
+}
+
+.signature-info {
+    font-family: 'Inter', sans-serif;
+}
+
+.signatory-name-new {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 2px 0;
+    letter-spacing: 1px;
+}
+
+.signatory-title-new {
+    font-size: 12px;
+    color: #7b8a8b;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Bottom Art Deco Ornament */
+.bottom-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    z-index: 2;
+    position: relative;
+}
+
+.ornament-left-bottom,
+.ornament-right-bottom {
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    position: relative;
+}
+
+.ornament-left-bottom::before,
+.ornament-right-bottom::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    width: 12px;
+    height: 12px;
+    background: #d4af37;
+    transform: rotate(45deg);
+}
+
+.ornament-left-bottom::before {
+    right: 8px;
+}
+
+.ornament-right-bottom::before {
+    left: 8px;
+}
+
+.ornament-center-bottom {
+    margin: 0 15px;
+    position: relative;
+}
+
+.center-diamond-bottom {
+    width: 30px;
+    height: 30px;
+    background: #d4af37;
+    transform: rotate(45deg);
+    position: relative;
+    border: 1px solid #b8941f;
+}
+
+.center-diamond-bottom::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: 15px;
+    height: 15px;
+    background: #f8f8f8;
+}
+
+.center-lines-bottom {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+}
+
+.center-lines-bottom::before,
+.center-lines-bottom::after {
+    content: '';
+    position: absolute;
+    background: #d4af37;
+}
+
+.center-lines-bottom::before {
+    top: 50%;
+    left: -15px;
+    right: -15px;
+    height: 1px;
+    transform: translateY(-50%);
+}
+
+.center-lines-bottom::after {
+    left: 50%;
+    top: -15px;
+    bottom: -15px;
+    width: 1px;
+    transform: translateX(-50%);
+}
+
+/* Background Watermark */
+.certificate-watermark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    opacity: 0.03;
+}
+
+.watermark-pattern {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background-image: 
+        radial-gradient(circle at center, #2c3e50 2px, transparent 2px),
+        radial-gradient(circle at 25% 25%, #d4af37 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, #d4af37 1px, transparent 1px);
+    background-size: 40px 40px, 60px 60px, 60px 60px;
+    background-position: 0 0, 15px 15px, 45px 45px;
+    opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .art-deco-certificate {
+        padding: 40px 30px;
+    }
+    
+    .certificate-main-title {
+        font-size: 36px;
+        letter-spacing: 4px;
+    }
+    
+    .student-name-new {
+        font-size: 32px;
+    }
+    
+    .name-underline {
+        width: 300px;
+    }
+    
+    .signature-section {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+    
+    .ornament-left,
+    .ornament-right {
+        width: 80px;
     }
 }

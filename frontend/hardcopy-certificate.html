@@ -96,187 +96,333 @@
                 </div>
             </div>
             <div class="panel-content">
-                    <form id="certificateForm" class="professional-form">
-                        <div class="form-section">
-                            <div class="section-header">
-                                <i class="fas fa-file-alt"></i>
-                                <h3>Hardcopy Certificate Generator</h3>
-                            </div>
-                            <div class="form-grid">
-                        <div class="form-group">
-                            <label for="registration">Registration No</label>
-                            <input type="text" id="registration" name="registration" placeholder="Registration No"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fathersname">Father's Name</label>
-                            <input type="text" id="fathersname" name="fathersname" placeholder="Father's Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="mothersname">Mother's Name</label>
-                            <input type="text" id="mothersname" name="mothersname" placeholder="Mother's Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dob">Date of Birth</label>
-                            <input type="date" id="dob" name="dob" placeholder="dd-mm-yyyy" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="rollno">Roll No</label>
-                            <input type="text" id="rollno" name="rollno" placeholder="Roll No" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="erollno">Exam Roll No</label>
-                            <input type="text" id="erollno" name="erollno" placeholder="Exam Roll No" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueSession">Issue Session</label>
-                            <input type="text" id="IssueSession" name="IssueSession"
-                                placeholder="Issue Session (e.g. 2023-24)" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="duration">Course Duration</label>
-                            <input type="text" id="duration" name="duration" placeholder="Course Duration" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="performance">Performance</label>
-                            <input type="text" id="performance" name="performance" placeholder="Performance" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="certificate">Certificate Name</label>
-                            <input type="text" id="certificate" name="certificate" placeholder="Certificate Name"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="Grade">Grade</label>
-                            <input type="text" id="Grade" name="Grade" placeholder="Grade" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueDay">Issue Day</label>
-                            <input type="number" id="IssueDay" name="IssueDay" placeholder="Issue Day (e.g. 12)"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueMonth">Issue Month</label>
-                            <input type="text" id="IssueMonth" name="IssueMonth" placeholder="Issue Month (e.g. May)"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueYear">Issue Year</label>
-                            <input type="number" id="IssueYear" name="IssueYear" placeholder="Issue Year (e.g. 2024)"
-                                required>
-                        </div>
-                                <div class="form-group">
-                                    <label for="photo">Photo</label>
-                                    <div class="file-input-wrapper">
-                                        <span class="file-input-label">Choose File</span>
-                                        <input type="file" id="photo" name="photo" accept="image/*">
-                                    </div>
+                <!-- Professional Hardcopy Certificate Layout -->
+                <div class="professional-hardcopy-layout">
+                    
+                    <!-- Certificate Form Section -->
+                    <div class="hardcopy-form-section">
+                        <div class="hardcopy-form-card">
+                            <div class="card-header">
+                                <div class="header-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="header-content">
+                                    <h3>Hardcopy Certificate Generator</h3>
+                                    <p>Generate professional hardcopy certificates with detailed student information</p>
                                 </div>
                             </div>
-                        </div>
+                            
+                            <form id="certificateForm" class="professional-hardcopy-form">
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-user-graduate"></i>
+                                        <h4>Student Information</h4>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="registration">
+                                                <i class="fas fa-id-card"></i>
+                                                Registration No *
+                                            </label>
+                                            <input type="text" id="registration" name="registration" placeholder="Enter registration number" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">
+                                                <i class="fas fa-user"></i>
+                                                Student Name *
+                                            </label>
+                                            <input type="text" id="name" name="name" placeholder="Enter student's full name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fathersname">
+                                                <i class="fas fa-male"></i>
+                                                Father's Name *
+                                            </label>
+                                            <input type="text" id="fathersname" name="fathersname" placeholder="Enter father's name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mothersname">
+                                                <i class="fas fa-female"></i>
+                                                Mother's Name *
+                                            </label>
+                                            <input type="text" id="mothersname" name="mothersname" placeholder="Enter mother's name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dob">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                Date of Birth *
+                                            </label>
+                                            <input type="date" id="dob" name="dob" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rollno">
+                                                <i class="fas fa-hashtag"></i>
+                                                Roll Number *
+                                            </label>
+                                            <input type="text" id="rollno" name="rollno" placeholder="Enter roll number" required>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div class="form-section">
-                            <div class="section-header">
-                                <i class="fas fa-book"></i>
-                                <h3>Subjects (max 6)</h3>
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <h4>Academic Information</h4>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="erollno">
+                                                <i class="fas fa-clipboard-list"></i>
+                                                Exam Roll Number *
+                                            </label>
+                                            <input type="text" id="erollno" name="erollno" placeholder="Enter exam roll number" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IssueSession">
+                                                <i class="fas fa-calendar"></i>
+                                                Issue Session *
+                                            </label>
+                                            <input type="text" id="IssueSession" name="IssueSession" placeholder="e.g. 2023-24" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="duration">
+                                                <i class="fas fa-clock"></i>
+                                                Course Duration *
+                                            </label>
+                                            <input type="text" id="duration" name="duration" placeholder="e.g. 2 Years" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="performance">
+                                                <i class="fas fa-chart-line"></i>
+                                                Performance *
+                                            </label>
+                                            <input type="text" id="performance" name="performance" placeholder="e.g. Excellent" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="certificate">
+                                                <i class="fas fa-certificate"></i>
+                                                Certificate Name *
+                                            </label>
+                                            <input type="text" id="certificate" name="certificate" placeholder="Enter certificate/course name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Grade">
+                                                <i class="fas fa-award"></i>
+                                                Grade *
+                                            </label>
+                                            <input type="text" id="Grade" name="Grade" placeholder="e.g. A+" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <h4>Issue Information</h4>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="IssueDay">
+                                                <i class="fas fa-calendar-day"></i>
+                                                Issue Day *
+                                            </label>
+                                            <input type="number" id="IssueDay" name="IssueDay" placeholder="e.g. 12" min="1" max="31" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IssueMonth">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                Issue Month *
+                                            </label>
+                                            <select id="IssueMonth" name="IssueMonth" required>
+                                                <option value="">Select Month</option>
+                                                <option value="January">January</option>
+                                                <option value="February">February</option>
+                                                <option value="March">March</option>
+                                                <option value="April">April</option>
+                                                <option value="May">May</option>
+                                                <option value="June">June</option>
+                                                <option value="July">July</option>
+                                                <option value="August">August</option>
+                                                <option value="September">September</option>
+                                                <option value="October">October</option>
+                                                <option value="November">November</option>
+                                                <option value="December">December</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IssueYear">
+                                                <i class="fas fa-calendar"></i>
+                                                Issue Year *
+                                            </label>
+                                            <input type="number" id="IssueYear" name="IssueYear" placeholder="e.g. 2024" min="2020" max="2030" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="photo">
+                                                <i class="fas fa-image"></i>
+                                                Student Photo
+                                            </label>
+                                            <div class="file-input-wrapper">
+                                                <input type="file" id="photo" name="photo" accept="image/*">
+                                                <div class="file-input-display">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <span class="file-input-label">Choose Photo</span>
+                                                    <small>JPG, PNG (Max 2MB)</small>
+                                                </div>
+                                            </div>
+                                        </div>
                             </div>
-                            <div class="form-group full-width">
-                                <table class="subjects-table" id="subjectsTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject Name</th>
-                                            <th>Theory</th>
-                                            <th>Practical</th>
-                                            <th>Obtained</th>
-                                            <th>Remove</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="subjectsArea">
-                                        <!-- Subject rows will be added here -->
-                                    </tbody>
-                                </table>
-                                <button type="button" id="addSubjectBtn" class="btn-secondary" title="Add Subject" aria-label="Add Subject">
-                                    <i class="fas fa-plus"></i> Add Subject
-                                </button>
-                            </div>
                         </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary">
-                                <i class="fas fa-file-pdf"></i> Generate Certificate PDF
-                            </button>
-                        </div>
-                    </form>
-                    <canvas id="barcodeCanvas" style="display:none"></canvas>
-                    <canvas id="watermarkCanvas" width="400" height="400" style="display:none"></canvas>
-                    <img id="qrImage" style="display:none">
-                </div>
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-book"></i>
+                                        <h4>Subjects & Marks (Maximum 6 subjects)</h4>
+                                    </div>
+                                    <div class="subjects-container">
+                                        <div class="subjects-table-wrapper">
+                                            <table class="subjects-table" id="subjectsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th><i class="fas fa-book-open"></i> Subject Name</th>
+                                                        <th><i class="fas fa-pen"></i> Theory (30)</th>
+                                                        <th><i class="fas fa-flask"></i> Practical (70)</th>
+                                                        <th><i class="fas fa-calculator"></i> Total Obtained</th>
+                                                        <th><i class="fas fa-trash"></i> Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="subjectsArea">
+                                                    <!-- Subject rows will be added here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="subjects-actions">
+                                            <button type="button" id="addSubjectBtn" class="btn-add-subject">
+                                                <i class="fas fa-plus"></i>
+                                                Add Subject
+                                            </button>
+                                            <div class="subjects-info">
+                                                <small><i class="fas fa-info-circle"></i> You can add up to 6 subjects. Theory marks are out of 30, Practical marks are out of 70.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <!-- Certificate Details Panel -->
-                <div class="certificate-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-certificate"></i> All Certificates</h3>
-                        <p class="section-subtitle">View and manage all issued certificates</p>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">
+                                        <i class="fas fa-file-pdf"></i>
+                                        Generate Certificate PDF
+                                    </button>
+                                    <button type="button" class="btn-secondary" onclick="document.getElementById('certificateForm').reset();">
+                                        <i class="fas fa-eraser"></i>
+                                        Clear Form
+                                    </button>
+                                    <button type="button" class="btn-outline" onclick="window.print();">
+                                        <i class="fas fa-print"></i>
+                                        Print Form
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Hidden elements for PDF generation -->
+                            <canvas id="barcodeCanvas" style="display:none"></canvas>
+                            <canvas id="watermarkCanvas" width="400" height="400" style="display:none"></canvas>
+                            <img id="qrImage" style="display:none">
+                        </div>
                     </div>
 
-                    <div id="certificateDetailsPanel" class="certificate-details-panel">
-                        <div class="certificate-details-header">
-                            <div class="certificate-header-left">
-                                <h4>Certificate Records</h4>
-                                <span class="certificate-timestamp" id="certificateTimestamp">Last updated: Never</span>
+                    <!-- Certificate Management Section -->
+                    <div class="certificate-management-section">
+                        <div class="management-card">
+                            <div class="card-header">
+                                <div class="header-icon">
+                                    <i class="fas fa-list-alt"></i>
+                                </div>
+                                <div class="header-content">
+                                    <h3>Certificate Management</h3>
+                                    <p>View, manage and track all issued hardcopy certificates</p>
+                                </div>
                             </div>
-                            <div class="certificate-header-actions">
-                                <button id="refreshCertificatesBtn" class="action-btn btn-refresh">
-                                    <i class="fas fa-sync-alt"></i>
-                                    Refresh
-                                </button>
-                            </div>
-                        </div>
 
-                        <div class="certificates-table-container">
-                            <div class="table-controls">
-                                <div class="search-container">
-                                    <div class="search-box">
-                                        <i class="fas fa-search"></i>
-                                        <input type="text" id="certificateSearchInput"
-                                            placeholder="Search certificates by name, registration, or course...">
+                            <div class="management-content">
+                                <div class="management-header">
+                                    <div class="management-stats">
+                                        <div class="stat-item">
+                                            <div class="stat-icon">
+                                                <i class="fas fa-certificate"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <span class="stat-number" id="certificateCount">0</span>
+                                                <span class="stat-label">Total Certificates</span>
+                                            </div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-icon">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <span class="stat-number" id="certificateTimestamp">Never</span>
+                                                <span class="stat-label">Last Updated</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="management-actions">
+                                        <button id="refreshCertificatesBtn" class="action-btn btn-refresh">
+                                            <i class="fas fa-sync-alt"></i>
+                                            Refresh Data
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="table-info">
-                                    <span id="certificateCount">0 certificates found</span>
-                                </div>
-                            </div>
 
-                            <div class="table-wrapper">
-                                <table class="certificates-table" id="certificatesTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Certificate ID</th>
-                                            <th>Student Name</th>
-                                            <th>Registration No</th>
-                                            <th>Course</th>
-                                            <th>Grade</th>
-                                            <th>Issue Date</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="certificatesTableBody">
-                                        <tr class="no-data-row">
-                                            <td colspan="8" class="no-data-cell">
-                                                <div class="no-data-content">
-                                                    <i class="fas fa-certificate"></i>
-                                                    <p>No certificates found</p>
-                                                    <small>Generate your first certificate using the form above</small>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="certificates-table-container">
+                                    <div class="table-controls">
+                                        <div class="search-container">
+                                            <div class="search-box">
+                                                <i class="fas fa-search"></i>
+                                                <input type="text" id="certificateSearchInput" placeholder="Search certificates by name, registration, or course...">
+                                            </div>
+                                        </div>
+                                        <div class="table-filters">
+                                            <select class="filter-select" id="statusFilter">
+                                                <option value="">All Status</option>
+                                                <option value="issued">Issued</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="active">Active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-wrapper">
+                                        <table class="certificates-table" id="certificatesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th><i class="fas fa-id-card"></i> Certificate ID</th>
+                                                    <th><i class="fas fa-user-graduate"></i> Student Name</th>
+                                                    <th><i class="fas fa-hashtag"></i> Registration No</th>
+                                                    <th><i class="fas fa-book"></i> Course</th>
+                                                    <th><i class="fas fa-award"></i> Grade</th>
+                                                    <th><i class="fas fa-calendar"></i> Issue Date</th>
+                                                    <th><i class="fas fa-info-circle"></i> Status</th>
+                                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="certificatesTableBody">
+                                                <tr class="no-data-row">
+                                                    <td colspan="8" class="no-data-cell">
+                                                        <div class="no-data-content">
+                                                            <div class="no-data-icon">
+                                                                <i class="fas fa-certificate"></i>
+                                                            </div>
+                                                            <div class="no-data-text">
+                                                                <h4>No certificates found</h4>
+                                                                <p>Generate your first certificate using the form above</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

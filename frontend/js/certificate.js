@@ -233,23 +233,314 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Generate JPG Download
     async function generateJPGDownload(certificateElement) {
-        // Create a wrapper div with proper styling
+        // Create a professional landscape wrapper (A4 landscape at 300 DPI)
         const wrapper = document.createElement('div');
-        wrapper.style.padding = '60px';
-        wrapper.style.backgroundColor = '#ffffff';
-        wrapper.style.display = 'inline-block';
-        wrapper.style.boxSizing = 'border-box';
+        wrapper.style.cssText = `
+            width: 3508px;
+            height: 2480px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px;
+            box-sizing: border-box;
+            position: relative;
+        `;
+
+        // Add subtle background pattern
+        const backgroundPattern = document.createElement('div');
+        backgroundPattern.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        `;
+        wrapper.appendChild(backgroundPattern);
 
         // Clone the certificate element
         const clonedCert = certificateElement.cloneNode(true);
 
-        // Style the cloned certificate
-        clonedCert.style.width = '1000px';
-        clonedCert.style.height = 'auto';
-        clonedCert.style.minHeight = '1400px';
-        clonedCert.style.margin = '0';
-        clonedCert.style.display = 'block';
-        clonedCert.style.boxSizing = 'border-box';
+        // Style the cloned certificate for professional landscape view
+        clonedCert.style.cssText = `
+            width: 3308px;
+            height: 2280px;
+            margin: 0;
+            display: block;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 
+                0 40px 80px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        `;
+
+        // Enhance certificate container for landscape layout
+        const certificateContainer = clonedCert.querySelector('.certificate-container-new');
+        if (certificateContainer) {
+            certificateContainer.style.cssText = `
+                width: 100%;
+                height: 100%;
+                padding: 80px 120px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                position: relative;
+            `;
+        }
+
+        // Enhance certificate header for landscape
+        const certificateHeader = clonedCert.querySelector('.certificate-header-new');
+        if (certificateHeader) {
+            certificateHeader.style.cssText = `
+                text-align: center;
+                margin-bottom: 40px;
+                position: relative;
+            `;
+        }
+
+        // Enhance institute logo for landscape
+        const instituteLogo = clonedCert.querySelector('.institute-logo-new');
+        if (instituteLogo) {
+            instituteLogo.style.cssText = `
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 20px;
+                display: block;
+            `;
+        }
+
+        // Enhance institute name for landscape
+        const instituteName = clonedCert.querySelector('.institute-name-new');
+        if (instituteName) {
+            instituteName.style.cssText = `
+                font-size: 80px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin: 0 0 12px 0;
+                font-family: 'Playfair Display', serif;
+                line-height: 1.2;
+            `;
+        }
+
+        // Enhance institute subtitle for landscape
+        const instituteSubtitle = clonedCert.querySelector('.institute-subtitle-new');
+        if (instituteSubtitle) {
+            instituteSubtitle.style.cssText = `
+                font-size: 20px;
+                color: #7b8a8b;
+                margin: 0 0 40px 0;
+                font-weight: 400;
+            `;
+        }
+
+        // Enhance certificate title for landscape
+        const certificateTitle = clonedCert.querySelector('.certificate-type-new');
+        if (certificateTitle) {
+            certificateTitle.style.cssText = `
+                font-size: 72px;
+                font-weight: 700;
+                color: #2c3e50;
+                letter-spacing: 3px;
+                margin: 40px 0;
+                font-family: 'Playfair Display', serif;
+                text-align: center;
+            `;
+        }
+
+        // Enhance certificate body for landscape
+        const certificateBody = clonedCert.querySelector('.certificate-body-new');
+        if (certificateBody) {
+            certificateBody.style.cssText = `
+                text-align: center;
+                margin: 50px 0;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 30px;
+            `;
+        }
+
+        // Enhance presentation text for landscape
+        const presentationText = clonedCert.querySelector('.presentation-text, .presentation-text-new');
+        if (presentationText) {
+            presentationText.style.cssText = `
+                font-size: 40px;
+                color: #5a6c7d;
+                margin: 0;
+                font-weight: 600;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance presentation subtext for landscape
+        const presentationSubtext = clonedCert.querySelector('.presentation-subtext');
+        if (presentationSubtext) {
+            presentationSubtext.style.cssText = `
+                font-size: 36px;
+                color: #64748b;
+                margin: 0;
+                font-weight: 500;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance student name for landscape
+        const studentNameEl = clonedCert.querySelector('.student-name-new');
+        if (studentNameEl) {
+            studentNameEl.style.cssText = `
+                font-size: 96px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin: 25px 0;
+                font-family: 'Playfair Display', serif;
+                line-height: 1.2;
+                text-transform: uppercase;
+            `;
+        }
+
+        // Enhance achievement text for landscape
+        const achievementText = clonedCert.querySelector('.achievement-text-new, .course-text');
+        if (achievementText) {
+            achievementText.style.cssText = `
+                font-size: 36px;
+                color: #5a6c7d;
+                margin: 0;
+                font-weight: 400;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance course name for landscape
+        const courseNameEl = clonedCert.querySelector('.course-name-new');
+        if (courseNameEl) {
+            courseNameEl.style.cssText = `
+                font-size: 72px;
+                font-weight: 600;
+                color: #3498db;
+                margin: 25px 0;
+                font-family: 'Playfair Display', serif;
+                font-style: italic;
+                line-height: 1.3;
+            `;
+        }
+
+        // Enhance completion text for landscape
+        const completionText = clonedCert.querySelector('.completion-text-new, .completion-text');
+        if (completionText) {
+            completionText.style.cssText = `
+                font-size: 32px;
+                color: #5a6c7d;
+                margin: 0;
+                font-weight: 500;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance certificate footer for landscape
+        const certificateFooter = clonedCert.querySelector('.certificate-footer-new');
+        if (certificateFooter) {
+            certificateFooter.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-top: 50px;
+                padding-top: 40px;
+                border-top: 3px solid #e9ecef;
+            `;
+        }
+
+        // Enhance signature area
+        const signatureArea = clonedCert.querySelector('.signature-area-new');
+        if (signatureArea) {
+            signatureArea.style.cssText = `
+                text-align: left;
+                flex: 1;
+            `;
+        }
+
+        // Enhance signature image for landscape
+        const signatureImg = clonedCert.querySelector('.signature-img-new');
+        if (signatureImg) {
+            signatureImg.style.cssText = `
+                width: 180px;
+                height: auto;
+                margin-bottom: 12px;
+                display: block;
+            `;
+        }
+
+        // Enhance signatory info for landscape
+        const signatoryName = clonedCert.querySelector('.signatory-name-new');
+        if (signatoryName) {
+            signatoryName.style.cssText = `
+                font-size: 32px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin: 0;
+                font-family: 'Playfair Display', serif;
+            `;
+        }
+
+        const signatoryTitle = clonedCert.querySelector('.signatory-title-new');
+        if (signatoryTitle) {
+            signatoryTitle.style.cssText = `
+                font-size: 24px;
+                color: #7b8a8b;
+                margin: 0;
+                font-weight: 500;
+                text-transform: uppercase;
+            `;
+        }
+
+        // Enhance certificate info for landscape
+        const certificateInfo = clonedCert.querySelector('.certificate-info-new');
+        if (certificateInfo) {
+            certificateInfo.style.cssText = `
+                text-align: right;
+                flex: 1;
+                font-size: 16px;
+                color: #5a6c7d;
+                line-height: 1.8;
+            `;
+        }
+
+        // Enhance certificate seal for landscape
+        const certificateSeal = clonedCert.querySelector('.certificate-seal');
+        if (certificateSeal) {
+            certificateSeal.style.cssText = `
+                position: absolute;
+                top: 25px;
+                right: 25px;
+                width: 100px;
+                height: 100px;
+                background: linear-gradient(135deg, #f1c40f, #f39c12);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 6px 16px rgba(241, 196, 15, 0.4);
+            `;
+        }
+
+        // Enhance borders and decorative elements
+        const borderElements = clonedCert.querySelectorAll('.certificate-border-frame, .border-outer, .border-gold, .border-inner');
+        borderElements.forEach(border => {
+            if (border) {
+                border.style.display = 'block';
+                border.style.opacity = '1';
+            }
+        });
 
         wrapper.appendChild(clonedCert);
 
@@ -261,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const canvas = await html2canvas(wrapper, {
-                scale: 3,
+                scale: 1.5, // Reduced scale since we're using larger dimensions
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -269,17 +560,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 letterRendering: true,
                 scrollX: 0,
                 scrollY: 0,
-                width: wrapper.offsetWidth,
-                height: wrapper.offsetHeight
+                width: 3508,
+                height: 2480,
+                onclone: function (clonedDoc) {
+                    // Ensure all fonts are loaded
+                    const style = clonedDoc.createElement('style');
+                    style.textContent = `
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+                        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+                        * {
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                            -webkit-font-smoothing: antialiased;
+                            -moz-osx-font-smoothing: grayscale;
+                            text-rendering: optimizeLegibility;
+                        }
+                        .institute-name-new, .certificate-type-new, .student-name-new {
+                            font-family: 'Playfair Display', serif !important;
+                        }
+                    `;
+                    clonedDoc.head.appendChild(style);
+                }
             });
 
-            // Convert canvas to JPG
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            // Convert canvas to high-quality JPG
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
             // Create download link
             const link = document.createElement('a');
             const studentNameForFile = studentName ? studentName.value.replace(/\s+/g, '_') : 'Student';
-            link.download = `Certificate_${studentNameForFile}_FullHD.jpg`;
+            link.download = `Certificate_${studentNameForFile}_Professional.jpg`;
             link.href = imgData;
 
             // Trigger download
@@ -287,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function () {
             link.click();
             document.body.removeChild(link);
 
-            showNotification('Certificate downloaded successfully!', 'success');
+            showNotification('Professional certificate downloaded successfully!', 'success');
 
         } finally {
             // Clean up
