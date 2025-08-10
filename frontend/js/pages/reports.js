@@ -382,7 +382,26 @@ function showNotification(message, type = 'success') {
 }
 
 // Reports.js - Professional Reports Dashboard
-const API_BASE = `${window.location.protocol}//aalekhapi.sahaedu.in/api/reports`;
+const API_BASE = 'https://aalekhapi.sahaedu.in/api/reports';
+
+// Global pagination instances for reports
+let studentAdmissionsPagination = null;
+let monthlyPaymentsPagination = null;
+let pendingFeesPagination = null;
+let studentsByMonthPagination = null;
+
+// Initialize student admissions pagination
+function initializeStudentAdmissionsPagination() {
+    studentAdmissionsPagination = new TablePagination({
+        containerId: 'student-admissions-container',
+        tableId: 'studentAdmissionsTable',
+        data: [],
+        pageSize: 10,
+        renderRow: (row, index) => `<tr><td>${row.month}</td><td>${row.count}</td></tr>`
+    });
+    
+    window.student_admissions_containerPagination = studentAdmissionsPagination;
+}
 
 // 1. Monthly Student Admissions
 async function loadStudentAdmissions() {
@@ -397,17 +416,39 @@ async function loadStudentAdmissions() {
         // Chart
         renderBarChart('studentAdmissionsChart', labels, counts, 'New Students');
         
-        // Table
-        const tbody = document.querySelector('#studentAdmissionsTable tbody');
-        let total = counts.reduce((sum, val) => sum + val, 0);
-        tbody.innerHTML = data.map(row => `<tr><td>${row.month}</td><td>${row.count}</td></tr>`).join('');
-        tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td style='text-align:right;'>Total</td><td>${total}</td></tr>`;
+        // Initialize pagination if not already done
+        if (!studentAdmissionsPagination) {
+            initializeStudentAdmissionsPagination();
+        }
+        
+        // Add total row to data
+        const total = counts.reduce((sum, val) => sum + val, 0);
+        const dataWithTotal = [...data, { month: 'Total', count: total, isTotal: true }];
+        
+        // Update pagination with new data
+        studentAdmissionsPagination.updateData(dataWithTotal);
+        
     } catch (error) {
         console.error('Error loading student admissions:', error);
-        const tbody = document.querySelector('#studentAdmissionsTable tbody');
-        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#888;">Error loading data. Please check if the server is running.</td></tr>';
+        if (!studentAdmissionsPagination) {
+            initializeStudentAdmissionsPagination();
+        }
+        studentAdmissionsPagination.updateData([{ month: 'Error loading data', count: 'Please check server', isError: true }]);
         showNotification('Error loading student admissions data', 'error');
     }
+}
+
+// Initialize monthly payments pagination
+function initializeMonthlyPaymentsPagination() {
+    monthlyPaymentsPagination = new TablePagination({
+        containerId: 'monthly-payments-container',
+        tableId: 'monthlyPaymentsTable',
+        data: [],
+        pageSize: 10,
+        renderRow: (row, index) => `<tr><td>${row.month}</td><td>₹${row.totalPayments.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`
+    });
+    
+    window.monthly_payments_containerPagination = monthlyPaymentsPagination;
 }
 
 // 2. Monthly Payments Collected
@@ -423,15 +464,48 @@ async function loadMonthlyPayments() {
         // Chart
         renderBarChart('monthlyPaymentsChart', labels, totals, 'Total Payments (₹)');
         
-        // Table
-        const tbody = document.querySelector('#monthlyPaymentsTable tbody');
-        tbody.innerHTML = data.map(row => `<tr><td>${row.month}</td><td>₹${row.totalPayments.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`).join('');
+        // Initialize pagination if not already done
+        if (!monthlyPaymentsPagination) {
+            initializeMonthlyPaymentsPagination();
+        }
+        
+        // Update pagination with new data
+        monthlyPaymentsPagination.updateData(data);
+        
     } catch (error) {
         console.error('Error loading monthly payments:', error);
-        const tbody = document.querySelector('#monthlyPaymentsTable tbody');
-        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#888;">Error loading data. Please check if the server is running.</td></tr>';
+        if (!monthlyPaymentsPagination) {
+            initializeMonthlyPaymentsPagination();
+        }
+        monthlyPaymentsPagination.updateData([{ month: 'Error loading data', totalPayments: 0, isError: true }]);
         showNotification('Error loading monthly payments data', 'error');
     }
+}
+
+// Initialize pending fees pagination
+function initializePendingFeesPagination() {
+    pendingFeesPagination = new TablePagination({
+        containerId: 'pending-fees-container',
+        tableId: 'pendingFeesTable',
+        data: [],
+        pageSize: 10,
+        renderRow: (row, index) => {
+            if (row.isTotal) {
+                return `<tr style='font-weight:bold;background:#f9f9f9;'><td colspan='3' style='text-align:right;'>Total Pending Fees</td><td>₹${row.totalAmount.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`;
+            }
+            const admissionDate = row.admissionDate ? new Date(row.admissionDate).toLocaleDateString('en-IN') : 'N/A';
+            return `<tr><td>${row.studentName}</td><td>${row.course}</td><td>₹${row.pendingAmount}</td><td>${admissionDate}</td></tr>`;
+        },
+        searchFilter: (row, searchTerm) => {
+            if (row.isTotal) return false; // Don't include total row in search
+            const term = searchTerm.toLowerCase();
+            return (row.studentName && row.studentName.toLowerCase().includes(term)) ||
+                   (row.course && row.course.toLowerCase().includes(term)) ||
+                   (row.pendingAmount && row.pendingAmount.toString().includes(term));
+        }
+    });
+    
+    window.pending_fees_containerPagination = pendingFeesPagination;
 }
 
 // 3. Pending Fees
@@ -441,27 +515,39 @@ async function loadPendingFees() {
         if (!res.ok) throw new Error('Failed to fetch data');
         
         const data = await res.json();
-        const tbody = document.querySelector('#pendingFeesTable tbody');
         const countDiv = document.getElementById('pendingFeesCount');
         
+        // Initialize pagination if not already done
+        if (!pendingFeesPagination) {
+            initializePendingFeesPagination();
+        }
+        
         if (data.length) {
-            let total = 0;
-            tbody.innerHTML = data.map(row => {
-                total += Number(row.pendingAmount);
-                const admissionDate = row.admissionDate ? new Date(row.admissionDate).toLocaleDateString('en-IN') : 'N/A';
-                return `<tr><td>${row.studentName}</td><td>${row.course}</td><td>₹${row.pendingAmount}</td><td>${admissionDate}</td></tr>`;
-            }).join('');
-            tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td colspan='3' style='text-align:right;'>Total Pending Fees</td><td>₹${total.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`;
+            let total = data.reduce((sum, row) => sum + Number(row.pendingAmount), 0);
+            
+            // Add total row to data
+            const dataWithTotal = [...data, { 
+                studentName: 'Total Pending Fees', 
+                course: '', 
+                pendingAmount: '', 
+                admissionDate: '', 
+                totalAmount: total, 
+                isTotal: true 
+            }];
+            
+            pendingFeesPagination.updateData(dataWithTotal);
             countDiv.textContent = `Total Students with Pending Fees: ${data.length}`;
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">No pending fees</td></tr>';
+            pendingFeesPagination.updateData([]);
             countDiv.textContent = 'Total Students with Pending Fees: 0';
         }
     } catch (error) {
         console.error('Error loading pending fees:', error);
-        const tbody = document.querySelector('#pendingFeesTable tbody');
+        if (!pendingFeesPagination) {
+            initializePendingFeesPagination();
+        }
+        pendingFeesPagination.updateData([]);
         const countDiv = document.getElementById('pendingFeesCount');
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">Error loading data. Please check if the server is running.</td></tr>';
         countDiv.textContent = 'Error loading pending fees data';
         showNotification('Error loading pending fees data', 'error');
     }
@@ -470,7 +556,6 @@ async function loadPendingFees() {
 // 3.1. Pending Fees by Month
 async function loadPendingFeesByMonth() {
     const month = document.getElementById('pendingFeesMonthPicker').value;
-    const tbody = document.querySelector('#pendingFeesTable tbody');
     const countDiv = document.getElementById('pendingFeesCount');
     
     if (!month) {
@@ -478,7 +563,13 @@ async function loadPendingFeesByMonth() {
         return;
     }
     
-    tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+    // Initialize pagination if not already done
+    if (!pendingFeesPagination) {
+        initializePendingFeesPagination();
+    }
+    
+    // Show loading state
+    pendingFeesPagination.updateData([{ studentName: 'Loading...', course: '', pendingAmount: '', admissionDate: '' }]);
     countDiv.textContent = '';
     
     try {
@@ -486,21 +577,27 @@ async function loadPendingFeesByMonth() {
         const data = await response.json();
         
         if (data.length) {
-            let total = 0;
-            tbody.innerHTML = data.map(row => {
-                total += Number(row.pendingAmount);
-                const admissionDate = row.admissionDate ? new Date(row.admissionDate).toLocaleDateString('en-IN') : 'N/A';
-                return `<tr><td>${row.studentName}</td><td>${row.course}</td><td>₹${row.pendingAmount}</td><td>${admissionDate}</td></tr>`;
-            }).join('');
-            tbody.innerHTML += `<tr style='font-weight:bold;background:#f9f9f9;'><td colspan='3' style='text-align:right;'>Total Pending Fees</td><td>₹${total.toLocaleString('en-IN', {minimumFractionDigits:2})}</td></tr>`;
+            let total = data.reduce((sum, row) => sum + Number(row.pendingAmount), 0);
+            
+            // Add total row to data
+            const dataWithTotal = [...data, { 
+                studentName: 'Total Pending Fees', 
+                course: '', 
+                pendingAmount: '', 
+                admissionDate: '', 
+                totalAmount: total, 
+                isTotal: true 
+            }];
+            
+            pendingFeesPagination.updateData(dataWithTotal);
             countDiv.textContent = `Students with Pending Fees (${month}): ${data.length}`;
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">No pending fees found for this month.</td></tr>';
+            pendingFeesPagination.updateData([]);
             countDiv.textContent = `Students with Pending Fees (${month}): 0`;
         }
     } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">Error loading data.</td></tr>';
-        countDiv.textContent = '';
+        pendingFeesPagination.updateData([]);
+        countDiv.textContent = 'Error loading data';
     }
 }
 
@@ -560,32 +657,61 @@ function getCurrentMonthString() {
     return now.toISOString().slice(0, 7); // 'YYYY-MM'
 }
 
+// Initialize students by month pagination
+function initializeStudentsByMonthPagination() {
+    studentsByMonthPagination = new TablePagination({
+        containerId: 'students-by-month-container',
+        tableId: 'studentsByMonthTable',
+        data: [],
+        pageSize: 10,
+        renderRow: (student, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${student.name || ''}</td>
+                <td>${student.fatherName || ''}</td>
+                <td>${student.courses || ''}</td>
+            </tr>
+        `,
+        searchFilter: (student, searchTerm) => {
+            const term = searchTerm.toLowerCase();
+            return (student.name && student.name.toLowerCase().includes(term)) ||
+                   (student.fatherName && student.fatherName.toLowerCase().includes(term)) ||
+                   (student.courses && student.courses.toLowerCase().includes(term));
+        }
+    });
+    
+    window.students_by_month_containerPagination = studentsByMonthPagination;
+}
+
 async function loadStudentsByMonth() {
     const month = document.getElementById('studentsMonthPicker').value;
-    const tableBody = document.querySelector('#studentsByMonthTable tbody');
     const countDiv = document.getElementById('studentsByMonthCount');
-    tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+    
+    // Initialize pagination if not already done
+    if (!studentsByMonthPagination) {
+        initializeStudentsByMonthPagination();
+    }
+    
+    // Show loading state
+    studentsByMonthPagination.updateData([{ name: 'Loading...', fatherName: '', courses: '' }]);
     countDiv.textContent = '';
+    
     try {
         const response = await fetch(`${API_BASE}/students-by-month?month=${month}`);
         const students = await response.json();
+        
         if (students.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="4">No students found for this month.</td></tr>';
+            studentsByMonthPagination.updateData([]);
             countDiv.textContent = 'Total Students: 0';
             return;
         }
+        
         countDiv.textContent = `Total Students: ${students.length}`;
-        tableBody.innerHTML = students.map((s, idx) => `
-            <tr>
-                <td>${idx + 1}</td>
-                <td>${s.name || ''}</td>
-                <td>${s.fatherName || ''}</td>
-                <td>${s.courses || ''}</td>
-            </tr>
-        `).join('');
+        studentsByMonthPagination.updateData(students);
+        
     } catch (err) {
-        tableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
-        countDiv.textContent = '';
+        studentsByMonthPagination.updateData([]);
+        countDiv.textContent = 'Error loading data';
     }
 }
 window.loadStudentsByMonth = loadStudentsByMonth;

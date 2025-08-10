@@ -1,206 +1,221 @@
-document.addEventListener('DOMContentLoaded', function() {
+// Check if user is logged in
+if (!localStorage.getItem('isLoggedIn')) {
+    window.location.replace('login.html');
+    throw new Error('Not logged in');
+}
+
+// Set username from localStorage
+const username = localStorage.getItem('username');
+if (username) {
+    const usernameElement = document.getElementById('username');
+    if (usernameElement) {
+        usernameElement.textContent = username;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize variables
     const certificateForm = document.getElementById('certificateForm');
     const studentName = document.getElementById('studentName');
     const courseName = document.getElementById('courseName');
     const certificateType = document.getElementById('certificateType');
+    const studentIdInput = document.getElementById('studentIdInput');
     const previewCertificateBtn = document.getElementById('previewCertificate');
     const downloadCertificateBtn = document.getElementById('downloadCertificate');
     const printCertificateBtn = document.getElementById('printCertificate');
-
-    // Tab Navigation
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove active class from all buttons
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to clicked button
-            this.classList.add('active');
-            
-            // Get the target panel from data attribute
-            const targetPanel = this.getAttribute('data-target');
-            
-            // Hide all panels
-            document.querySelectorAll('.tab-content').forEach(panel => {
-                panel.classList.remove('active');
-            });
-            
-            // Show target panel
-            if (targetPanel) {
-                const panel = document.getElementById(targetPanel);
-                if (panel) {
-                    panel.classList.add('active');
-                    
-                    // Load content based on panel
-                    switch(targetPanel) {
-                        case 'dashboard-panel':
-                            loadStudentList();
-                            break;
-                        case 'students-panel':
-                            loadStudentList();
-                            break;
-                        case 'attendance-panel':
-                            loadAttendanceList();
-                            break;
-                        case 'results-panel':
-                            loadResultsList();
-                            break;
-                        case 'courses-panel':
-                            loadCoursesList();
-                            break;
-                        case 'schedule-panel':
-                            loadScheduleList();
-                            break;
-                        case 'certificates-panel':
-                            loadCertificatesList();
-                            break;
-                        case 'templates-panel':
-                            loadTemplatesList();
-                            break;
-                    }
-                }
-            }
-        });
-    });
-
-    // Function to load student list
-    async function loadStudentList() {
-        try {
-            const response = await fetch('/api/students');
-            if (response.ok) {
-                const students = await response.json();
-                displayStudentList(students);
-            } else {
-                throw new Error('Failed to load students');
-            }
-        } catch (error) {
-            console.error('Error loading students:', error);
-            showNotification('Error loading student list', 'error');
-        }
-    }
-
-    // Function to display student list
-    function displayStudentList(students) {
-        const dashboardPanel = document.getElementById('dashboard-panel');
-        if (!dashboardPanel) return;
-
-        const tableBody = dashboardPanel.querySelector('tbody');
-        if (!tableBody) return;
-
-        tableBody.innerHTML = students.map(student => `
-            <tr>
-                <td>${student.name}</td>
-                <td>${student.rollNumber || '-'}</td>
-                <td>${student.course || '-'}</td>
-                <td>${student.email || '-'}</td>
-                <td>${student.phone || '-'}</td>
-                <td>
-                    <button class="btn-icon" onclick="viewStudent('${student.id}')" title="View">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn-icon" onclick="editStudent('${student.id}')" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    // Set default dates
-    // const today = new Date(); // Removed
-    // issueDate.valueAsDate = today; // Removed
-    // validUntil.valueAsDate = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()); // Removed
-
-    // Event Listeners
-    certificateForm.addEventListener('submit', handleCertificateGeneration);
-    previewCertificateBtn.addEventListener('click', showCertificatePreview);
-    downloadCertificateBtn.addEventListener('click', downloadCertificate);
-    printCertificateBtn.addEventListener('click', printCertificate);
+    const clearFormBtn = document.getElementById('clearForm');
+    const fullscreenPreviewBtn = document.getElementById('fullscreenPreview');
 
     // Add real-time preview updates
-    // Remove event listeners for date fields
-    studentName.addEventListener('input', updatePreview);
-    courseName.addEventListener('input', updatePreview);
-    certificateType.addEventListener('change', updatePreview);
-    const studentIdInput = document.getElementById('studentIdInput');
-    studentIdInput.addEventListener('input', updatePreview);
+    if (studentName) {
+        studentName.addEventListener('input', updateLivePreview);
+    }
+    if (courseName) {
+        courseName.addEventListener('input', updateLivePreview);
+    }
+    if (certificateType) {
+        certificateType.addEventListener('change', updateLivePreview);
+    }
+    if (studentIdInput) {
+        studentIdInput.addEventListener('input', updateLivePreview);
+    }
 
-    // Functions
-    function updatePreview() {
-        console.log('updatePreview called');
-        const data = {
-            student: {
-                name: studentName.value.trim() || '[Student Name]',
-                courseName: courseName.value.trim() || '[Course Name]',
-                studentId: studentIdInput.value.trim() || '[ID]'
-            },
-            type: certificateType.value || 'Completion'
-        };
-     
-        updatePreviewContent(data);
+    // Event Listeners
+    if (certificateForm) {
+        certificateForm.addEventListener('submit', handleCertificateGeneration);
+    }
+    if (previewCertificateBtn) {
+        previewCertificateBtn.addEventListener('click', updateLivePreview);
+    }
+    if (downloadCertificateBtn) {
+        downloadCertificateBtn.addEventListener('click', downloadCertificate);
+    }
+    if (printCertificateBtn) {
+        printCertificateBtn.addEventListener('click', printCertificate);
+    }
+    if (clearFormBtn) {
+        clearFormBtn.addEventListener('click', clearForm);
+    }
+    if (fullscreenPreviewBtn) {
+        fullscreenPreviewBtn.addEventListener('click', openFullscreenPreview);
+    }
+
+    // Initialize live preview on page load
+    updateLivePreview();
+
+    // Live Preview Function
+    function updateLivePreview() {
+        console.log('updateLivePreview called');
+
+        const studentNameValue = studentName ? studentName.value.trim() : '';
+        const courseNameValue = courseName ? courseName.value.trim() : '';
+        const certificateTypeValue = certificateType ? certificateType.value : 'Completion';
+        const studentIdValue = studentIdInput ? studentIdInput.value.trim() : '';
+
+        // Update student name
+        const studentNameElement = document.querySelector('.student-name-new');
+        if (studentNameElement) {
+            studentNameElement.textContent = studentNameValue || '[Student Name]';
+        }
+
+        // Update course name
+        const courseNameElement = document.querySelector('.course-name-new');
+        if (courseNameElement) {
+            courseNameElement.textContent = courseNameValue || '[Course Name]';
+        }
+
+        // Update certificate type
+        const certificateTypeElement = document.querySelector('.certificate-type-new');
+        if (certificateTypeElement) {
+            certificateTypeElement.textContent = `CERTIFICATE OF ${certificateTypeValue.toUpperCase()}`;
+        }
+
+        // Update certificate ID
+        const certificateIdElement = document.getElementById('certificateStudentId');
+        if (certificateIdElement) {
+            certificateIdElement.textContent = studentIdValue || generateCertificateId();
+        }
+
+        // Update issue date
+        const issueDateElement = document.getElementById('issueDateNew');
+        if (issueDateElement) {
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            issueDateElement.textContent = formattedDate;
+        }
+
+        console.log('Live preview updated');
     }
 
     // Generate Certificate ID function
-    function generateCertificateId(options = {}) {
-        const type = options.type || 'Completion';
+    function generateCertificateId() {
         const year = new Date().getFullYear();
         const month = String(new Date().getMonth() + 1).padStart(2, '0');
         const randomNum = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-        
-        // Format: SIMT-COMP-2024-12-1234
-        const typeCode = type.substring(0, 4).toUpperCase();
-        return `SIMT-${typeCode}-${year}-${month}-${randomNum}`;
+        return `SIMT-CERT-${year}-${month}-${randomNum}`;
     }
 
+    // Clear Form Function
+    function clearForm() {
+        if (certificateForm) {
+            certificateForm.reset();
+            updateLivePreview();
+            showNotification('Form cleared successfully', 'success');
+        }
+    }
+
+    // Fullscreen Preview Function
+    function openFullscreenPreview() {
+        const certificateContainer = document.querySelector('.certificate-container-new');
+        if (!certificateContainer) {
+            showNotification('Certificate preview not found', 'error');
+            return;
+        }
+
+        // Create fullscreen modal
+        const fullscreenModal = document.createElement('div');
+        fullscreenModal.className = 'fullscreen-modal';
+        fullscreenModal.innerHTML = `
+            <div class="fullscreen-overlay">
+                <div class="fullscreen-content">
+                    <div class="fullscreen-header">
+                        <h3>Certificate Preview - Fullscreen</h3>
+                        <button class="fullscreen-close" title="Close Fullscreen">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="fullscreen-certificate">
+                        ${certificateContainer.outerHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add to body
+        document.body.appendChild(fullscreenModal);
+
+        // Add event listeners
+        const closeBtn = fullscreenModal.querySelector('.fullscreen-close');
+        const overlay = fullscreenModal.querySelector('.fullscreen-overlay');
+
+        closeBtn.addEventListener('click', () => {
+            document.body.removeChild(fullscreenModal);
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                document.body.removeChild(fullscreenModal);
+            }
+        });
+
+        // Close on ESC key
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                document.body.removeChild(fullscreenModal);
+                document.removeEventListener('keydown', handleEscape);
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+    }
+
+    // Handle Certificate Generation
     async function handleCertificateGeneration(e) {
         e.preventDefault();
 
         // Validate required fields
-        if (!studentName.value.trim()) {
+        if (!studentName || !studentName.value.trim()) {
             showNotification('Please enter student name', 'error');
             return;
         }
-        
-        if (!courseName.value.trim()) {
+
+        if (!courseName || !courseName.value.trim()) {
             showNotification('Please enter course name', 'error');
             return;
         }
 
-        const certificateData = {
-            student: {
-                name: studentName.value,
-                courseName: courseName.value,
-                studentId: studentIdInput.value || generateCertificateId({ type: certificateType.value })
-            },
-            type: certificateType.value,
-            status: 'Active',
-            certificateId: generateCertificateId({
-                type: certificateType.value
-            })
-        };
-
         try {
-            // Generate certificate locally (skip API call since it's not working)
             showNotification('Generating certificate...', 'info');
-            updatePreviewContent(certificateData);
-            
+            updateLivePreview();
+
             // Wait a moment for the preview to update
             setTimeout(async () => {
-                await downloadPDF();
+                await downloadCertificate();
             }, 500);
-            
+
         } catch (error) {
             console.error('Error generating certificate:', error);
             showNotification('Error generating certificate', 'error');
         }
     }
 
-    async function downloadPDF() {
+    // Download Certificate Function
+    async function downloadCertificate() {
         const certificateElement = document.querySelector('.certificate-template');
-        
+
         if (!certificateElement) {
             console.error('Certificate element not found');
             showNotification('Certificate template not found', 'error');
@@ -208,132 +223,336 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            // Prioritize JPG download for better quality and reliability
-            showNotification('Generating Full HD certificate...', 'info');
+            showNotification('Generating certificate download...', 'info');
             await generateJPGDownload(certificateElement);
-            
         } catch (error) {
-            console.error('JPG generation failed, trying PDF fallback:', error);
-            showNotification('JPG failed, trying PDF...', 'info');
-            
-            try {
-                if (typeof html2pdf !== 'undefined') {
-                    await generatePDFDownload(certificateElement);
-                } else {
-                    throw new Error('PDF library not available');
-                }
-            } catch (pdfError) {
-                console.error('Both JPG and PDF generation failed:', pdfError);
-                showNotification('Error generating certificate download', 'error');
-            }
+            console.error('Download failed:', error);
+            showNotification('Error generating certificate download', 'error');
         }
     }
 
-    async function generatePDFDownload(certificateElement) {
-        // Enhanced PDF generation optimized for the new certificate design
-        const opt = {
-            margin: [8, 8, 8, 8], // Adequate margins to prevent cutting
-            filename: `Certificate_${studentName.value.replace(/\s+/g, '_') || 'Student'}.pdf`,
-            image: { 
-                type: 'jpeg', 
-                quality: 0.92
-            },
-            html2canvas: { 
-                scale: 2.5, // Higher scale for better quality
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                letterRendering: true,
-                width: 794,  // A4 portrait width
-                height: 1123, // A4 portrait height
-                onclone: function(clonedDoc) {
-                    // Optimize cloned document for PDF
-                    const clonedCert = clonedDoc.querySelector('.certificate-template');
-                    if (clonedCert) {
-                        clonedCert.style.maxHeight = 'none';
-                        clonedCert.style.overflow = 'visible';
-                        clonedCert.style.height = 'auto';
-                    }
-                    
-                    const clonedContainer = clonedDoc.querySelector('.certificate-container-new');
-                    if (clonedContainer) {
-                        clonedContainer.style.minHeight = '1050px'; // Ensure adequate height
-                        clonedContainer.style.height = '1050px';
-                        clonedContainer.style.overflow = 'visible';
-                        clonedContainer.style.padding = '20px';
-                    }
-                    
-                    // Ensure footer content is visible
-                    const clonedFooter = clonedDoc.querySelector('.certificate-footer-new');
-                    if (clonedFooter) {
-                        clonedFooter.style.marginTop = '20px';
-                        clonedFooter.style.paddingTop = '20px';
-                        clonedFooter.style.pageBreakInside = 'avoid';
-                    }
-                    
-                    // Ensure certificate info is visible
-                    const clonedInfo = clonedDoc.querySelector('.certificate-info-new');
-                    if (clonedInfo) {
-                        clonedInfo.style.minWidth = '180px';
-                        clonedInfo.style.fontSize = '12px';
-                    }
-                    
-                    // Ensure images are properly sized
-                    const images = clonedDoc.querySelectorAll('img');
-                    images.forEach(img => {
-                        img.style.maxWidth = '100%';
-                        img.style.height = 'auto';
-                    });
-                }
-            },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait',
-                compress: true
-            },
-            pagebreak: { 
-                mode: ['avoid-all', 'css', 'legacy'] 
-            }
-        };
-
-        await html2pdf().set(opt).from(certificateElement).save();
-        showNotification('Certificate PDF downloaded successfully!', 'success');
-    }
-
+    // Generate JPG Download
     async function generateJPGDownload(certificateElement) {
-        // Create a wrapper div with equal padding for proper spacing
+        // Create a professional landscape wrapper (A4 landscape at 300 DPI)
         const wrapper = document.createElement('div');
-        wrapper.style.padding = '60px';
-        wrapper.style.backgroundColor = '#ffffff';
-        wrapper.style.display = 'inline-block';
-        wrapper.style.boxSizing = 'border-box';
-        
+        wrapper.style.cssText = `
+            width: 3508px;
+            height: 2480px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px;
+            box-sizing: border-box;
+            position: relative;
+        `;
+
+        // Add subtle background pattern
+        const backgroundPattern = document.createElement('div');
+        backgroundPattern.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        `;
+        wrapper.appendChild(backgroundPattern);
+
         // Clone the certificate element
         const clonedCert = certificateElement.cloneNode(true);
-        
-        // Style the cloned certificate for optimal capture
-        clonedCert.style.width = '1000px';
-        clonedCert.style.height = 'auto';
-        clonedCert.style.minHeight = '1400px';
-        clonedCert.style.margin = '0';
-        clonedCert.style.display = 'block';
-        clonedCert.style.boxSizing = 'border-box';
-        
-        // Append cloned certificate to wrapper
+
+        // Style the cloned certificate for professional landscape view
+        clonedCert.style.cssText = `
+            width: 3308px;
+            height: 2280px;
+            margin: 0;
+            display: block;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 
+                0 40px 80px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        `;
+
+        // Enhance certificate container for landscape layout
+        const certificateContainer = clonedCert.querySelector('.certificate-container-new');
+        if (certificateContainer) {
+            certificateContainer.style.cssText = `
+                width: 100%;
+                height: 100%;
+                padding: 80px 120px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                position: relative;
+            `;
+        }
+
+        // Enhance certificate header for landscape
+        const certificateHeader = clonedCert.querySelector('.certificate-header-new');
+        if (certificateHeader) {
+            certificateHeader.style.cssText = `
+                text-align: center;
+                margin-bottom: 40px;
+                position: relative;
+            `;
+        }
+
+        // Enhance institute logo for landscape
+        const instituteLogo = clonedCert.querySelector('.institute-logo-new');
+        if (instituteLogo) {
+            instituteLogo.style.cssText = `
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 20px;
+                display: block;
+            `;
+        }
+
+        // Enhance institute name for landscape
+        const instituteName = clonedCert.querySelector('.institute-name-new');
+        if (instituteName) {
+            instituteName.style.cssText = `
+                font-size: 80px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin: 0 0 12px 0;
+                font-family: 'Playfair Display', serif;
+                line-height: 1.2;
+            `;
+        }
+
+        // Enhance institute subtitle for landscape
+        const instituteSubtitle = clonedCert.querySelector('.institute-subtitle-new');
+        if (instituteSubtitle) {
+            instituteSubtitle.style.cssText = `
+                font-size: 20px;
+                color: #7b8a8b;
+                margin: 0 0 40px 0;
+                font-weight: 400;
+            `;
+        }
+
+        // Enhance certificate title for landscape
+        const certificateTitle = clonedCert.querySelector('.certificate-type-new');
+        if (certificateTitle) {
+            certificateTitle.style.cssText = `
+                font-size: 72px;
+                font-weight: 700;
+                color: #2c3e50;
+                letter-spacing: 3px;
+                margin: 40px 0;
+                font-family: 'Playfair Display', serif;
+                text-align: center;
+            `;
+        }
+
+        // Enhance certificate body for landscape
+        const certificateBody = clonedCert.querySelector('.certificate-body-new');
+        if (certificateBody) {
+            certificateBody.style.cssText = `
+                text-align: center;
+                margin: 50px 0;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 30px;
+            `;
+        }
+
+        // Enhance presentation text for landscape
+        const presentationText = clonedCert.querySelector('.presentation-text, .presentation-text-new');
+        if (presentationText) {
+            presentationText.style.cssText = `
+                font-size: 40px;
+                color: #5a6c7d;
+                margin: 0;
+                font-weight: 600;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance presentation subtext for landscape
+        const presentationSubtext = clonedCert.querySelector('.presentation-subtext');
+        if (presentationSubtext) {
+            presentationSubtext.style.cssText = `
+                font-size: 36px;
+                color: #64748b;
+                margin: 0;
+                font-weight: 500;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance student name for landscape
+        const studentNameEl = clonedCert.querySelector('.student-name-new');
+        if (studentNameEl) {
+            studentNameEl.style.cssText = `
+                font-size: 96px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin: 25px 0;
+                font-family: 'Playfair Display', serif;
+                line-height: 1.2;
+                text-transform: uppercase;
+            `;
+        }
+
+        // Enhance achievement text for landscape
+        const achievementText = clonedCert.querySelector('.achievement-text-new, .course-text');
+        if (achievementText) {
+            achievementText.style.cssText = `
+                font-size: 36px;
+                color: #5a6c7d;
+                margin: 0;
+                font-weight: 400;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance course name for landscape
+        const courseNameEl = clonedCert.querySelector('.course-name-new');
+        if (courseNameEl) {
+            courseNameEl.style.cssText = `
+                font-size: 72px;
+                font-weight: 600;
+                color: #3498db;
+                margin: 25px 0;
+                font-family: 'Playfair Display', serif;
+                font-style: italic;
+                line-height: 1.3;
+            `;
+        }
+
+        // Enhance completion text for landscape
+        const completionText = clonedCert.querySelector('.completion-text-new, .completion-text');
+        if (completionText) {
+            completionText.style.cssText = `
+                font-size: 32px;
+                color: #5a6c7d;
+                margin: 0;
+                font-weight: 500;
+                font-style: italic;
+            `;
+        }
+
+        // Enhance certificate footer for landscape
+        const certificateFooter = clonedCert.querySelector('.certificate-footer-new');
+        if (certificateFooter) {
+            certificateFooter.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-top: 50px;
+                padding-top: 40px;
+                border-top: 3px solid #e9ecef;
+            `;
+        }
+
+        // Enhance signature area
+        const signatureArea = clonedCert.querySelector('.signature-area-new');
+        if (signatureArea) {
+            signatureArea.style.cssText = `
+                text-align: left;
+                flex: 1;
+            `;
+        }
+
+        // Enhance signature image for landscape
+        const signatureImg = clonedCert.querySelector('.signature-img-new');
+        if (signatureImg) {
+            signatureImg.style.cssText = `
+                width: 180px;
+                height: auto;
+                margin-bottom: 12px;
+                display: block;
+            `;
+        }
+
+        // Enhance signatory info for landscape
+        const signatoryName = clonedCert.querySelector('.signatory-name-new');
+        if (signatoryName) {
+            signatoryName.style.cssText = `
+                font-size: 32px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin: 0;
+                font-family: 'Playfair Display', serif;
+            `;
+        }
+
+        const signatoryTitle = clonedCert.querySelector('.signatory-title-new');
+        if (signatoryTitle) {
+            signatoryTitle.style.cssText = `
+                font-size: 24px;
+                color: #7b8a8b;
+                margin: 0;
+                font-weight: 500;
+                text-transform: uppercase;
+            `;
+        }
+
+        // Enhance certificate info for landscape
+        const certificateInfo = clonedCert.querySelector('.certificate-info-new');
+        if (certificateInfo) {
+            certificateInfo.style.cssText = `
+                text-align: right;
+                flex: 1;
+                font-size: 16px;
+                color: #5a6c7d;
+                line-height: 1.8;
+            `;
+        }
+
+        // Enhance certificate seal for landscape
+        const certificateSeal = clonedCert.querySelector('.certificate-seal');
+        if (certificateSeal) {
+            certificateSeal.style.cssText = `
+                position: absolute;
+                top: 25px;
+                right: 25px;
+                width: 100px;
+                height: 100px;
+                background: linear-gradient(135deg, #f1c40f, #f39c12);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 6px 16px rgba(241, 196, 15, 0.4);
+            `;
+        }
+
+        // Enhance borders and decorative elements
+        const borderElements = clonedCert.querySelectorAll('.certificate-border-frame, .border-outer, .border-gold, .border-inner');
+        borderElements.forEach(border => {
+            if (border) {
+                border.style.display = 'block';
+                border.style.opacity = '1';
+            }
+        });
+
         wrapper.appendChild(clonedCert);
-        
+
         // Temporarily add wrapper to body (hidden)
         wrapper.style.position = 'absolute';
         wrapper.style.left = '-9999px';
         wrapper.style.top = '-9999px';
         document.body.appendChild(wrapper);
-        
+
         try {
-            // Enhanced Full HD JPG generation with equal border spacing
             const canvas = await html2canvas(wrapper, {
-                scale: 3, // High scale for Full HD quality
+                scale: 1.5, // Reduced scale since we're using larger dimensions
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -341,157 +560,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 letterRendering: true,
                 scrollX: 0,
                 scrollY: 0,
-                width: wrapper.offsetWidth,
-                height: wrapper.offsetHeight,
-                onclone: function(clonedDoc) {
-                    // Ensure footer content is fully visible
-                    const clonedFooter = clonedDoc.querySelector('.certificate-footer-new');
-                    if (clonedFooter) {
-                        clonedFooter.style.marginTop = '30px';
-                        clonedFooter.style.paddingTop = '25px';
-                        clonedFooter.style.position = 'relative';
-                        clonedFooter.style.pageBreakInside = 'avoid';
-                    }
-                    
-                    // Ensure certificate info is fully visible
-                    const clonedInfo = clonedDoc.querySelector('.certificate-info-new');
-                    if (clonedInfo) {
-                        clonedInfo.style.minWidth = '250px';
-                        clonedInfo.style.fontSize = '14px';
-                        clonedInfo.style.lineHeight = '1.5';
-                        clonedInfo.style.visibility = 'visible';
-                        clonedInfo.style.display = 'flex';
-                    }
-                    
-                    // Ensure signature area is visible
-                    const clonedSignature = clonedDoc.querySelector('.signature-area-new');
-                    if (clonedSignature) {
-                        clonedSignature.style.visibility = 'visible';
-                        clonedSignature.style.display = 'flex';
-                    }
-                    
-                    // Ensure all text is crisp and visible
-                    const allText = clonedDoc.querySelectorAll('*');
-                    allText.forEach(element => {
-                        element.style.webkitFontSmoothing = 'antialiased';
-                        element.style.mozOsxFontSmoothing = 'grayscale';
-                        element.style.textRendering = 'optimizeLegibility';
-                    });
-                    
-                    // Ensure images are properly sized and crisp
-                    const images = clonedDoc.querySelectorAll('img');
-                    images.forEach(img => {
-                        img.style.maxWidth = '100%';
-                        img.style.height = 'auto';
-                        img.style.imageRendering = 'crisp-edges';
-                        img.style.imageRendering = '-webkit-optimize-contrast';
-                    });
+                width: 3508,
+                height: 2480,
+                onclone: function (clonedDoc) {
+                    // Ensure all fonts are loaded
+                    const style = clonedDoc.createElement('style');
+                    style.textContent = `
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+                        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+                        * {
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                            -webkit-font-smoothing: antialiased;
+                            -moz-osx-font-smoothing: grayscale;
+                            text-rendering: optimizeLegibility;
+                        }
+                        .institute-name-new, .certificate-type-new, .student-name-new {
+                            font-family: 'Playfair Display', serif !important;
+                        }
+                    `;
+                    clonedDoc.head.appendChild(style);
                 }
             });
 
-            // Convert canvas to ultra high-quality JPG
-            const imgData = canvas.toDataURL('image/jpeg', 1.0); // Maximum quality (100%)
-            
+            // Convert canvas to high-quality JPG
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
             // Create download link
             const link = document.createElement('a');
-            link.download = `Certificate_${studentName.value.replace(/\s+/g, '_') || 'Student'}_FullHD.jpg`;
+            const studentNameForFile = studentName ? studentName.value.replace(/\s+/g, '_') : 'Student';
+            link.download = `Certificate_${studentNameForFile}_Professional.jpg`;
             link.href = imgData;
-            
+
             // Trigger download
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            showNotification('Full HD Certificate JPG downloaded successfully!', 'success');
-            
+
+            showNotification('Professional certificate downloaded successfully!', 'success');
+
         } finally {
-            // Clean up - remove the temporary wrapper
+            // Clean up
             document.body.removeChild(wrapper);
         }
     }
 
-    function showCertificatePreview() {
-        updatePreview();
-    }
-
-    function updatePreviewContent(data) {
-        console.log('updatePreviewContent called with data:', data);
-        
-        // Update certificate type
-        const certificateTypeElement = document.querySelector('.certificate-type-new');
-        if (certificateTypeElement) {
-            certificateTypeElement.textContent = `CERTIFICATE OF ${data.type.toUpperCase()}`;
-        }
-
-        // Update student name
-        const studentNameElement = document.querySelector('.student-name-new');
-        if (studentNameElement) {
-            studentNameElement.textContent = data.student.name || '[Student Name]';
-        }
-
-        // Update course name
-        const courseNameElement = document.querySelector('.course-name-new');
-        if (courseNameElement) {
-            courseNameElement.textContent = data.student.courseName || '[Course Name]';
-        }
-
-        // Update certificate ID in footer
-        const certificateStudentIdElement = document.getElementById('certificateStudentId');
-        if (certificateStudentIdElement) {
-            certificateStudentIdElement.textContent = data.certificateId || data.student.studentId || '[Certificate ID]';
-        }
-
-        // Update issue date
-        const issueDateElement = document.getElementById('issueDateNew');
-        if (issueDateElement) {
-            const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            issueDateElement.textContent = today.toLocaleDateString('en-US', options);
-        }
-
-        // Update signatory information (static for now)
-        const signatoryNameElement = document.querySelector('.signatory-name-new');
-        if (signatoryNameElement) {
-            signatoryNameElement.textContent = 'Aalekh';
-        }
-
-        const signatoryTitleElement = document.querySelector('.signatory-title-new');
-        if (signatoryTitleElement) {
-            signatoryTitleElement.textContent = 'Director';
-        }
-    }
-
-    function formatDate(dateString) {
-        // This function might not be needed if dates are removed, but keeping it for now
-        if (!dateString || dateString === '[Date]') return '[Date]';
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('en-US', options);
-    }
-
-
-     // This function might not be needed for the professional portrait if there's no verification ID displayed
-     // Keeping it in case it's used elsewhere or for future additions.
-    // function generateVerificationId(certificateId) {
-    //     // Generate a shorter verification ID based on the certificate ID
-    //     return certificateId.split('-')[0] + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-    // }
-
-    async function downloadCertificate() {
-        // Use the same optimized downloadPDF function
-        await downloadPDF();
-    }
-
+    // Print Certificate Function
     function printCertificate() {
         try {
             const certificateElement = document.querySelector('.certificate-template');
-             if (!certificateElement) {
-                 console.error('Certificate template element not found for printing.');
-                 showNotification('Error: Certificate template not found for printing.', 'error');
-                 return;
+            if (!certificateElement) {
+                showNotification('Certificate template not found for printing', 'error');
+                return;
             }
 
             const printWindow = window.open('', '_blank');
-            
+
             printWindow.document.write(`
                 <html>
                     <head>
@@ -510,13 +633,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     padding: 0;
                                     box-shadow: none;
                                     border: none;
-                                    page-break-after: avoid;
-                                    page-break-inside: avoid;
-                                }
-                                .certificate-theme-border {
-                                    border: 2px solid #2c3e50 !important;
-                                    padding: 2rem !important;
-                                    background: white !important;
                                 }
                                 * {
                                     -webkit-print-color-adjust: exact !important;
@@ -537,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </style>
                     </head>
                     <body>
-                        <div class="certificate-template"> ${certificateElement.innerHTML} </div>
+                        <div class="certificate-template">${certificateElement.innerHTML}</div>
                         <script>
                             window.onload = function() {
                                 setTimeout(function() {
@@ -551,9 +667,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     </body>
                 </html>
             `);
-             printWindow.document.close();
-
-             showNotification('Print window opened.', 'info');
+            printWindow.document.close();
+            showNotification('Print window opened', 'info');
 
         } catch (error) {
             console.error('Error printing certificate:', error);
@@ -561,41 +676,213 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Enhanced notification system
     function showNotification(message, type = 'success') {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.certificate-notification');
+        existingNotifications.forEach(notif => notif.remove());
+
         const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        
+        notification.className = `certificate-notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        // Add styles
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' :
+                type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+                    'linear-gradient(135deg, #3b82f6, #2563eb)'};
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            font-weight: 500;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        `;
+
+        const content = notification.querySelector('.notification-content');
+        content.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        `;
+
         document.body.appendChild(notification);
-        
-        // Use a small delay to allow the element to be added before adding the show class for transition
+
+        // Trigger animation
         setTimeout(() => {
-            notification.classList.add('show');
+            notification.style.transform = 'translateX(0)';
         }, 100);
 
-        // Automatically remove the notification after a few seconds
+        // Remove notification after 4 seconds
         setTimeout(() => {
-            notification.classList.remove('show');
-            // Remove the element after the transition ends
-            notification.addEventListener('transitionend', () => {
-                notification.remove();
-            });
-        }, 3000); // Notification stays for 3 seconds
+            notification.style.transform = 'translateX(120%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 4000);
     }
 
-    // Add a placeholder viewCertificateDetails function if needed for the button
-    // Keeping it in case it's called from other parts of the application
-    window.viewCertificateDetails = function(certificateId) {
-        console.log('View certificate details for ID:', certificateId);
-        // Implement logic to show certificate details or preview for a generated certificate
-        // This could involve fetching the certificate data by ID and populating the preview.
-         showNotification(`Viewing details for certificate ID: ${certificateId}`, 'info');
+    // Initialize bulk certificate functionality
+    initializeBulkCertificates();
+});
+
+// Bulk Certificate Generation Functionality
+function initializeBulkCertificates() {
+    const bulkExcelFile = document.getElementById('bulkExcelFile');
+    const uploadDropzone = document.getElementById('uploadDropzone');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFileBtn = document.getElementById('removeFile');
+    const processBulkBtn = document.getElementById('processBulkCertificates');
+    const downloadSampleBtn = document.getElementById('downloadSampleExcel');
+
+    let uploadedFile = null;
+
+    // Download sample Excel file
+    if (downloadSampleBtn) {
+        downloadSampleBtn.addEventListener('click', downloadSampleExcelFile);
+    }
+
+    // File upload handling
+    if (uploadDropzone && bulkExcelFile) {
+        uploadDropzone.addEventListener('click', () => bulkExcelFile.click());
+
+        uploadDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadDropzone.classList.add('dragover');
+        });
+
+        uploadDropzone.addEventListener('dragleave', () => {
+            uploadDropzone.classList.remove('dragover');
+        });
+
+        uploadDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadDropzone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        bulkExcelFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+    }
+
+    // Remove file
+    if (removeFileBtn) {
+        removeFileBtn.addEventListener('click', () => {
+            uploadedFile = null;
+            bulkExcelFile.value = '';
+            fileInfo.style.display = 'none';
+            uploadDropzone.style.display = 'block';
+            processBulkBtn.disabled = true;
+        });
+    }
+
+    // Process bulk certificates
+    if (processBulkBtn) {
+        processBulkBtn.addEventListener('click', processBulkCertificates);
+    }
+
+    function handleFileUpload(file) {
+        // Validate file type
+        const allowedTypes = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please upload a valid Excel file (.xlsx or .xls)');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size should be less than 5MB');
+            return;
+        }
+
+        uploadedFile = file;
+        fileName.textContent = file.name;
+        fileSize.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+
+        uploadDropzone.style.display = 'none';
+        fileInfo.style.display = 'flex';
+        processBulkBtn.disabled = false;
+    }
+
+    function downloadSampleExcelFile() {
+        // Create sample data
+        const sampleData = [
+            ['Student Name', 'Course Name', 'Student ID', 'Certificate Type'],
+            ['John Doe', 'Web Development', 'STU001', 'Completion'],
+            ['Jane Smith', 'Digital Marketing', 'STU002', 'Achievement'],
+            ['Mike Johnson', 'Data Science', 'STU003', 'Excellence']
+        ];
+
+        // Create CSV content
+        const csvContent = sampleData.map(row => row.join(',')).join('\n');
+
+        // Create download link
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Certificate_Sample_Template.csv';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        window.URL.revokeObjectURL(url);
+    }
+
+    function processBulkCertificates() {
+        alert('Bulk certificate processing functionality will be implemented soon!');
+    }
+}// D
+// ebug function to check if all elements exist
+function debugCertificateElements() {
+    console.log('=== Certificate Elements Debug ===');
+
+    const elements = {
+        'studentName': document.getElementById('studentName'),
+        'courseName': document.getElementById('courseName'),
+        'certificateType': document.getElementById('certificateType'),
+        'studentIdInput': document.getElementById('studentIdInput'),
+        'student-name-new': document.querySelector('.student-name-new'),
+        'course-name-new': document.querySelector('.course-name-new'),
+        'certificate-type-new': document.querySelector('.certificate-type-new'),
+        'certificateStudentId': document.getElementById('certificateStudentId'),
+        'issueDateNew': document.getElementById('issueDateNew')
     };
 
+    Object.entries(elements).forEach(([name, element]) => {
+        console.log(`${name}:`, element ? '✓ Found' : '✗ Missing');
+    });
 
-    // Load certificates when the page loads (Removed)
-    // loadCertificates();
+    console.log('=== End Debug ===');
+}
 
-    // Don't call updatePreview on load to avoid auto-filling data
-    // updatePreview();
+// Call debug function when page loads
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(debugCertificateElements, 1000);
 });

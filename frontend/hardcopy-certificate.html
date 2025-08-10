@@ -19,1223 +19,25 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <!-- JsBarcode -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #e9f0fa 0%, #f7fafc 100%);
-            margin: 0;
-            min-height: 100vh;
-            color: #222;
-        }
 
-        header {
-            background: #fff;
-            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
-            padding: 32px 0 18px 0;
-            text-align: center;
-            border-bottom: 1px solid #e6eaf1;
-        }
-
-        header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: #2c3e50;
-            margin-bottom: 6px;
-        }
-
-        header p {
-            color: #7b8a8b;
-            font-size: 1.1rem;
-            margin: 0;
-        }
-
-        .main-container {
-            display: flex;
-            min-height: 100vh;
-            background: none;
-        }
-
-        .side-panel {
-            background: #fff;
-            box-shadow: 2px 0 16px rgba(44, 62, 80, 0.07);
-            padding: 36px 18px 24px 18px;
-            width: 260px;
-            min-height: 100vh;
-            border-right: 1px solid #e6eaf1;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
-
-        .admin-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 12px;
-        }
-
-        .admin-avatar {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #e6eaf1;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
-        }
-
-        .admin-info h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .admin-role {
-            color: #7b8a8b;
-            font-size: 0.98rem;
-        }
-
-        .tab-btn,
-        .tab-btn.active,
-        .tab-btn:focus {
-            background: none;
-            border: none;
-            color: #34495e;
-            font-size: 1.05rem;
-            font-weight: 500;
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.2s, color 0.2s;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .tab-btn.active,
-        .tab-btn:hover {
-            background: #2980ef;
-            color: #fff;
-        }
-
-        .tab-btn i.fas {
-            color: #3498db;
-            font-size: 1.1em;
-        }
-
-        .tab-btn.active i.fas,
-        .tab-btn:hover i.fas {
-            color: #fff;
-        }
-
-        .student-section h4 {
-            color: #2c3e50;
-            font-size: 1.08rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .content-panel {
-            flex: 1;
-            padding: 0 0 0 0;
-            background: none;
-            min-height: 100vh;
-        }
-
-        .panel-header {
-            background: #fff;
-            border-bottom: 1px solid #e6eaf1;
-            padding: 32px 40px 18px 40px;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
-            border-radius: 0 0 16px 16px;
-            margin-bottom: 0;
-        }
-
-        .panel-title h2 {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .panel-title .subtitle {
-            color: #7b8a8b;
-            font-size: 1.08rem;
-            margin: 0;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
-            padding: 48px 64px 36px 64px;
-            max-width: 950px;
-            margin: 48px auto 48px auto;
-            border: 1px solid #e6eaf1;
-        }
-
-        .card h3 {
-            color: #2c3e50;
-            font-weight: 700;
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .card p {
-            color: #7b8a8b;
-            font-size: 1.08rem;
-            margin-bottom: 24px;
-        }
-
-        #certificateForm {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px 36px;
-            margin-top: 24px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            margin-bottom: 10px;
-        }
-
-        .form-group label {
-            font-size: 1.01rem;
-            color: #34495e;
-            margin-bottom: 7px;
-            font-weight: 600;
-            letter-spacing: 0.01em;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group input[type="date"],
-        .form-group input[type="file"] {
-            padding: 12px 14px;
-            border: 1.5px solid #d1d5db;
-            border-radius: 7px;
-            font-size: 1.05rem;
-            background: #f9fafb;
-            transition: border 0.2s, box-shadow 0.2s;
-            margin-bottom: 2px;
-            font-family: inherit;
-        }
-
-        .form-group input:focus {
-            border: 1.5px solid #2980ef;
-            outline: none;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            margin-bottom: 0;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            opacity: 0;
-            width: 100%;
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-input-label {
-            background: #f3f6fa;
-            border: 1.5px solid #d1d5db;
-            border-radius: 7px;
-            padding: 12px 14px;
-            font-size: 1.05rem;
-            color: #34495e;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            transition: border 0.2s;
-            font-family: inherit;
-        }
-
-        .file-input-label:hover {
-            border: 1.5px solid #2980ef;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-            margin-top: 10px;
-        }
-
-        .subjects-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-bottom: 18px;
-            margin-top: 8px;
-            background: #f9fafb;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
-        }
-
-        .subjects-table th,
-        .subjects-table td {
-            border: none;
-            padding: 10px 8px;
-            text-align: center;
-            font-size: 1.01rem;
-        }
-
-        .subjects-table th {
-            background: #eaf2fb;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-
-        .subjects-table td {
-            background: #fff;
-            color: #34495e;
-        }
-
-        .subject-row input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 8px 8px;
-            border-radius: 5px;
-            border: 1.5px solid #d1d5db;
-            background: #f9fafb;
-            font-size: 1.01rem;
-            margin-bottom: 0;
-            font-family: inherit;
-        }
-
-        .subject-row input:focus {
-            border: 1.5px solid #2980ef;
-            background: #fff;
-        }
-
-        .subject-row button {
-            background: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 6px 14px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
-        }
-
-        .subject-row button:hover {
-            background: #c0392b;
-        }
-
-        #addSubjectBtn {
-            background: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 9px 22px;
-            font-size: 1.05rem;
-            margin-top: 10px;
-            margin-bottom: 0;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-
-        #addSubjectBtn:hover {
-            background: #2980b9;
-        }
-
-        #certificateForm button[type="submit"] {
-            background: linear-gradient(90deg, #2980ef 0%, #27ae60 100%);
-            color: #fff;
-            border: none;
-            border-radius: 7px;
-            padding: 14px 0;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 18px;
-            transition: background 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
-            letter-spacing: 0.01em;
-        }
-
-        #certificateForm button[type="submit"]:hover {
-            background: linear-gradient(90deg, #27ae60 0%, #2980ef 100%);
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
-        }
-
-        @media (max-width: 900px) {
-            #certificateForm {
-                grid-template-columns: 1fr;
-            }
-
-            .card {
-                padding: 24px 8px 24px 8px;
-            }
-
-            .panel-header {
-                padding: 24px 12px 12px 12px;
-            }
-        }
-
-        /* Mobile Menu Styles */
-        .mobile-menu-toggle {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            background: #2980ef;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .mobile-menu-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .main-container {
-                flex-direction: column;
-            }
-
-            .side-panel {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                width: 280px;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s ease;
-                overflow-y: auto;
-                padding: 80px 18px 24px 18px;
-            }
-
-            .side-panel.mobile-active {
-                left: 0;
-            }
-
-            .mobile-menu-overlay.active {
-                display: block;
-            }
-
-            .content-panel {
-                padding: 80px 0 0 0;
-                width: 100%;
-            }
-
-            .card {
-                padding: 20px 16px;
-                margin: 16px;
-                border-radius: 12px;
-            }
-
-            .panel-header {
-                padding: 20px 16px 16px 16px;
-            }
-
-            .panel-header h2 {
-                font-size: 1.5rem;
-            }
-
-            /* Form improvements for mobile */
-            #certificateForm {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .form-group {
-                margin-bottom: 16px;
-            }
-
-            .form-group label {
-                font-size: 0.95rem;
-                margin-bottom: 8px;
-            }
-
-            .form-group input {
-                padding: 14px 12px;
-                font-size: 16px; /* Prevents zoom on iOS */
-                border-radius: 8px;
-            }
-
-            /* Subjects table mobile optimization */
-            .subjects-table {
-                font-size: 0.85rem;
-                overflow-x: auto;
-                display: block;
-                white-space: nowrap;
-            }
-
-            .subjects-table thead,
-            .subjects-table tbody,
-            .subjects-table th,
-            .subjects-table td,
-            .subjects-table tr {
-                display: block;
-            }
-
-            .subjects-table thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-
-            .subjects-table tr {
-                border: 1px solid #e1e4e8;
-                margin-bottom: 10px;
-                padding: 10px;
-                border-radius: 8px;
-                background: #fff;
-            }
-
-            .subjects-table td {
-                border: none;
-                position: relative;
-                padding: 8px 8px 8px 35%;
-                text-align: left;
-                white-space: normal;
-            }
-
-            .subjects-table td:before {
-                content: attr(data-label) ": ";
-                position: absolute;
-                left: 6px;
-                width: 30%;
-                padding-right: 10px;
-                white-space: nowrap;
-                font-weight: 600;
-                color: #2c3e50;
-            }
-
-            .subject-row input {
-                width: 100%;
-                margin-bottom: 8px;
-            }
-
-            /* Certificate details panel mobile */
-            .certificate-details-panel {
-                margin: 16px;
-                padding: 20px 16px;
-                border-radius: 12px;
-            }
-
-            .certificate-info-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .certificate-actions {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .action-btn {
-                justify-content: center;
-                padding: 14px 20px;
-                font-size: 16px;
-            }
-
-            /* Certificates table mobile */
-            .certificates-table-container {
-                overflow-x: auto;
-                margin: 0 -16px;
-                padding: 0 16px;
-            }
-
-            .certificates-table {
-                min-width: 600px;
-            }
-
-            /* Search and filters mobile */
-            .search-filters {
-                flex-direction: column;
-                gap: 12px;
-                align-items: stretch;
-            }
-
-            .search-input {
-                width: 100%;
-                margin-bottom: 12px;
-            }
-
-            /* Button improvements */
-            #addSubjectBtn,
-            #certificateForm button[type="submit"] {
-                width: 100%;
-                padding: 16px;
-                font-size: 16px;
-                margin-top: 16px;
-            }
-
-            /* Header mobile */
-            header {
-                padding: 20px 16px 16px 16px;
-            }
-
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            header p {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .card {
-                margin: 8px;
-                padding: 16px 12px;
-            }
-
-            .panel-header {
-                padding: 16px 12px 12px 12px;
-            }
-
-            .panel-header h2 {
-                font-size: 1.3rem;
-            }
-
-            .form-group input {
-                padding: 12px 10px;
-            }
-
-            .certificate-details-panel {
-                margin: 8px;
-                padding: 16px 12px;
-            }
-
-            .info-section {
-                padding: 16px 12px;
-            }
-
-            .action-btn {
-                padding: 12px 16px;
-                font-size: 14px;
-            }
-
-            /* Make tables more mobile-friendly */
-            .subjects-table td {
-                padding: 6px 6px 6px 30%;
-                font-size: 0.8rem;
-            }
-
-            .subjects-table td:before {
-                font-size: 0.75rem;
-            }
-        }
-
-        /* Certificate Details Panel Styles */
-        .certificate-details-panel {
-            display: block;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
-            padding: 40px;
-            margin-top: 32px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .certificate-details-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #e1e4e8;
-        }
-
-        .certificate-details-header h3 {
-            color: #2c3e50;
-            font-weight: 600;
-            font-size: 24px;
-            margin: 0;
-        }
-
-        .certificate-status {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .status-issued {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .certificate-info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .info-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #2980ef;
-        }
-
-        .info-section h4 {
-            color: #2c3e50;
-            font-weight: 600;
-            margin: 0 0 16px 0;
-            font-size: 16px;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e1e4e8;
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .info-label {
-            font-weight: 500;
-            color: #7b8a8b;
-            font-size: 14px;
-        }
-
-        .info-value {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 14px;
-            text-align: right;
-        }
-
-        .certificate-actions {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            padding-top: 24px;
-            border-top: 2px solid #e1e4e8;
-        }
-
-        .action-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-view {
-            background: #3498db;
-            color: #fff;
-        }
-
-        .btn-view:hover {
-            background: #2980b9;
-        }
-
-        .btn-download {
-            background: #27ae60;
-            color: #fff;
-        }
-
-        .btn-download:hover {
-            background: #219150;
-        }
-
-        .btn-print {
-            background: #f39c12;
-            color: #fff;
-        }
-
-        .btn-print:hover {
-            background: #e67e22;
-        }
-
-        .btn-edit {
-            background: #9b59b6;
-            color: #fff;
-        }
-
-        .btn-edit:hover {
-            background: #8e44ad;
-        }
-
-        @media (max-width: 768px) {
-            .certificate-info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .certificate-actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .card {
-                padding: 32px 16px 24px 16px;
-                max-width: 98vw;
-            }
-        }
-
-        /* Enhanced Certificate Section Styles */
-        .certificate-section {
-            max-width: 1000px;
-            margin: 32px auto;
-            padding: 0 20px;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 32px;
-            padding: 24px;
-            background: linear-gradient(135deg, #2980ef 0%, #27ae60 100%);
-            border-radius: 16px;
-            color: white;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
-        }
-
-        .section-header h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .section-header .section-subtitle {
-            margin: 0;
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        .certificate-header-left {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .certificate-header-left h4 {
-            margin: 0;
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .certificate-timestamp {
-            font-size: 0.9rem;
-            color: #7b8a8b;
-            font-weight: 400;
-        }
-
-        .certificate-info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .info-section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e1e4e8;
-        }
-
-        .info-section-header i {
-            color: #2980ef;
-            font-size: 1.2rem;
-        }
-
-        .info-section-header h5 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .info-content {
-            padding: 8px 0;
-        }
-
-        .btn-refresh {
-            background: #17a2b8;
-            color: #fff;
-        }
-
-        .btn-refresh:hover {
-            background: #138496;
-        }
-
-        /* Responsive adjustments for certificate section */
-        @media (max-width: 768px) {
-            .certificate-section {
-                padding: 0 12px;
-            }
-
-            .section-header {
-                padding: 20px 16px;
-                margin-bottom: 24px;
-            }
-
-            .section-header h3 {
-                font-size: 1.5rem;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .certificate-details-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .certificate-info-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .certificate-actions {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .action-btn {
-                justify-content: center;
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .certificate-details-panel {
-                padding: 24px 16px;
-                margin-top: 20px;
-            }
-
-            .section-header h3 {
-                font-size: 1.3rem;
-            }
-
-            .certificate-header-left h4 {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Table Styles */
-        .certificates-table-container {
-            margin-top: 24px;
-        }
-
-        .table-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 16px;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-        }
-
-        .search-box {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 12px;
-            color: #7b8a8b;
-            font-size: 14px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 10px 12px 10px 36px;
-            border: 1.5px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            background: #f9fafb;
-            transition: border 0.2s, box-shadow 0.2s;
-        }
-
-        .search-box input:focus {
-            border: 1.5px solid #2980ef;
-            outline: none;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
-        }
-
-        .table-info {
-            color: #7b8a8b;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.08);
-        }
-
-        .certificates-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            font-size: 14px;
-        }
-
-        .certificates-table th {
-            background: linear-gradient(135deg, #2980ef 0%, #27ae60 100%);
-            color: #fff;
-            padding: 16px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .certificates-table td {
-            padding: 14px 12px;
-            border-bottom: 1px solid #e1e4e8;
-            color: #2c3e50;
-            vertical-align: middle;
-        }
-
-        .certificates-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .certificates-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .certificate-id {
-            font-weight: 600;
-            color: #2980ef;
-        }
-
-        .student-name {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-issued {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-active {
-            background: #cce5ff;
-            color: #0056b3;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .table-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .table-action-btn {
-            padding: 6px 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-table-view {
-            background: #3498db;
-            color: #fff;
-        }
-
-        .btn-table-view:hover {
-            background: #2980b9;
-        }
-
-        .btn-table-download {
-            background: #27ae60;
-            color: #fff;
-        }
-
-        .btn-table-download:hover {
-            background: #219150;
-        }
-
-        .btn-table-edit {
-            background: #9b59b6;
-            color: #fff;
-        }
-
-        .btn-table-edit:hover {
-            background: #8e44ad;
-        }
-
-        .no-data-cell {
-            text-align: center;
-            padding: 60px 20px;
-            color: #7b8a8b;
-        }
-
-        .no-data-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .no-data-content i {
-            font-size: 48px;
-            color: #d1d5db;
-        }
-
-        .no-data-content p {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .no-data-content small {
-            font-size: 14px;
-            color: #7b8a8b;
-        }
-
-        .certificate-header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        /* Responsive table styles */
-        @media (max-width: 768px) {
-            .table-controls {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-            }
-
-            .search-container {
-                max-width: none;
-            }
-
-            .certificates-table {
-                font-size: 12px;
-            }
-
-            .certificates-table th,
-            .certificates-table td {
-                padding: 10px 8px;
-            }
-
-            .table-actions {
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .table-action-btn {
-                font-size: 11px;
-                padding: 4px 8px;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .certificates-table th:nth-child(3),
-            .certificates-table td:nth-child(3),
-            .certificates-table th:nth-child(5),
-            .certificates-table td:nth-child(5) {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 <body>
     <header>
-        <h1>Saha Institute of Management & Technology</h1>
-        <p>Welcome, <span id="username">aalekh</span></p>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Welcome, <span id="username">aalekh</span></p>
+            </div>
+        </div>
     </header>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     <div class="main-container">
-        <div class="side-panel">
+        <div class="side-panel" id="sidePanel">
             <div class="admin-section">
                 <div class="admin-header">
                     <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
@@ -1245,42 +47,45 @@
                     </div>
                 </div>
                 <div class="admin-menu">
-                    <button class="tab-btn" onclick="window.location.href='index.html'">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <span>Teachers</span>
-                    </button>
                 </div>
             </div>
             <div class="student-section">
                 <h4>Student Management</h4>
-                <button class="tab-btn" onclick="window.location.href='index.html'">
+                <a href="index.html" class="tab-btn">
                     <i class="fas fa-list"></i>
                     <span>List Students</span>
-                </button>
-                <button class="tab-btn" onclick="window.location.href='index.html#add-panel'">
+                </a>
+                <a href="index.html#add-panel" class="tab-btn">
                     <i class="fas fa-user-plus"></i>
                     <span>Add Student</span>
-                </button>
-                <button class="tab-btn" onclick="window.location.href='payments.html'">
+                </a>
+                <a href="index.html#payments-panel" class="tab-btn">
                     <i class="fas fa-money-bill"></i>
                     <span>Payments</span>
-                </button>
-                <button class="tab-btn" onclick="window.location.href='reports.html'">
+                </a>
+                <a href="pages/reports.html" class="tab-btn">
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span>
-                </button>
+                </a>
                 <a href="enquiry.html" class="tab-btn">
                     <i class="fas fa-question-circle"></i>
                     <span>Enquiries</span>
                 </a>
-                <a href="certificate.html" class="tab-btn">
+                <a href="certificate.html" class="tab-btn" id="certificatesMenuBtn">
                     <i class="fas fa-certificate"></i>
                     <span>Certificates</span>
+                    <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
                 </a>
-                <a href="hardcopy-certificate.html" class="tab-btn active">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Hardcopy Certificate</span>
-                </a>
+                <div id="certificatesSubMenu" style="display:block;flex-direction:column;margin-left:32px;">
+                    <a href="certificate.html" class="tab-btn" id="digitalCertBtn">
+                        <i class="fas fa-desktop"></i>
+                        <span>Digital Certificate</span>
+                    </a>
+                    <a href="hardcopy-certificate.html" class="tab-btn active" id="hardcopyCertBtn">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Hardcopy Certificate</span>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="content-panel">
@@ -1291,170 +96,333 @@
                 </div>
             </div>
             <div class="panel-content">
-                <div class="card">
-                    <h3 style="color:#2c3e50; font-weight: 600; font-size: 24px;">Hardcopy Certificate Generator</h3>
-                    <p style="color:#7b8a8b; margin-top: -2px; margin-bottom: 24px;">Fill in the details below to
-                        generate a student certificate.</p>
-                    <form id="certificateForm">
-                        <div class="form-group">
-                            <label for="registration">Registration No</label>
-                            <input type="text" id="registration" name="registration" placeholder="Registration No"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fathersname">Father's Name</label>
-                            <input type="text" id="fathersname" name="fathersname" placeholder="Father's Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="mothersname">Mother's Name</label>
-                            <input type="text" id="mothersname" name="mothersname" placeholder="Mother's Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dob">Date of Birth</label>
-                            <input type="date" id="dob" name="dob" placeholder="dd-mm-yyyy" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="rollno">Roll No</label>
-                            <input type="text" id="rollno" name="rollno" placeholder="Roll No" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="erollno">Exam Roll No</label>
-                            <input type="text" id="erollno" name="erollno" placeholder="Exam Roll No" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueSession">Issue Session</label>
-                            <input type="text" id="IssueSession" name="IssueSession"
-                                placeholder="Issue Session (e.g. 2023-24)" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="duration">Course Duration</label>
-                            <input type="text" id="duration" name="duration" placeholder="Course Duration" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="performance">Performance</label>
-                            <input type="text" id="performance" name="performance" placeholder="Performance" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="certificate">Certificate Name</label>
-                            <input type="text" id="certificate" name="certificate" placeholder="Certificate Name"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="Grade">Grade</label>
-                            <input type="text" id="Grade" name="Grade" placeholder="Grade" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueDay">Issue Day</label>
-                            <input type="number" id="IssueDay" name="IssueDay" placeholder="Issue Day (e.g. 12)"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueMonth">Issue Month</label>
-                            <input type="text" id="IssueMonth" name="IssueMonth" placeholder="Issue Month (e.g. May)"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="IssueYear">Issue Year</label>
-                            <input type="number" id="IssueYear" name="IssueYear" placeholder="Issue Year (e.g. 2024)"
-                                required>
-                        </div>
-                        <div class="form-group file-input-wrapper">
-                            <label for="photo">Photo</label>
-                            <span class="file-input-label">Choose File</span>
-                            <input type="file" id="photo" name="photo" accept="image/*">
-                        </div>
-                        <div class="full-width">
-                            <label style="font-weight:600;">Subjects (max 6):</label>
-                            <table class="subjects-table" id="subjectsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Subject Name</th>
-                                        <th>Theory</th>
-                                        <th>Practical</th>
-                                        <th>Obtained</th>
-                                        <th>Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="subjectsArea">
-                                    <!-- Subject rows will be added here -->
-                                </tbody>
-                            </table>
-                            <button type="button" id="addSubjectBtn" title="Add Subject" aria-label="Add Subject"><i
-                                    class="fas fa-plus"></i> Add Subject</button>
-                        </div>
-                        <button type="submit" class="full-width"><i class="fas fa-file-pdf"></i> Generate Certificate
-                            PDF</button>
-                    </form>
-                    <canvas id="barcodeCanvas" style="display:none"></canvas>
-                    <canvas id="watermarkCanvas" width="400" height="400" style="display:none"></canvas>
-                    <img id="qrImage" style="display:none">
-                </div>
-
-                <!-- Certificate Details Panel -->
-                <div class="certificate-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-certificate"></i> All Certificates</h3>
-                        <p class="section-subtitle">View and manage all issued certificates</p>
-                    </div>
-
-                    <div id="certificateDetailsPanel" class="certificate-details-panel">
-                        <div class="certificate-details-header">
-                            <div class="certificate-header-left">
-                                <h4>Certificate Records</h4>
-                                <span class="certificate-timestamp" id="certificateTimestamp">Last updated: Never</span>
+                <!-- Professional Hardcopy Certificate Layout -->
+                <div class="professional-hardcopy-layout">
+                    
+                    <!-- Certificate Form Section -->
+                    <div class="hardcopy-form-section">
+                        <div class="hardcopy-form-card">
+                            <div class="card-header">
+                                <div class="header-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="header-content">
+                                    <h3>Hardcopy Certificate Generator</h3>
+                                    <p>Generate professional hardcopy certificates with detailed student information</p>
+                                </div>
                             </div>
-                            <div class="certificate-header-actions">
-                                <button id="refreshCertificatesBtn" class="action-btn btn-refresh">
-                                    <i class="fas fa-sync-alt"></i>
-                                    Refresh
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="certificates-table-container">
-                            <div class="table-controls">
-                                <div class="search-container">
-                                    <div class="search-box">
-                                        <i class="fas fa-search"></i>
-                                        <input type="text" id="certificateSearchInput"
-                                            placeholder="Search certificates by name, registration, or course...">
+                            
+                            <form id="certificateForm" class="professional-hardcopy-form">
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-user-graduate"></i>
+                                        <h4>Student Information</h4>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="registration">
+                                                <i class="fas fa-id-card"></i>
+                                                Registration No *
+                                            </label>
+                                            <input type="text" id="registration" name="registration" placeholder="Enter registration number" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">
+                                                <i class="fas fa-user"></i>
+                                                Student Name *
+                                            </label>
+                                            <input type="text" id="name" name="name" placeholder="Enter student's full name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fathersname">
+                                                <i class="fas fa-male"></i>
+                                                Father's Name *
+                                            </label>
+                                            <input type="text" id="fathersname" name="fathersname" placeholder="Enter father's name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mothersname">
+                                                <i class="fas fa-female"></i>
+                                                Mother's Name *
+                                            </label>
+                                            <input type="text" id="mothersname" name="mothersname" placeholder="Enter mother's name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dob">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                Date of Birth *
+                                            </label>
+                                            <input type="date" id="dob" name="dob" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rollno">
+                                                <i class="fas fa-hashtag"></i>
+                                                Roll Number *
+                                            </label>
+                                            <input type="text" id="rollno" name="rollno" placeholder="Enter roll number" required>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="table-info">
-                                    <span id="certificateCount">0 certificates found</span>
+
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <h4>Academic Information</h4>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="erollno">
+                                                <i class="fas fa-clipboard-list"></i>
+                                                Exam Roll Number *
+                                            </label>
+                                            <input type="text" id="erollno" name="erollno" placeholder="Enter exam roll number" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IssueSession">
+                                                <i class="fas fa-calendar"></i>
+                                                Issue Session *
+                                            </label>
+                                            <input type="text" id="IssueSession" name="IssueSession" placeholder="e.g. 2023-24" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="duration">
+                                                <i class="fas fa-clock"></i>
+                                                Course Duration *
+                                            </label>
+                                            <input type="text" id="duration" name="duration" placeholder="e.g. 2 Years" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="performance">
+                                                <i class="fas fa-chart-line"></i>
+                                                Performance *
+                                            </label>
+                                            <input type="text" id="performance" name="performance" placeholder="e.g. Excellent" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="certificate">
+                                                <i class="fas fa-certificate"></i>
+                                                Certificate Name *
+                                            </label>
+                                            <input type="text" id="certificate" name="certificate" placeholder="Enter certificate/course name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Grade">
+                                                <i class="fas fa-award"></i>
+                                                Grade *
+                                            </label>
+                                            <input type="text" id="Grade" name="Grade" placeholder="e.g. A+" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <h4>Issue Information</h4>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="IssueDay">
+                                                <i class="fas fa-calendar-day"></i>
+                                                Issue Day *
+                                            </label>
+                                            <input type="number" id="IssueDay" name="IssueDay" placeholder="e.g. 12" min="1" max="31" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IssueMonth">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                Issue Month *
+                                            </label>
+                                            <select id="IssueMonth" name="IssueMonth" required>
+                                                <option value="">Select Month</option>
+                                                <option value="January">January</option>
+                                                <option value="February">February</option>
+                                                <option value="March">March</option>
+                                                <option value="April">April</option>
+                                                <option value="May">May</option>
+                                                <option value="June">June</option>
+                                                <option value="July">July</option>
+                                                <option value="August">August</option>
+                                                <option value="September">September</option>
+                                                <option value="October">October</option>
+                                                <option value="November">November</option>
+                                                <option value="December">December</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IssueYear">
+                                                <i class="fas fa-calendar"></i>
+                                                Issue Year *
+                                            </label>
+                                            <input type="number" id="IssueYear" name="IssueYear" placeholder="e.g. 2024" min="2020" max="2030" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="photo">
+                                                <i class="fas fa-image"></i>
+                                                Student Photo
+                                            </label>
+                                            <div class="file-input-wrapper">
+                                                <input type="file" id="photo" name="photo" accept="image/*">
+                                                <div class="file-input-display">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <span class="file-input-label">Choose Photo</span>
+                                                    <small>JPG, PNG (Max 2MB)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
+
+                                <div class="form-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-book"></i>
+                                        <h4>Subjects & Marks (Maximum 6 subjects)</h4>
+                                    </div>
+                                    <div class="subjects-container">
+                                        <div class="subjects-table-wrapper">
+                                            <table class="subjects-table" id="subjectsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th><i class="fas fa-book-open"></i> Subject Name</th>
+                                                        <th><i class="fas fa-pen"></i> Theory (30)</th>
+                                                        <th><i class="fas fa-flask"></i> Practical (70)</th>
+                                                        <th><i class="fas fa-calculator"></i> Total Obtained</th>
+                                                        <th><i class="fas fa-trash"></i> Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="subjectsArea">
+                                                    <!-- Subject rows will be added here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="subjects-actions">
+                                            <button type="button" id="addSubjectBtn" class="btn-add-subject">
+                                                <i class="fas fa-plus"></i>
+                                                Add Subject
+                                            </button>
+                                            <div class="subjects-info">
+                                                <small><i class="fas fa-info-circle"></i> You can add up to 6 subjects. Theory marks are out of 30, Practical marks are out of 70.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">
+                                        <i class="fas fa-file-pdf"></i>
+                                        Generate Certificate PDF
+                                    </button>
+                                    <button type="button" class="btn-secondary" onclick="document.getElementById('certificateForm').reset();">
+                                        <i class="fas fa-eraser"></i>
+                                        Clear Form
+                                    </button>
+                                    <button type="button" class="btn-outline" onclick="window.print();">
+                                        <i class="fas fa-print"></i>
+                                        Print Form
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Hidden elements for PDF generation -->
+                            <canvas id="barcodeCanvas" style="display:none"></canvas>
+                            <canvas id="watermarkCanvas" width="400" height="400" style="display:none"></canvas>
+                            <img id="qrImage" style="display:none">
+                        </div>
+                    </div>
+
+                    <!-- Certificate Management Section -->
+                    <div class="certificate-management-section">
+                        <div class="management-card">
+                            <div class="card-header">
+                                <div class="header-icon">
+                                    <i class="fas fa-list-alt"></i>
+                                </div>
+                                <div class="header-content">
+                                    <h3>Certificate Management</h3>
+                                    <p>View, manage and track all issued hardcopy certificates</p>
                                 </div>
                             </div>
 
-                            <div class="table-wrapper">
-                                <table class="certificates-table" id="certificatesTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Certificate ID</th>
-                                            <th>Student Name</th>
-                                            <th>Registration No</th>
-                                            <th>Course</th>
-                                            <th>Grade</th>
-                                            <th>Issue Date</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="certificatesTableBody">
-                                        <tr class="no-data-row">
-                                            <td colspan="8" class="no-data-cell">
-                                                <div class="no-data-content">
-                                                    <i class="fas fa-certificate"></i>
-                                                    <p>No certificates found</p>
-                                                    <small>Generate your first certificate using the form above</small>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="management-content">
+                                <div class="management-header">
+                                    <div class="management-stats">
+                                        <div class="stat-item">
+                                            <div class="stat-icon">
+                                                <i class="fas fa-certificate"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <span class="stat-number" id="certificateCount">0</span>
+                                                <span class="stat-label">Total Certificates</span>
+                                            </div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-icon">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                            <div class="stat-content">
+                                                <span class="stat-number" id="certificateTimestamp">Never</span>
+                                                <span class="stat-label">Last Updated</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="management-actions">
+                                        <button id="refreshCertificatesBtn" class="action-btn btn-refresh">
+                                            <i class="fas fa-sync-alt"></i>
+                                            Refresh Data
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="certificates-table-container">
+                                    <div class="table-controls">
+                                        <div class="search-container">
+                                            <div class="search-box">
+                                                <i class="fas fa-search"></i>
+                                                <input type="text" id="certificateSearchInput" placeholder="Search certificates by name, registration, or course...">
+                                            </div>
+                                        </div>
+                                        <div class="table-filters">
+                                            <select class="filter-select" id="statusFilter">
+                                                <option value="">All Status</option>
+                                                <option value="issued">Issued</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="active">Active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-wrapper">
+                                        <table class="certificates-table" id="certificatesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th><i class="fas fa-id-card"></i> Certificate ID</th>
+                                                    <th><i class="fas fa-user-graduate"></i> Student Name</th>
+                                                    <th><i class="fas fa-hashtag"></i> Registration No</th>
+                                                    <th><i class="fas fa-book"></i> Course</th>
+                                                    <th><i class="fas fa-award"></i> Grade</th>
+                                                    <th><i class="fas fa-calendar"></i> Issue Date</th>
+                                                    <th><i class="fas fa-info-circle"></i> Status</th>
+                                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="certificatesTableBody">
+                                                <tr class="no-data-row">
+                                                    <td colspan="8" class="no-data-cell">
+                                                        <div class="no-data-content">
+                                                            <div class="no-data-icon">
+                                                                <i class="fas fa-certificate"></i>
+                                                            </div>
+                                                            <div class="no-data-text">
+                                                                <h4>No certificates found</h4>
+                                                                <p>Generate your first certificate using the form above</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1462,6 +430,50 @@
             </div>
         </div>
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu functionality
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const sidePanel = document.getElementById('sidePanel');
+
+        if (mobileMenuToggle && mobileMenuOverlay && sidePanel) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidePanel.classList.toggle('mobile-open');
+                mobileMenuOverlay.classList.toggle('active');
+            });
+
+            mobileMenuOverlay.addEventListener('click', function() {
+                sidePanel.classList.remove('mobile-open');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        }
+
+        // Certificates submenu functionality
+        const menuBtn = document.getElementById('certificatesMenuBtn');
+        const subMenu = document.getElementById('certificatesSubMenu');
+        if(menuBtn && subMenu) {
+            // Show submenu on hover instead of click
+            menuBtn.addEventListener('mouseenter', function() {
+                subMenu.style.display = 'block';
+                this.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+            });
+            
+            // Hide submenu when mouse leaves the entire certificates section
+            const certificatesSection = menuBtn.parentElement;
+            certificatesSection.addEventListener('mouseleave', function() {
+                // Always keep submenu visible on certificate pages
+                // subMenu.style.display = 'none';
+                // menuBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+            });
+            
+            // Ensure chevron is pointing correctly on page load and submenu is visible
+            menuBtn.querySelector('.fa-chevron-down').style.transition = 'transform 0.3s';
+            menuBtn.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+            subMenu.style.display = 'block';
+        }
+    });
+    </script>
     <script src="js/hardcopy-certificate.js" defer></script>
 </body>
 

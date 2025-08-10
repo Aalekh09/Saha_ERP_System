@@ -334,32 +334,21 @@ async function saveCertificateToBackend(data) {
             remarks: `Course: ${data.certificate || 'N/A'}, Duration: ${data.duration || 'N/A'}, Grade: ${data.Grade || 'N/A'}`,
             status: "Issued",
             // Additional fields for hardcopy certificate
-            studentName: data.name || "",
-            registrationNumber: data.registration || "",
-            rollNumber: data.rollno || "",
-            examRollNumber: data.erollno || "",
-            courseDuration: data.duration || "",
-            performance: data.performance || "",
-            grade: data.Grade || "",
-            issueSession: data.IssueSession || "",
-            issueDay: data.IssueDay ? parseInt(data.IssueDay) : null,
-            issueMonth: data.IssueMonth || "",
-            issueYear: data.IssueYear ? parseInt(data.IssueYear) : null,
-            fathersName: data.fathersname || "",
-            mothersName: data.mothersname || "",
-            dateOfBirth: data.dob || ""
+            studentName: data.name,
+            registrationNumber: data.registration,
+            rollNumber: data.rollno,
+            examRollNumber: data.erollno,
+            courseDuration: data.duration,
+            performance: data.performance,
+            grade: data.Grade,
+            issueSession: data.IssueSession,
+            issueDay: parseInt(data.IssueDay),
+            issueMonth: data.IssueMonth,
+            issueYear: parseInt(data.IssueYear),
+            fathersName: data.fathersname,
+            mothersName: data.mothersname,
+            dateOfBirth: data.dob
         };
-        
-        // Validate required fields
-        if (!certificateData.type || !certificateData.studentName || !certificateData.registrationNumber) {
-            console.error('Missing required fields:', {
-                type: certificateData.type,
-                studentName: certificateData.studentName,
-                registrationNumber: certificateData.registrationNumber
-            });
-            alert('Missing required fields: Certificate type, student name, and registration number are required.');
-            return null;
-        }
         
         console.log('Sending certificate data to backend:', certificateData);
         
@@ -379,18 +368,9 @@ async function saveCertificateToBackend(data) {
             console.log('Certificate saved successfully:', savedCertificate);
             return savedCertificate.id;
         } else {
-            let errorText = '';
-            try {
-                errorText = await response.text();
-            } catch (e) {
-                errorText = 'Unable to read error response';
-            }
+            const errorText = await response.text();
             console.error('Failed to save certificate to backend. Status:', response.status);
             console.error('Error response:', errorText);
-            console.error('Request data that failed:', certificateData);
-            
-            // Show user-friendly error message
-            alert(`Failed to save certificate to backend. Status: ${response.status}\nError: ${errorText || 'Unknown error'}`);
             return null;
         }
     } catch (error) {

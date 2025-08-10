@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saha Institute of Management & Technology - Enquiries</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -37,6 +38,15 @@
                 </div>
             </div>
             <div class="student-section">
+                <h4>Navigation</h4>
+                <a href="dashboard.html" class="tab-btn">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="index.html" class="tab-btn">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
                 <h4>Enquiry Management</h4>
                 <button class="tab-btn active" data-tab="enquiry-form">
                     <i class="fas fa-question-circle"></i>
@@ -46,10 +56,6 @@
                     <i class="fas fa-list"></i>
                     <span>Enquiry List</span>
                 </button>
-                <a href="index.html" class="tab-btn">
-                    <i class="fas fa-home"></i>
-                    <span>Back to Dashboard</span>
-                </a>
             </div>
         </div>
 
@@ -175,26 +181,28 @@
                         <span id="filteredEnquiries">Showing: 0</span>
                     </div>
                     
-                    <div class="table-container">
-                        <table id="enquiriesTable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Father's Name</th>
-                                    <th>Date of Enquiry</th>
-                                    <th>Taken By</th>
-                                    <th>Phone Number</th>
-                                    <th>Course</th>
-                                    <th>Duration</th>
-                                    <th>Remarks</th>
-                                    <th>Status</th>
-                                    <th>Feedback</th>
-                                    <th>Actions</th>
-                                    <th>Convert</th>
-                                </tr>
-                            </thead>
-                            <tbody id="enquiriesTableBody"></tbody>
-                        </table>
+                    <div id="enquiries-panel">
+                        <div class="table-container">
+                            <table id="enquiriesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Father's Name</th>
+                                        <th>Date of Enquiry</th>
+                                        <th>Taken By</th>
+                                        <th>Phone Number</th>
+                                        <th>Course</th>
+                                        <th>Duration</th>
+                                        <th>Remarks</th>
+                                        <th>Status</th>
+                                        <th>Feedback</th>
+                                        <th>Actions</th>
+                                        <th>Convert</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="enquiriesTableBody"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,6 +300,7 @@
         </div>
     </div>
 
+    <script src="js/pagination.js"></script>
     <script src="js/enquiry.js"></script>
 </body>
 </html> 

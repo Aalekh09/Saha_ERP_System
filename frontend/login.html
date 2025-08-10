@@ -3,105 +3,97 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Login - Saha Institute of Management & Technology</title>
+    <title>Admin Login - Saha Institute of Management & Technology</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
-<body class="login-page">
+<body class="professional-login-page">
     <div id="notification" class="notification">
         <span id="notificationMessage"></span>
     </div>
 
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Saha Institute of Management & Technology</h1>
-            <p>Welcome to our learning platform</p>
-        </div>
-        
-        <div class="login-options">
-            <div class="login-option" id="adminOption">
-                <i class="fas fa-user-shield"></i>
-                <h2>Admin Login</h2>
-                <p>Access administrative controls</p>
+    <div class="professional-login-container">
+        <!-- Left Side - Branding & Image -->
+        <div class="login-branding">
+            <div class="branding-content">
+                <div class="institute-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Excellence in Education & Technology</p>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Comprehensive Student Management</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Advanced Analytics & Reporting</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Secure Administrative Controls</span>
+                    </div>
+                </div>
             </div>
-            <div class="login-option" id="studentOption">
-                <i class="fas fa-user-graduate"></i>
-                <h2>Student Login</h2>
-                <p>Access your learning materials</p>
+            <div class="branding-image">
+                <i class="fas fa-university"></i>
             </div>
-        </div>
-
-        <div class="login-box" id="adminLoginBox" style="display: none;">
-            <div class="login-box-header">
-                <i class="fas fa-user-shield"></i>
-                <h2>Admin Login</h2>
-            </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">
-                        <i class="fas fa-user"></i>
-                        Username
-                    </label>
-                    <input type="text" id="username" required placeholder="Enter your username" />
-                </div>
-                <div class="form-group">
-                    <label for="password">
-                        <i class="fas fa-lock"></i>
-                        Password
-                    </label>
-                    <input type="password" id="password" required placeholder="Enter your password" />
-                </div>
-                <div class="form-actions">
-                    <button type="submit" id="loginBtn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </button>
-                </div>
-                <div class="back-to-options">
-                    <button type="button" id="backBtn">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Options
-                    </button>
-                </div>
-            </form>
         </div>
 
-        <div class="login-box" id="studentLoginBox" style="display: none;">
-            <div class="login-box-header">
-                <i class="fas fa-user-graduate"></i>
-                <h2>Student Login</h2>
-            </div>
-            <form id="studentLoginForm">
-                <div class="form-group">
-                    <label for="studentUsername">
-                        <i class="fas fa-user"></i>
-                        Student ID
-                    </label>
-                    <input type="text" id="studentUsername" required placeholder="Enter your student ID" />
+        <!-- Right Side - Login Form -->
+        <div class="login-form-section">
+            <div class="login-form-container">
+                <div class="login-header">
+                    <div class="admin-badge">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h2>Administrator Login</h2>
+                    <p>Access your administrative dashboard</p>
                 </div>
-                <div class="form-group">
-                    <label for="studentPassword">
-                        <i class="fas fa-lock"></i>
-                        Password
-                    </label>
-                    <input type="password" id="studentPassword" required placeholder="Enter your password" />
-                </div>
-                <div class="form-actions">
-                    <button type="submit" id="studentLoginBtn">
+
+                <form id="loginForm" class="professional-login-form">
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input type="text" id="username" required placeholder="Enter your username" autocomplete="username" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <input type="password" id="password" required placeholder="Enter your password" autocomplete="current-password" />
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                    </div>
+
+                    <button type="submit" id="loginBtn" class="professional-login-btn">
                         <i class="fas fa-sign-in-alt"></i>
-                        Login
+                        <span>Sign In</span>
+                        <div class="btn-loader" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
                     </button>
+                </form>
+
+                <div class="login-footer">
+                    <p>© 2024 Saha Institute of Management & Technology</p>
                 </div>
-                <div class="back-to-options">
-                    <button type="button" id="studentBackBtn">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Options
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saha Institute of Management & Technology</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,13 +37,14 @@
                     </div>
                 </div>
                 <div class="admin-menu">
-                    <button class="tab-btn" data-tab="teachers">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <span>Teachers</span>
-                    </button>
                 </div>
             </div>
             <div class="student-section">
+                <h4>Navigation</h4>
+                <a href="dashboard.html" class="tab-btn">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
                 <h4>Student Management</h4>
                 <button class="tab-btn active" data-tab="list">
                     <i class="fas fa-list"></i>
@@ -60,15 +62,12 @@
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span>
                 </a>
-                <a href="pages/attendance.html" class="tab-btn" id="attendanceLink">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Attendance</span>
-                </a>
+
                 <a href="enquiry.html" class="tab-btn">
                     <i class="fas fa-question-circle"></i>
                     <span>Enquiries</span>
                 </a>
-                <a href="#" class="tab-btn" id="certificatesMenuBtn">
+                <a href="certificate.html" class="tab-btn" id="certificatesMenuBtn">
                     <i class="fas fa-certificate"></i>
                     <span>Certificates</span>
                     <i class="fas fa-chevron-down" style="margin-left:auto;"></i>
@@ -272,6 +271,30 @@
                             </div>
                         </div>
 
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-file-upload"></i>
+                                <h3>Document Upload</h3>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="tenthClassDocument">10th Class Document</label>
+                                    <input type="file" id="tenthClassDocument" accept=".pdf,.jpg,.jpeg,.png" placeholder="Upload 10th class certificate/marksheet">
+                                    <small class="form-text">Upload 10th class certificate or marksheet (PDF, JPG, PNG - Max 5MB)</small>
+                                    <div id="filePreview" class="file-preview" style="display: none;">
+                                        <div class="file-info">
+                                            <i class="fas fa-file"></i>
+                                            <span id="fileName"></span>
+                                            <span id="fileSize"></span>
+                                        </div>
+                                        <button type="button" id="removeFile" class="btn-remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                             <button type="submit" id="submitBtn" class="btn-primary">
                                 <i class="fas fa-save"></i> Add Student
@@ -378,7 +401,7 @@
                         </div>
                     </div>
                     <!-- End Payment Modal -->
-                    <div class="payments-list">
+                    <div class="payments-list" id="payments-panel">
                         <div class="table-container">
                             <table id="paymentsTable">
                                 <thead>
@@ -535,13 +558,7 @@
         <span id="notificationMessage"></span>
     </div>
 
-    <div id="maintenanceModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeMaintenanceModal">&times;</span>
-            <h2>Under Maintenance</h2>
-            <p>Teachers panel is currently under maintenance.<br>Please check back later.</p>
-        </div>
-    </div>
+
 
     <div id="idCardModal" class="modal">
         <div class="modal-content professional-id-card-modal">
@@ -637,64 +654,31 @@
         </div>
     </div>
 
-    <!-- Teachers Panel (Initially Hidden) -->
-    <div id="teachers-panel" class="tab-content">
-        <div class="panel-header">
-            <div class="panel-title">
-                <h2><i class="fas fa-chalkboard-teacher"></i> Teacher Management</h2>
-                <p class="subtitle">Manage and view teacher records</p>
-            </div>
-            <div class="panel-actions">
-                <button id="addTeacherBtn" class="action-btn primary">
-                    <i class="fas fa-user-plus"></i> Add New Teacher
-                </button>
-            </div>
-        </div>
 
-        <div class="panel-content">
-            <div id="teacher-form" class="teacher-form" style="display: none;">
-                <!-- Teacher Form -->
-            </div>
 
-            <div class="teachers-list">
-                <div class="table-container">
-                <table id="teachersTable">
-                    <thead>
-                        <tr>
-                            <th>Photo</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Qualification</th>
-                            <th>Specialization</th>
-                            <th>Joining Date</th>
-                            <th>Salary</th>
-                            <th>Status</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="teachersTableBody">
-                        <!-- Teacher rows will be loaded here by JavaScript -->
-                    </tbody>
-                </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <script src="js/pagination.js"></script>
     <script src="js/script.js"></script>
     <script>
     // Sidebar submenu toggle for Certificates
     const certMenuBtn = document.getElementById('certificatesMenuBtn');
     const certSubMenu = document.getElementById('certificatesSubMenu');
     if (certMenuBtn && certSubMenu) {
-        certMenuBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            certSubMenu.style.display = certSubMenu.style.display === 'flex' ? 'none' : 'flex';
+        // Show submenu on hover instead of click
+        certMenuBtn.addEventListener('mouseenter', function() {
+            certSubMenu.style.display = 'flex';
         });
-        // Optionally, open submenu if on certificate or hardcopy certificate page
-        if (window.location.pathname.includes('certificate.html')) {
+        
+        // Hide submenu when mouse leaves the entire certificates section
+        const certificatesSection = certMenuBtn.parentElement;
+        certificatesSection.addEventListener('mouseleave', function() {
+            // Only hide if we're not on a certificate page
+            if (!window.location.pathname.includes('certificate')) {
+                certSubMenu.style.display = 'none';
+            }
+        });
+        
+        // Always show submenu if on certificate or hardcopy certificate page
+        if (window.location.pathname.includes('certificate')) {
             certSubMenu.style.display = 'flex';
         }
     }
@@ -706,43 +690,10 @@
             alert('This is under working. Please contact admin for more details.');
         });
     }
-    // Intercept Teachers panel click globally
-    const teachersBtn = document.querySelector('.admin-menu .tab-btn[data-tab="teachers"]');
-    const teachersPanel = document.getElementById('teachers-panel');
-    const listPanel = document.getElementById('list-panel');
-    if (teachersBtn) {
-        teachersBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(function(panel) {
-                panel.classList.remove('active');
-            });
-            // Show the list students panel
-            if (listPanel) listPanel.classList.add('active');
-            // Show modal with message
-            const modal = document.getElementById('maintenanceModal');
-            if (modal) {
-                modal.style.display = 'block';
-            } else {
-                alert('Teachers panel is not available yet. It will come soon. For more details, contact admin.');
-            }
-        });
-    }
-    // Close maintenance modal logic
-    const closeMaintenanceModal = document.getElementById('closeMaintenanceModal');
-    if (closeMaintenanceModal) {
-        closeMaintenanceModal.addEventListener('click', function() {
-            const modal = document.getElementById('maintenanceModal');
-            if (modal) modal.style.display = 'none';
-        });
-    }
-    // Optional: Hide modal on outside click
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('maintenanceModal');
-        if (modal && event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+
     </script>
 </body>
-</html>
+</html>    <
+script>
+
+    </script>
