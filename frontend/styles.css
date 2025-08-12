@@ -255,7 +255,7 @@ a.tab-btn i {
 
 .search-box input {
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 2.5rem;
+    padding: var(--spacing-md) 2.5rem var(--spacing-md) 2.5rem;
     border: none;
     background: transparent;
     font-size: 0.875rem;
@@ -1263,6 +1263,30 @@ tr:last-child td {
 #clearDateFilter:hover {
     background: #dc2626;
     transform: scale(1.1);
+}
+
+#clearSearchFilter {
+    background: var(--error-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#clearSearchFilter:hover {
+    background: #dc2626;
+    transform: translateY(-50%) scale(1.1);
 }
 
 /* Badge Styles */
