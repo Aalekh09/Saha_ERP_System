@@ -302,26 +302,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize mobile menu
     initializeMobileMenu();
     
-    // Only load the charts/tables that exist in the current HTML
-    loadStudentAdmissions();
-    loadMonthlyPayments();
-    loadPendingFees();
-    // loadEnquirySummary(); // Only if you add this table to the HTML
-    
-    // Students by month picker
-    const monthPicker = document.getElementById('studentsMonthPicker');
-    if (monthPicker) {
-        monthPicker.value = getCurrentMonthString();
-        loadStudentsByMonth();
-        monthPicker.addEventListener('change', loadStudentsByMonth);
-    }
-    
-    // Pending fees month picker
-    const pendingFeesMonthPicker = document.getElementById('pendingFeesMonthPicker');
-    if (pendingFeesMonthPicker) {
-        pendingFeesMonthPicker.value = getCurrentMonthString();
-        pendingFeesMonthPicker.addEventListener('change', loadPendingFeesByMonth);
-    }
+    // Wait a bit for MonthlyAdmissionReports to initialize first
+    setTimeout(() => {
+        // Only load the charts/tables that exist in the current HTML
+        loadStudentAdmissions();
+        loadMonthlyPayments();
+        loadPendingFees();
+        // loadEnquirySummary(); // Only if you add this table to the HTML
+        
+        // Students by month picker
+        const monthPicker = document.getElementById('studentsMonthPicker');
+        if (monthPicker) {
+            monthPicker.value = getCurrentMonthString();
+            loadStudentsByMonth();
+            monthPicker.addEventListener('change', loadStudentsByMonth);
+        }
+        
+        // Pending fees month picker
+        const pendingFeesMonthPicker = document.getElementById('pendingFeesMonthPicker');
+        if (pendingFeesMonthPicker) {
+            pendingFeesMonthPicker.value = getCurrentMonthString();
+            pendingFeesMonthPicker.addEventListener('change', loadPendingFeesByMonth);
+        }
+    }, 100);
 });
 
 // Enhanced notification system
@@ -403,37 +406,55 @@ function initializeStudentAdmissionsPagination() {
     window.student_admissions_containerPagination = studentAdmissionsPagination;
 }
 
-// 1. Monthly Student Admissions
+// 1. Monthly Student Admissions - Enhanced with Interactive Reports
 async function loadStudentAdmissions() {
     try {
         const res = await fetch(`${API_BASE}/monthly-student-admissions`);
         if (!res.ok) throw new Error('Failed to fetch data');
         
         const data = await res.json();
-        const labels = data.map(row => row.month);
+        
+        // Initialize the interactive monthly reports if not already done
+        if (!window.monthlyAdmissionReports && document.getElementById('monthsGrid')) {
+            // The MonthlyAdmissionReports class will handle the interactive view
+            // This function now serves as a fallback for the table view
+        }
+        
+        // Still maintain the table view for compatibility
+        const labels = data.map(row => MonthUtils ? MonthUtils.formatMonthYear(row.month) : row.month);
         const counts = data.map(row => row.count);
         
-        // Chart
-        renderBarChart('studentAdmissionsChart', labels, counts, 'New Students');
+        // Chart (if chart element exists)
+        if (document.getElementById('studentAdmissionsChart')) {
+            renderBarChart('studentAdmissionsChart', labels, counts, 'New Students');
+        }
         
-        // Initialize pagination if not already done
-        if (!studentAdmissionsPagination) {
+        // Initialize pagination if not already done and table view is being used
+        if (!studentAdmissionsPagination && document.getElementById('studentAdmissionsTable')) {
             initializeStudentAdmissionsPagination();
         }
         
-        // Add total row to data
-        const total = counts.reduce((sum, val) => sum + val, 0);
-        const dataWithTotal = [...data, { month: 'Total', count: total, isTotal: true }];
-        
-        // Update pagination with new data
-        studentAdmissionsPagination.updateData(dataWithTotal);
+        // Update table view if it exists
+        if (studentAdmissionsPagination) {
+            // Transform data to use formatted month names
+            const formattedData = data.map(row => ({
+                ...row,
+                month: MonthUtils ? MonthUtils.formatMonthYear(row.month) : row.month
+            }));
+            
+            // Add total row to data
+            const total = counts.reduce((sum, val) => sum + val, 0);
+            const dataWithTotal = [...formattedData, { month: 'Total', count: total, isTotal: true }];
+            
+            // Update pagination with new data
+            studentAdmissionsPagination.updateData(dataWithTotal);
+        }
         
     } catch (error) {
         console.error('Error loading student admissions:', error);
-        if (!studentAdmissionsPagination) {
-            initializeStudentAdmissionsPagination();
+        if (studentAdmissionsPagination) {
+            studentAdmissionsPagination.updateData([{ month: 'Error loading data', count: 'Please check server', isError: true }]);
         }
-        studentAdmissionsPagination.updateData([{ month: 'Error loading data', count: 'Please check server', isError: true }]);
         showNotification('Error loading student admissions data', 'error');
     }
 }

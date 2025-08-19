@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Month Utils Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+        .demo { margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Month Utils Test Page</h1>
+    
+    <div class="demo">
+        <h2>Demo Usage</h2>
+        <p><strong>Current Month:</strong> <span id="currentMonth"></span></p>
+        <p><strong>Format "2024-01":</strong> <span id="formatDemo"></span></p>
+        <p><strong>Short Format "2024-06":</strong> <span id="shortFormatDemo"></span></p>
+        <p><strong>Previous Month of "2024-01":</strong> <span id="previousDemo"></span></p>
+        <p><strong>Next Month of "2023-12":</strong> <span id="nextDemo"></span></p>
+    </div>
+
+    <div id="testResults">
+        <h2>Test Results</h2>
+        <button onclick="runTests()">Run Tests</button>
+        <div id="results"></div>
+    </div>
+
+    <script src="js/monthUtils.js"></script>
+    <script src="js/monthUtils.test.js"></script>
+    <script>
+        // Demo the utilities
+        document.getElementById('currentMonth').textContent = MonthUtils.formatMonthYear(MonthUtils.getCurrentMonthString());
+        document.getElementById('formatDemo').textContent = MonthUtils.formatMonthYear('2024-01');
+        document.getElementById('shortFormatDemo').textContent = MonthUtils.formatShortMonthYear('2024-06');
+        document.getElementById('previousDemo').textContent = MonthUtils.formatMonthYear(MonthUtils.getPreviousMonth('2024-01'));
+        document.getElementById('nextDemo').textContent = MonthUtils.formatMonthYear(MonthUtils.getNextMonth('2023-12'));
+
+        function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Running tests...</p>';
+            
+            // Capture console output
+            const originalLog = console.log;
+            const originalError = console.error;
+            let output = [];
+            
+            console.log = function(...args) {
+                output.push({ type: 'log', message: args.join(' ') });
+                originalLog.apply(console, args);
+            };
+            
+            console.error = function(...args) {
+                output.push({ type: 'error', message: args.join(' ') });
+                originalError.apply(console, args);
+            };
+            
+            // Run the tests
+            const success = runMonthUtilsTests();
+            
+            // Restore console
+            console.log = originalLog;
+            console.error = originalError;
+            
+            // Display results
+            let html = '';
+            output.forEach(item => {
+                const className = item.type === 'error' ? 'fail' : 'pass';
+                html += `<div class="test-result ${className}">${item.message}</div>`;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

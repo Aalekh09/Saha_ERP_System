@@ -1006,3 +1006,525 @@ canvas {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     border-bottom: none;
 }
+/
+* Monthly Admission Reports - Enhanced Interactive Components */
+
+/* Monthly Overview Grid */
+.monthly-admissions-overview {
+    padding: 20px 0;
+}
+
+.months-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+/* Month Card Styling */
+.month-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.month-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.month-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.month-card:hover::before {
+    transform: scaleX(1);
+}
+
+.month-card:active {
+    transform: translateY(-4px) scale(1.01);
+}
+
+.month-card h3 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.month-card h3 i {
+    color: #667eea;
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.month-card .student-count {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+.month-card .student-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.month-card.no-students {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.month-card.no-students:hover {
+    transform: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+}
+
+.month-card.no-students::before {
+    display: none;
+}
+
+.month-card.no-students .student-count {
+    color: #adb5bd;
+}
+
+/* Student Details Panel */
+.student-details-panel {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    animation: slideInUp 0.4s ease-out;
+}
+
+.student-details-panel .panel-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0;
+}
+
+.student-details-panel .panel-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.student-details-panel .panel-header h3 i {
+    font-size: 1.3rem;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.back-btn i {
+    font-size: 1rem;
+}
+
+/* Students List */
+.students-list {
+    padding: 32px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.student-item {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.student-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px 0 0 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.student-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.student-item:hover::before {
+    opacity: 1;
+}
+
+.student-item:last-child {
+    margin-bottom: 0;
+}
+
+.student-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.student-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.student-field .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.student-field .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.student-field.name .value {
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.student-field.course .value {
+    color: #28a745;
+}
+
+.student-field.father .value {
+    color: #6f42c1;
+}
+
+/* Empty State for Students List */
+.students-list-empty {
+    text-align: center;
+    padding: 60px 40px;
+    color: #6c757d;
+}
+
+.students-list-empty i {
+    font-size: 4rem;
+    color: #e9ecef;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.students-list-empty h4 {
+    margin: 0 0 12px 0;
+    color: #495057;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.students-list-empty p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+/* View Toggle Button */
+.report-actions .action-btn.view-toggle {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.report-actions .action-btn.view-toggle:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+/* Loading States */
+.months-grid.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.students-list.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.students-list.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    border: 3px solid #e9ecef;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive Design for Monthly Reports */
+@media (max-width: 1200px) {
+    .months-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .months-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+    }
+    
+    .month-card {
+        padding: 20px;
+    }
+    
+    .month-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .month-card .student-count {
+        font-size: 1.8rem;
+    }
+    
+    .student-details-panel .panel-header {
+        padding: 20px 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .student-details-panel .panel-header h3 {
+        font-size: 1.3rem;
+    }
+    
+    .back-btn {
+        align-self: flex-end;
+    }
+    
+    .students-list {
+        padding: 24px 20px;
+    }
+    
+    .student-info {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .student-item {
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .months-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .month-card {
+        padding: 16px;
+    }
+    
+    .month-card h3 {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .month-card h3 i {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+    
+    .month-card .student-count {
+        font-size: 1.6rem;
+    }
+    
+    .student-details-panel .panel-header {
+        padding: 16px 20px;
+    }
+    
+    .student-details-panel .panel-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .students-list {
+        padding: 20px 16px;
+    }
+    
+    .student-item {
+        padding: 12px 16px;
+    }
+    
+    .student-field .label {
+        font-size: 0.75rem;
+    }
+    
+    .student-field .value {
+        font-size: 0.9rem;
+    }
+    
+    .student-field.name .value {
+        font-size: 1rem;
+    }
+}
+
+/* Animation Enhancements */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.month-card {
+    animation: fadeInScale 0.4s ease-out;
+}
+
+.month-card:nth-child(1) { animation-delay: 0.05s; }
+.month-card:nth-child(2) { animation-delay: 0.1s; }
+.month-card:nth-child(3) { animation-delay: 0.15s; }
+.month-card:nth-child(4) { animation-delay: 0.2s; }
+.month-card:nth-child(5) { animation-delay: 0.25s; }
+.month-card:nth-child(6) { animation-delay: 0.3s; }
+
+.student-item {
+    animation: slideInUp 0.3s ease-out;
+}
+
+.student-item:nth-child(1) { animation-delay: 0.05s; }
+.student-item:nth-child(2) { animation-delay: 0.1s; }
+.student-item:nth-child(3) { animation-delay: 0.15s; }
+.student-item:nth-child(4) { animation-delay: 0.2s; }
+.student-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* Print Styles for Monthly Reports */
+@media print {
+    .monthly-admissions-overview {
+        break-inside: avoid;
+    }
+    
+    .months-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    
+    .month-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+    
+    .month-card::before {
+        display: none;
+    }
+    
+    .student-details-panel {
+        box-shadow: none;
+        border: 2px solid #ddd;
+        break-inside: avoid;
+    }
+    
+    .student-details-panel .panel-header {
+        background: white;
+        color: black;
+        border-bottom: 2px solid #2c3e50;
+    }
+    
+    .back-btn {
+        display: none;
+    }
+    
+    .student-item {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+        margin-bottom: 8px;
+    }
+    
+    .student-item::before {
+        display: none;
+    }
+}

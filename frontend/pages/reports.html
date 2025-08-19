@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/pages/reports.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -102,16 +103,42 @@
             </div>
             <div class="panel-content">
                 <div class="reports-grid">
-                    <!-- Monthly Student Admissions -->
+                    <!-- Monthly Student Admissions - Enhanced Interactive Version -->
                     <div class="report-card">
                         <div class="report-header">
                             <h3><i class="fas fa-user-graduate"></i> Monthly Student Admissions</h3>
-                            <button class="action-btn" onclick="exportTableToExcel('studentAdmissionsTable')">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </button>
+                            <div class="report-actions">
+                                <button class="action-btn" onclick="monthlyAdmissionReports.toggleView()">
+                                    <i class="fas fa-th-large"></i> <span id="viewToggleText">Grid View</span>
+                                </button>
+                                <button class="action-btn" onclick="exportTableToExcel('studentAdmissionsTable')">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                            </div>
                         </div>
                         <div class="report-body" id="student-admissions-container">
-                            <div class="table-container">
+                            <!-- Monthly Overview Grid -->
+                            <div id="monthly-overview" class="monthly-admissions-overview">
+                                <div class="months-grid" id="monthsGrid">
+                                    <!-- Month cards will be generated dynamically -->
+                                </div>
+                            </div>
+                            
+                            <!-- Student Details Panel -->
+                            <div id="student-details-panel" class="student-details-panel" style="display: none;">
+                                <div class="panel-header">
+                                    <h3 id="selectedMonthTitle">Students Admitted</h3>
+                                    <button class="back-btn" onclick="monthlyAdmissionReports.returnToOverview()">
+                                        <i class="fas fa-arrow-left"></i> Back to Overview
+                                    </button>
+                                </div>
+                                <div class="students-list" id="studentsList">
+                                    <!-- Student details will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Traditional Table View (fallback) -->
+                            <div id="table-view" class="table-container" style="display: none;">
                                 <table class="report-table" id="studentAdmissionsTable">
                                     <thead>
                                         <tr><th>Month</th><th>New Students</th></tr>
@@ -206,6 +233,8 @@
         </div>
     </div>
     <script src="../js/pagination.js"></script>
+    <script src="../js/monthUtils.js"></script>
+    <script src="../js/monthlyAdmissionReports.js"></script>
     <script src="../js/pages/reports.js"></script>
     <script>
         // Certificates submenu functionality
