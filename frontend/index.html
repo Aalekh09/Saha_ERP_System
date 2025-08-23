@@ -433,6 +433,98 @@
                     </div>
                     <!-- End Payment Modal -->
 
+                    <!-- Edit Payment Modal -->
+                    <div id="editPaymentModal" class="modal" style="display:none;">
+                        <div class="modal-content payment-modal-upgraded">
+                            <div class="modal-header upgraded-modal-header">
+                                <div class="modal-header-left">
+                                    <div class="modal-header-icon">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="modal-header-title">
+                                        <h2><i class="fas fa-edit"></i> Edit Payment</h2>
+                                        <p class="modal-subtitle">Update payment details including receipt number</p>
+                                    </div>
+                                </div>
+                                <button class="close-btn" id="closeEditPaymentModalBtn" title="Close Edit Payment Modal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editPaymentForm" class="payment-form-upgraded">
+                                    <input type="hidden" id="editPaymentId" name="paymentId">
+                                    
+                                    <div class="form-section">
+                                        <h4 class="form-section-title"><i class="fas fa-user"></i> Student Information</h4>
+                                        <div class="form-grid-2col">
+                                            <div class="form-group">
+                                                <label for="editStudentName">Student Name</label>
+                                                <input type="text" id="editStudentName" readonly class="readonly-field">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editStudentCourse">Course</label>
+                                                <input type="text" id="editStudentCourse" readonly class="readonly-field">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h4 class="form-section-title"><i class="fas fa-receipt"></i> Payment Details</h4>
+                                        <div class="form-grid-2col">
+                                            <div class="form-group">
+                                                <label for="editReceiptNumber">Receipt Number *</label>
+                                                <input type="text" id="editReceiptNumber" name="receiptNumber" required 
+                                                       placeholder="Enter receipt number">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentAmount">Amount (₹) *</label>
+                                                <input type="number" id="editPaymentAmount" name="amount" min="0" step="0.01" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentMethod">Payment Method *</label>
+                                                <select id="editPaymentMethod" name="paymentMethod" required>
+                                                    <option value="">Select Method</option>
+                                                    <option value="Cash">Cash</option>
+                                                    <option value="Card">Card</option>
+                                                    <option value="UPI">UPI</option>
+                                                    <option value="Bank Transfer">Bank Transfer</option>
+                                                    <option value="Cheque">Cheque</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentDate">Payment Date *</label>
+                                                <input type="date" id="editPaymentDate" name="paymentDate" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentStatus">Status</label>
+                                                <select id="editPaymentStatus" name="status">
+                                                    <option value="Completed">Completed</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Failed">Failed</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentDescription">Description</label>
+                                                <input type="text" id="editPaymentDescription" name="description" 
+                                                       placeholder="Payment description (optional)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary" id="cancelEditPaymentBtn">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-save"></i> Update Payment
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Edit Payment Modal -->
+
                     <!-- Student Ledger Modal -->
                     <div id="studentLedgerModal" class="modal" style="display:none;">
                         <div class="modal-content ledger-modal">

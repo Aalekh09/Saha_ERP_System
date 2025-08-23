@@ -1193,6 +1193,9 @@ function renderPaymentRow(payment, index) {
                     <button class="btn-icon" onclick="fetchPaymentAndGenerateReceipt(${payment.id})" title="Generate Receipt">
                         <i class="fas fa-receipt"></i>
                     </button>
+                    <button class="btn-icon btn-edit" onclick="editPayment(${payment.id})" title="Edit Payment">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <button class="btn-icon btn-danger" onclick="deletePayment(${payment.id})" title="Delete Payment">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -2641,4 +2644,222 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none';
         }
     });
+});
+
+// === Edit Payment Functionality ===
+
+// Edit payment function (enhanced version is below)
+
+// Populate edit payment form with existing data
+function populateEditPaymentForm(payment) {
+    // Set payment ID
+    document.getElementById('editPaymentId').value = payment.id;
+    
+    // Set student information (readonly)
+    document.getElementById('editStudentName').value = payment.student ? payment.student.name : 'N/A';
+    document.getElementById('editStudentCourse').value = payment.student ? payment.student.courses : 'N/A';
+    
+    // Set payment details (editable)
+    document.getElementById('editReceiptNumber').value = payment.receiptNumber || '';
+    document.getElementById('editPaymentAmount').value = payment.amount || '';
+    document.getElementById('editPaymentMethod').value = payment.paymentMethod || '';
+    document.getElementById('editPaymentStatus').value = payment.status || 'Completed';
+    document.getElementById('editPaymentDescription').value = payment.description || '';
+    
+    // Set payment date
+    if (payment.paymentDate) {
+        const date = new Date(payment.paymentDate);
+        const formattedDate = date.toISOString().split('T')[0];
+        document.getElementById('editPaymentDate').value = formattedDate;
+    }
+}
+
+// Handle edit payment form submission
+async function handleEditPaymentSubmit(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const paymentId = formData.get('paymentId');
+    
+    // Build payment update object with proper validation
+    const paymentUpdate = {};
+    
+    // Only include fields that have values
+    const receiptNumber = formData.get('receiptNumber');
+    if (receiptNumber && receiptNumber.trim()) {
+        paymentUpdate.receiptNumber = receiptNumber.trim();
+    }
+    
+    const amount = formData.get('amount');
+    if (amount && !isNaN(parseFloat(amount))) {
+        paymentUpdate.amount = parseFloat(amount);
+    }
+    
+    const paymentMethod = formData.get('paymentMethod');
+    if (paymentMethod && paymentMethod.trim()) {
+        paymentUpdate.paymentMethod = paymentMethod.trim();
+    }
+    
+    const paymentDate = formData.get('paymentDate');
+    if (paymentDate) {
+        // Convert date to LocalDateTime format expected by backend
+        paymentUpdate.paymentDate = paymentDate + 'T12:00:00';
+    }
+    
+    const status = formData.get('status');
+    if (status && status.trim()) {
+        paymentUpdate.status = status.trim();
+    }
+    
+    const description = formData.get('description');
+    if (description && description.trim()) {
+        paymentUpdate.description = description.trim();
+    }
+    
+    console.log('Updating payment with data:', paymentUpdate);
+    
+    try {
+        const response = await fetch(`${PAYMENT_API_URL}/${paymentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paymentUpdate)
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server error:', errorText);
+            throw new Error(`Failed to update payment: ${response.status} - ${errorText}`);
+        }
+        
+        // Close modal
+        closeEditPaymentModal();
+        
+        // Refresh payments list
+        await fetchPayments();
+        
+        showNotification('Payment updated successfully', 'success');
+        
+    } catch (error) {
+        console.error('Error updating payment:', error);
+        showNotification('Error updating payment', 'error');
+    }
+}
+
+// Close edit payment modal (enhanced version is below)
+
+// Initialize edit payment modal event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit payment form submission
+    const editPaymentForm = document.getElementById('editPaymentForm');
+    if (editPaymentForm) {
+        editPaymentForm.addEventListener('submit', handleEditPaymentSubmit);
+    }
+    
+    // Close edit payment modal buttons
+    const closeEditPaymentModalBtn = document.getElementById('closeEditPaymentModalBtn');
+    const cancelEditPaymentBtn = document.getElementById('cancelEditPaymentBtn');
+    
+    if (closeEditPaymentModalBtn) {
+        closeEditPaymentModalBtn.addEventListener('click', closeEditPaymentModal);
+    }
+    
+    if (cancelEditPaymentBtn) {
+        cancelEditPaymentBtn.addEventListener('click', closeEditPaymentModal);
+    }
+    
+    // Close modal when clicking outside
+    const editPaymentModal = document.getElementById('editPaymentModal');
+    if (editPaymentModal) {
+        editPaymentModal.addEventListener('click', function(event) {
+            if (event.target === editPaymentModal) {
+                closeEditPaymentModal();
+            }
+        });
+    }
+});
+
+// Make edit payment function globally available
+window.editPayment = editPayment;
+
+// Enhanced modal scrolling behavior
+function enhanceModalScrolling() {
+    const editModal = document.getElementById('editPaymentModal');
+    if (editModal) {
+        // Prevent body scroll when modal is open
+        editModal.addEventListener('show', function() {
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Restore body scroll when modal is closed
+        editModal.addEventListener('hide', function() {
+            document.body.style.overflow = '';
+        });
+        
+        // Handle modal backdrop clicks
+        editModal.addEventListener('click', function(event) {
+            if (event.target === editModal) {
+                closeEditPaymentModal();
+            }
+        });
+    }
+}
+
+// Enhanced close edit payment modal with scroll restoration
+function closeEditPaymentModal() {
+    const editModal = document.getElementById('editPaymentModal');
+    editModal.style.display = 'none';
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    // Reset form
+    document.getElementById('editPaymentForm').reset();
+    
+    // Trigger hide event
+    editModal.dispatchEvent(new Event('hide'));
+}
+
+// Enhanced edit payment function with scroll management
+async function editPayment(paymentId) {
+    try {
+        // Fetch payment details
+        const response = await fetch(`${PAYMENT_API_URL}/${paymentId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch payment details');
+        }
+        
+        const payment = await response.json();
+        
+        // Populate the edit form
+        populateEditPaymentForm(payment);
+        
+        // Show the edit modal
+        const editModal = document.getElementById('editPaymentModal');
+        editModal.style.display = 'flex'; // Use flex for proper centering
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+        
+        // Trigger show event
+        editModal.dispatchEvent(new Event('show'));
+        
+        // Focus on first input after a short delay
+        setTimeout(() => {
+            const firstInput = editModal.querySelector('input:not([readonly]):not([type="hidden"])');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 300);
+        
+    } catch (error) {
+        console.error('Error fetching payment for edit:', error);
+        showNotification('Error loading payment details', 'error');
+    }
+}
+
+// Initialize enhanced modal behavior
+document.addEventListener('DOMContentLoaded', function() {
+    enhanceModalScrolling();
 });

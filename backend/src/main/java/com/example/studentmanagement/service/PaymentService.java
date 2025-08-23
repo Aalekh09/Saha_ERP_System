@@ -49,13 +49,31 @@ public class PaymentService {
     public Payment updatePayment(Long id, Payment paymentDetails) {
         Payment payment = paymentRepository.findById(id).orElse(null);
         if (payment != null) {
-            payment.setAmount(paymentDetails.getAmount());
-            payment.setPaymentMethod(paymentDetails.getPaymentMethod());
-            payment.setDescription(paymentDetails.getDescription());
-            payment.setStatus(paymentDetails.getStatus());
+            // Only update fields that are provided (not null)
+            if (paymentDetails.getAmount() != null) {
+                payment.setAmount(paymentDetails.getAmount());
+            }
+            if (paymentDetails.getPaymentMethod() != null) {
+                payment.setPaymentMethod(paymentDetails.getPaymentMethod());
+            }
+            if (paymentDetails.getDescription() != null) {
+                payment.setDescription(paymentDetails.getDescription());
+            }
+            if (paymentDetails.getStatus() != null) {
+                payment.setStatus(paymentDetails.getStatus());
+            }
             
-            // Update receipt number if manual receipt is provided
-            if (paymentDetails.getManualReceiptNumber() != null && !paymentDetails.getManualReceiptNumber().trim().isEmpty()) {
+            // Update payment date if provided
+            if (paymentDetails.getPaymentDate() != null) {
+                payment.setPaymentDate(paymentDetails.getPaymentDate());
+            }
+            
+            // Update receipt number - handle both direct receipt number and manual receipt number
+            if (paymentDetails.getReceiptNumber() != null && !paymentDetails.getReceiptNumber().trim().isEmpty()) {
+                payment.setReceiptNumber(paymentDetails.getReceiptNumber());
+                payment.setManualReceiptNumber(paymentDetails.getReceiptNumber());
+                payment.setIsManualReceipt(true);
+            } else if (paymentDetails.getManualReceiptNumber() != null && !paymentDetails.getManualReceiptNumber().trim().isEmpty()) {
                 payment.setReceiptNumber(paymentDetails.getManualReceiptNumber());
                 payment.setManualReceiptNumber(paymentDetails.getManualReceiptNumber());
                 payment.setIsManualReceipt(true);

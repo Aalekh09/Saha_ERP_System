@@ -93,10 +93,23 @@
                     <p class="subtitle">Comprehensive analytics and insights for data-driven decisions</p>
                 </div>
                 <div class="header-actions">
-                    <button class="action-btn" onclick="window.print()">
-                        <i class="fas fa-print"></i> Print Report
+                    <div class="date-range-selector">
+                        <select id="reportPeriod" class="period-select">
+                            <option value="current-month">Current Month</option>
+                            <option value="last-month">Last Month</option>
+                            <option value="last-3-months">Last 3 Months</option>
+                            <option value="last-6-months">Last 6 Months</option>
+                            <option value="current-year">Current Year</option>
+                            <option value="all-time" selected>All Time</option>
+                        </select>
+                    </div>
+                    <button class="action-btn refresh-btn" onclick="refreshAllReports()">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
-                    <button class="action-btn" onclick="exportAllReports()">
+                    <button class="action-btn print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="action-btn export-btn" onclick="exportAllReports()">
                         <i class="fas fa-download"></i> Export All
                     </button>
                 </div>
@@ -153,11 +166,32 @@
                     <div class="report-card">
                         <div class="report-header">
                             <h3><i class="fas fa-money-bill-wave"></i> Monthly Payments Collected</h3>
-                            <button class="action-btn" onclick="exportTableToExcel('monthlyPaymentsTable')">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </button>
+                            <div class="report-actions">
+                                <div class="receipt-lookup">
+                                    <input type="text" id="receiptNumberInput" placeholder="Enter receipt number..." class="receipt-input">
+                                    <button class="action-btn lookup-btn" onclick="lookupReceiptNumber()">
+                                        <i class="fas fa-search"></i> Lookup
+                                    </button>
+                                </div>
+                                <button class="action-btn" onclick="exportTableToExcel('monthlyPaymentsTable')">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                            </div>
                         </div>
                         <div class="report-body" id="monthly-payments-container">
+                            <!-- Receipt Details Panel -->
+                            <div id="receipt-details-panel" class="receipt-details-panel" style="display: none;">
+                                <div class="receipt-header">
+                                    <h4><i class="fas fa-receipt"></i> Receipt Details</h4>
+                                    <button class="close-btn" onclick="closeReceiptDetails()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="receipt-content" id="receipt-content">
+                                    <!-- Receipt details will be populated here -->
+                                </div>
+                            </div>
+                            
                             <div class="table-container">
                                 <table class="report-table" id="monthlyPaymentsTable">
                                     <thead>
