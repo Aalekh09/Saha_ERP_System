@@ -34,12 +34,13 @@
 
 /* Enhanced Panel Header */
 .panel-header {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
     color: white;
     padding: 40px;
     border-radius: 24px 24px 0 0;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .panel-header::before {
@@ -88,8 +89,9 @@
 }
 
 .panel-title h2 i {
-    color: #f093fb;
+    color: #4fd1c7;
     font-size: 2.2rem;
+    text-shadow: 0 0 20px rgba(79, 209, 199, 0.3);
 }
 
 .panel-title .subtitle {
@@ -115,16 +117,16 @@
 
 /* Ultra Professional Report Cards */
 .report-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 20px;
     box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 20px 40px rgba(0, 0, 0, 0.08),
         0 0 0 1px rgba(255, 255, 255, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(226, 232, 240, 0.5);
 }
 
 .report-card::before {
@@ -134,7 +136,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background: linear-gradient(90deg, #4fd1c7, #667eea, #764ba2, #f093fb);
 }
 
 .report-card:hover {
@@ -1005,4 +1007,1227 @@ canvas {
     font-weight: 700 !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     border-bottom: none;
+}
+/* /
+* Monthly Admission Reports - Enhanced Interactive Components */
+
+Monthly Overview Grid */
+.monthly-admissions-overview {
+    padding: 20px 0;
+}
+
+.months-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+/* Month Card Styling */
+.month-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.month-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.month-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.month-card:hover::before {
+    transform: scaleX(1);
+}
+
+.month-card:active {
+    transform: translateY(-4px) scale(1.01);
+}
+
+.month-card h3 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.month-card h3 i {
+    color: #667eea;
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.month-card .student-count {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+.month-card .student-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.month-card.no-students {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.month-card.no-students:hover {
+    transform: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+}
+
+.month-card.no-students::before {
+    display: none;
+}
+
+.month-card.no-students .student-count {
+    color: #adb5bd;
+}
+
+/* Student Details Panel */
+.student-details-panel {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    animation: slideInUp 0.4s ease-out;
+}
+
+.student-details-panel .panel-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0;
+}
+
+.student-details-panel .panel-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.student-details-panel .panel-header h3 i {
+    font-size: 1.3rem;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.back-btn i {
+    font-size: 1rem;
+}
+
+/* Students List */
+.students-list {
+    padding: 32px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.student-item {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.student-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px 0 0 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.student-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.student-item:hover::before {
+    opacity: 1;
+}
+
+.student-item:last-child {
+    margin-bottom: 0;
+}
+
+.student-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.student-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.student-field .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.student-field .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.student-field.name .value {
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.student-field.course .value {
+    color: #28a745;
+}
+
+.student-field.father .value {
+    color: #6f42c1;
+}
+
+/* Empty State for Students List */
+.students-list-empty {
+    text-align: center;
+    padding: 60px 40px;
+    color: #6c757d;
+}
+
+.students-list-empty i {
+    font-size: 4rem;
+    color: #e9ecef;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.students-list-empty h4 {
+    margin: 0 0 12px 0;
+    color: #495057;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.students-list-empty p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+/* View Toggle Button */
+.report-actions .action-btn.view-toggle {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.report-actions .action-btn.view-toggle:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+/* Loading States */
+.months-grid.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.students-list.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.students-list.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    border: 3px solid #e9ecef;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive Design for Monthly Reports */
+@media (max-width: 1200px) {
+    .months-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .months-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+    }
+    
+    .month-card {
+        padding: 20px;
+    }
+    
+    .month-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .month-card .student-count {
+        font-size: 1.8rem;
+    }
+    
+    .student-details-panel .panel-header {
+        padding: 20px 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .student-details-panel .panel-header h3 {
+        font-size: 1.3rem;
+    }
+    
+    .back-btn {
+        align-self: flex-end;
+    }
+    
+    .students-list {
+        padding: 24px 20px;
+    }
+    
+    .student-info {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .student-item {
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .months-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .month-card {
+        padding: 16px;
+    }
+    
+    .month-card h3 {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .month-card h3 i {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+    
+    .month-card .student-count {
+        font-size: 1.6rem;
+    }
+    
+    .student-details-panel .panel-header {
+        padding: 16px 20px;
+    }
+    
+    .student-details-panel .panel-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .students-list {
+        padding: 20px 16px;
+    }
+    
+    .student-item {
+        padding: 12px 16px;
+    }
+    
+    .student-field .label {
+        font-size: 0.75rem;
+    }
+    
+    .student-field .value {
+        font-size: 0.9rem;
+    }
+    
+    .student-field.name .value {
+        font-size: 1rem;
+    }
+}
+
+/* Animation Enhancements */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.month-card {
+    animation: fadeInScale 0.4s ease-out;
+}
+
+.month-card:nth-child(1) { animation-delay: 0.05s; }
+.month-card:nth-child(2) { animation-delay: 0.1s; }
+.month-card:nth-child(3) { animation-delay: 0.15s; }
+.month-card:nth-child(4) { animation-delay: 0.2s; }
+.month-card:nth-child(5) { animation-delay: 0.25s; }
+.month-card:nth-child(6) { animation-delay: 0.3s; }
+
+.student-item {
+    animation: slideInUp 0.3s ease-out;
+}
+
+.student-item:nth-child(1) { animation-delay: 0.05s; }
+.student-item:nth-child(2) { animation-delay: 0.1s; }
+.student-item:nth-child(3) { animation-delay: 0.15s; }
+.student-item:nth-child(4) { animation-delay: 0.2s; }
+.student-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* Print Styles for Monthly Reports */
+@media print {
+    .monthly-admissions-overview {
+        break-inside: avoid;
+    }
+    
+    .months-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    
+    .month-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+    
+    .month-card::before {
+        display: none;
+    }
+    
+    .student-details-panel {
+        box-shadow: none;
+        border: 2px solid #ddd;
+        break-inside: avoid;
+    }
+    
+    .student-details-panel .panel-header {
+        background: white;
+        color: black;
+        border-bottom: 2px solid #2c3e50;
+    }
+    
+    .back-btn {
+        display: none;
+    }
+    
+    .student-item {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+        margin-bottom: 8px;
+    }
+    
+    .student-item::before {
+        display: none;
+    }
+}
+/* / */
+* Receipt Lookup Functionality */
+.receipt-lookup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.receipt-lookup:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.receipt-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2c3e50;
+    min-width: 200px;
+}
+
+.receipt-input::placeholder {
+    color: #6c757d;
+    font-weight: 400;
+}
+
+.lookup-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    padding: 10px 16px;
+    font-size: 0.85rem;
+}
+
+.lookup-btn:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+/* Receipt Details Panel */
+.receipt-details-panel {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 2px solid #e9ecef;
+    animation: slideInDown 0.4s ease-out;
+}
+
+.receipt-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.receipt-header h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.receipt-header h4 i {
+    font-size: 1.1rem;
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.receipt-content {
+    padding: 24px;
+}
+
+/* Student Details in Receipt */
+.student-details-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+.student-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.detail-value.highlight {
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.detail-value.amount {
+    color: #28a745;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Payment Details */
+.payment-details-card {
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px solid #d4edda;
+}
+
+.payment-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+/* Error State */
+.receipt-error {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border: 2px solid #f5c6cb;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.receipt-error i {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    display: block;
+    color: #dc3545;
+}
+
+.receipt-error h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.receipt-error p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Loading State */
+.receipt-loading {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.receipt-loading i {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: block;
+    color: #667eea;
+    animation: spin 1s linear infinite;
+}
+
+.receipt-loading h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.receipt-loading p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Design for Receipt Lookup */
+@media (max-width: 768px) {
+    .receipt-lookup {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .receipt-input {
+        min-width: auto;
+        text-align: center;
+    }
+    
+    .lookup-btn {
+        justify-content: center;
+    }
+    
+    .receipt-header {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .close-btn {
+        align-self: flex-end;
+    }
+    
+    .receipt-content {
+        padding: 20px 16px;
+    }
+    
+    .student-details-grid,
+    .payment-details-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .receipt-lookup {
+        padding: 8px;
+    }
+    
+    .receipt-input {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+    }
+    
+    .lookup-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .receipt-header {
+        padding: 12px 16px;
+    }
+    
+    .receipt-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .receipt-content {
+        padding: 16px 12px;
+    }
+    
+    .student-details-card,
+    .payment-details-card {
+        padding: 16px;
+    }
+}
+
+/* Enhanced Professional Styling */
+.report-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.report-actions > * {
+    flex-shrink: 0;
+}
+
+/* Make receipt lookup more prominent */
+.receipt-lookup {
+    order: -1; /* Place it first in the actions */
+    flex: 1;
+    max-width: 300px;
+}
+
+/* Enhanced hover effects */
+.receipt-details-panel:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.student-details-card:hover,
+.payment-details-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Professional status indicators */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-indicator.paid {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-indicator.pending {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-indicator.overdue {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}/*
+ Enhanced Header Actions */
+.header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+}
+
+.date-range-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.period-select {
+    padding: 12px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    min-width: 150px;
+}
+
+.period-select:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.period-select option {
+    background: #2c3e50;
+    color: white;
+    padding: 8px;
+}
+
+/* Specialized Action Buttons */
+.refresh-btn {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.refresh-btn:hover {
+    background: linear-gradient(135deg, #138496 0%, #17a2b8 100%);
+    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.4);
+}
+
+.print-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.print-btn:hover {
+    background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+/* Enhanced Report Statistics */
+.report-stat {
+    background: linear-gradient(135deg, #4fd1c7 0%, #667eea 100%);
+    color: white;
+    padding: 20px 28px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(79, 209, 199, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.report-stat::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Professional Loading States */
+.report-card.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.report-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    border: 3px solid #e9ecef;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10;
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 768px) {
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    
+    .date-range-selector {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .period-select {
+        width: 100%;
+        min-width: 0;
+        font-size: 0.85rem;
+        padding: 10px 12px;
+    }
+    
+    .header-actions .action-btn {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        min-width: 0;
+    }
+    
+    .header-actions .action-btn span {
+        display: none;
+    }
+    
+    .header-actions .action-btn i {
+        margin: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .date-range-selector {
+        width: 100%;
+    }
+    
+    .header-actions .action-btn {
+        justify-content: center;
+        padding: 12px;
+    }
+    
+    .header-actions .action-btn span {
+        display: inline;
+        margin-left: 8px;
+    }
+}
+
+/* Professional Data Visualization Enhancements */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+/* Enhanced Table Styling */
+.report-table thead th {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 24px;
+    border: none;
+    position: relative;
+}
+
+.report-table thead th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4fd1c7, #667eea);
+}
+
+/* Professional Hover Effects */
+.report-table tbody tr:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    transform: translateX(4px);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Enhanced Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.completed {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-badge.pending {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-badge.overdue {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Professional Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.report-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.report-card:nth-child(1) { animation-delay: 0.1s; }
+.report-card:nth-child(2) { animation-delay: 0.2s; }
+.report-card:nth-child(3) { animation-delay: 0.3s; }
+.report-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Enhanced Print Styles */
+@media print {
+    .header-actions,
+    .action-btn,
+    .receipt-lookup,
+    .close-btn {
+        display: none !important;
+    }
+    
+    .panel-header {
+        background: white !important;
+        color: black !important;
+        border-bottom: 4px solid #2c3e50;
+    }
+    
+    .panel-title h2 {
+        color: #2c3e50 !important;
+        text-shadow: none !important;
+    }
+    
+    .panel-title h2 i {
+        color: #667eea !important;
+        text-shadow: none !important;
+    }
+    
+    .report-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 2px solid #e2e8f0 !important;
+        margin-bottom: 30px;
+    }
+    
+    .report-card::before {
+        display: none !important;
+    }
+    
+    .report-header {
+        background: white !important;
+        color: #2c3e50 !important;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .report-table thead th {
+        background: white !important;
+        color: #2c3e50 !important;
+        border-bottom: 3px solid #2c3e50 !important;
+    }
+    
+    .report-table thead th::after {
+        display: none !important;
+    }
 }

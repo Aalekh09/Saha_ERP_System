@@ -9,13 +9,11 @@ import com.example.studentmanagement.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,8 +35,7 @@ public class ReportController {
                 .filter(s -> s.getAdmissionDate() != null)
                 .collect(Collectors.groupingBy(
                         s -> YearMonth.from(s.getAdmissionDate()),
-                        Collectors.counting()
-                ));
+                        Collectors.counting()));
         // Get last 12 months
         List<YearMonth> last12Months = new ArrayList<>();
         YearMonth now = YearMonth.now();
@@ -63,8 +60,7 @@ public class ReportController {
                 .filter(p -> p.getPaymentDate() != null)
                 .collect(Collectors.groupingBy(
                         p -> YearMonth.from(p.getPaymentDate().toLocalDate()),
-                        Collectors.summingDouble(Payment::getAmount)
-                ));
+                        Collectors.summingDouble(Payment::getAmount)));
         // Get last 12 months
         List<YearMonth> last12Months = new ArrayList<>();
         YearMonth now = YearMonth.now();
@@ -105,11 +101,11 @@ public class ReportController {
         if (month == null || month.isEmpty()) {
             return getPendingFees();
         }
-        
+
         YearMonth yearMonth = YearMonth.parse(month);
         List<Student> students = studentRepository.findAll();
         List<Map<String, Object>> result = new ArrayList<>();
-        
+
         for (Student s : students) {
             if (s.getRemainingAmount() != null && s.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0) {
                 // Check if student was admitted in the specified month
@@ -134,8 +130,7 @@ public class ReportController {
                 .filter(e -> e.getDateOfEnquiry() != null)
                 .collect(Collectors.groupingBy(
                         e -> YearMonth.from(e.getDateOfEnquiry()),
-                        Collectors.counting()
-                ));
+                        Collectors.counting()));
         // Get last 12 months
         List<YearMonth> last12Months = new ArrayList<>();
         YearMonth now = YearMonth.now();
@@ -169,4 +164,63 @@ public class ReportController {
                 })
                 .collect(Collectors.toList());
     }
-} 
+
+    // 6. Receipt Lookup - Find student details by receipt number
+    @GetMapping("/receipt-lookup")
+    public Map<String, Object> lookupReceipt(@RequestParam String receiptNumber) {
+        Map<String, Object> response = new HashMap<>();
+
+        if (receiptNumber == null || receiptNumber.trim().isEmpty()) {
+            response.put("found", false);
+            response.put("error", "Receipt number is required");
+            return response;
+        }
+
+        // Find payment by receipt number
+        Optional<Payment> paymentOpt = paymentRepository.findAll().stream()
+                .filter(p -> receiptNumber.trim().equalsIgnoreCase(p.getReceiptNumber()))
+                .findFirst();
+
+        if (!paymentOpt.isPresent()) {
+            response.put("found", false);
+            response.put("receiptNumber", receiptNumber.trim());
+            return response;
+        }
+
+        Payment payment = paymentOpt.get();
+        Student student = payment.getStudent();
+
+        if (student == null) {
+            response.put("found", false);
+            response.put("error", "Student information not found for this receipt");
+            return response;
+        }
+
+        // Build receipt details
+        Map<String, Object> receiptDetails = new HashMap<>();
+        receiptDetails.put("receiptNumber", payment.getReceiptNumber());
+        receiptDetails.put("amount", payment.getAmount());
+        receiptDetails.put("paymentDate", payment.getPaymentDate());
+        receiptDetails.put("paymentMethod", payment.getPaymentMethod());
+        receiptDetails.put("description", payment.getDescription());
+        receiptDetails.put("status", payment.getStatus());
+
+        // Build student details
+        Map<String, Object> studentDetails = new HashMap<>();
+        studentDetails.put("id", student.getId());
+        studentDetails.put("name", student.getName());
+        studentDetails.put("fatherName", student.getFatherName());
+        studentDetails.put("contactNumber", student.getPhoneNumber());
+        studentDetails.put("email", student.getEmail());
+        studentDetails.put("courses", student.getCourses());
+        studentDetails.put("admissionDate", student.getAdmissionDate());
+        studentDetails.put("totalCourseFee", student.getTotalCourseFee());
+        studentDetails.put("remainingAmount", student.getRemainingAmount());
+
+        response.put("found", true);
+        response.put("receipt", receiptDetails);
+        response.put("student", studentDetails);
+
+        return response;
+    }
+}

@@ -142,12 +142,6 @@ function applyFilters() {
     const selectedDate = dateFilter.value;
     const searchTerm = searchEnquiryInput.value.toLowerCase();
 
-    // If both filters are empty, reload fresh data from server
-    if (!selectedDate && !searchTerm) {
-        fetchEnquiries();
-        return;
-    }
-
     let filteredEnquiries = allEnquiries;
 
     // Apply date filter
@@ -189,31 +183,8 @@ function updateStats(total, filtered) {
 
 // Search functionality
 searchEnquiryInput.addEventListener('input', (e) => {
-    const clearSearchBtn = document.getElementById('clearSearchFilter');
-    
-    // Show/hide clear button based on input content
-    if (e.target.value.trim()) {
-        clearSearchBtn.style.display = 'block';
-    } else {
-        clearSearchBtn.style.display = 'none';
-    }
-    
-    // Small delay to avoid too many API calls while typing
-    clearTimeout(window.searchTimeout);
-    window.searchTimeout = setTimeout(() => {
-        applyFilters();
-    }, 300);
+    applyFilters();
 });
-
-// Clear search filter functionality
-const clearSearchFilter = document.getElementById('clearSearchFilter');
-if (clearSearchFilter) {
-    clearSearchFilter.addEventListener('click', () => {
-        searchEnquiryInput.value = '';
-        clearSearchFilter.style.display = 'none';
-        applyFilters(); // This will trigger fetchEnquiries() since search is now empty
-    });
-}
 
 // Fetch and display enquiries
 async function fetchEnquiries() {
@@ -221,17 +192,7 @@ async function fetchEnquiries() {
         const response = await fetch(API_URL);
         const enquiries = await response.json();
         allEnquiries = enquiries; // Store all enquiries
-        
-        // If no filters are active, display all enquiries directly
-        const selectedDate = dateFilter.value;
-        const searchTerm = searchEnquiryInput.value.toLowerCase();
-        
-        if (!selectedDate && !searchTerm) {
-            displayEnquiries(enquiries);
-            updateStats(enquiries.length, enquiries.length);
-        } else {
-            applyFilters(); // Apply current filters
-        }
+        applyFilters(); // Apply current filters
     } catch (error) {
         console.error('Error fetching enquiries:', error);
         showNotification('Error fetching enquiries', true);
@@ -775,13 +736,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize character counter when DOM is loaded
     initializeCharacterCounter();
-    
-    // Initialize clear search button visibility
-    const clearSearchBtn = document.getElementById('clearSearchFilter');
-    const searchInput = document.getElementById('searchEnquiryInput');
-    if (clearSearchBtn && searchInput) {
-        clearSearchBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
-    }
 });
     // / Initialize feedback modal scrolling functionality
 function initializeFeedbackModalScrolling() {

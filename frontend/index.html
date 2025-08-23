@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,16 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"
+        onerror="this.onerror=null;this.href='libs/fallback-fonts.css';">
+    <link rel="stylesheet" href="libs/fallback-fonts.css">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" id="font-awesome-css">
+    <link rel="stylesheet" href="libs/offline-styles.css">
+    <script src="libs/offline-handler.js"></script>
+    <script src="libs/font-awesome-fallback.js"></script>
 </head>
+
 <body>
     <header>
         <div class="header-content">
@@ -25,7 +32,7 @@
     </header>
 
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-    
+
     <div class="main-container">
         <div class="side-panel" id="sidePanel">
             <div class="admin-section">
@@ -58,6 +65,7 @@
                     <i class="fas fa-money-bill"></i>
                     <span>Payments</span>
                 </button>
+
                 <a href="pages/reports.html" class="tab-btn">
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span>
@@ -115,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="panel-content">
                     <div class="list-stats">
                         <div class="stat-card">
@@ -146,7 +154,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="students-section">
                         <div class="table-container">
                             <table id="studentsTable">
@@ -178,7 +186,7 @@
                 <div class="panel-content">
                     <form id="studentForm" class="professional-form">
                         <input type="hidden" id="studentId">
-                        
+
                         <div class="form-section">
                             <div class="section-header">
                                 <i class="fas fa-user"></i>
@@ -220,12 +228,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="phoneNumber">Phone Number *</label>
-                                    <input type="tel" id="phoneNumber" required placeholder="Enter phone number" pattern="[0-9]{10}">
+                                    <input type="tel" id="phoneNumber" required placeholder="Enter phone number"
+                                        pattern="[0-9]{10}">
                                     <small class="form-text">Enter 10-digit mobile number</small>
                                 </div>
                                 <div class="form-group full-width">
                                     <label for="address">Address *</label>
-                                    <textarea id="address" required placeholder="Enter complete address" rows="2"></textarea>
+                                    <textarea id="address" required placeholder="Enter complete address"
+                                        rows="2"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -266,7 +276,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="totalCourseFee">Total Course Fee (₹) *</label>
-                                    <input type="number" id="totalCourseFee" min="0" step="0.01" required placeholder="Enter amount">
+                                    <input type="number" id="totalCourseFee" min="0" step="0.01" required
+                                        placeholder="Enter amount">
                                 </div>
                             </div>
                         </div>
@@ -279,8 +290,10 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="tenthClassDocument">10th Class Document</label>
-                                    <input type="file" id="tenthClassDocument" accept=".pdf,.jpg,.jpeg,.png" placeholder="Upload 10th class certificate/marksheet">
-                                    <small class="form-text">Upload 10th class certificate or marksheet (PDF, JPG, PNG - Max 5MB)</small>
+                                    <input type="file" id="tenthClassDocument" accept=".pdf,.jpg,.jpeg,.png"
+                                        placeholder="Upload 10th class certificate/marksheet">
+                                    <small class="form-text">Upload 10th class certificate or marksheet (PDF, JPG, PNG -
+                                        Max 5MB)</small>
                                     <div id="filePreview" class="file-preview" style="display: none;">
                                         <div class="file-info">
                                             <i class="fas fa-file"></i>
@@ -327,6 +340,18 @@
                     </div>
                 </div>
                 <div class="panel-content">
+                    <!-- Payment Tab Navigation -->
+                    <div class="payment-tabs">
+                        <button class="payment-tab-btn active" data-tab="payment-list">
+                            <i class="fas fa-list"></i>
+                            <span>Payment List</span>
+                        </button>
+                        <button class="payment-tab-btn" data-tab="student-ledger">
+                            <i class="fas fa-book"></i>
+                            <span>Student Ledger</span>
+                        </button>
+                    </div>
+
                     <!-- Payment Modal (hidden by default) -->
                     <div id="addPaymentModal" class="modal" style="display:none;">
                         <div class="modal-content payment-modal-upgraded">
@@ -337,7 +362,8 @@
                                     </div>
                                     <div class="modal-header-title">
                                         <h2><i class="fas fa-plus-circle"></i> Add New Payment</h2>
-                                        <p class="modal-subtitle">Fill in the details to record a new payment for a student.</p>
+                                        <p class="modal-subtitle">Fill in the details to record a new payment for a
+                                            student.</p>
                                     </div>
                                 </div>
                                 <button class="close-btn" id="closeAddPaymentModalBtn" title="Close Add Payment Modal">
@@ -358,17 +384,20 @@
                                         <h4 class="form-section-title"><i class="fas fa-user"></i> Student</h4>
                                         <div class="form-group">
                                             <label for="studentSearchInput">Search Student:</label>
-                                            <input type="text" id="studentSearchInput" placeholder="Type to search by name or ID...">
+                                            <input type="text" id="studentSearchInput"
+                                                placeholder="Type to search by name or ID...">
                                         </div>
                                         <div class="form-group">
                                             <label for="studentSelect" id="studentSelectLabel">Student:</label>
-                                            <select id="studentSelect" required title="Select Student" aria-labelledby="studentSelectLabel">
+                                            <select id="studentSelect" required title="Select Student"
+                                                aria-labelledby="studentSelectLabel">
                                                 <option value="">Select Student</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-section">
-                                        <h4 class="form-section-title"><i class="fas fa-rupee-sign"></i> Payment Details</h4>
+                                        <h4 class="form-section-title"><i class="fas fa-rupee-sign"></i> Payment Details
+                                        </h4>
                                         <div class="form-grid-2col">
                                             <div class="form-group">
                                                 <label for="amount">Amount:</label>
@@ -387,6 +416,20 @@
                                                 <input type="text" id="description" required>
                                             </div>
                                         </div>
+                                        <div class="form-grid-2col">
+                                            <div class="form-group">
+                                                <label for="receiptType">Receipt Number:</label>
+                                                <select id="receiptType" onchange="toggleReceiptInput()">
+                                                    <option value="auto">Auto Generate</option>
+                                                    <option value="manual">Manual Entry</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" id="manualReceiptGroup" style="display: none;">
+                                                <label for="manualReceiptNumber">Manual Receipt No:</label>
+                                                <input type="text" id="manualReceiptNumber"
+                                                    placeholder="Enter receipt number">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-actions upgraded-form-actions">
                                         <button type="submit" class="btn-primary">
@@ -401,26 +444,260 @@
                         </div>
                     </div>
                     <!-- End Payment Modal -->
-                    <div class="payments-list" id="payments-panel">
-                        <div class="table-container">
-                            <table id="paymentsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Receipt No</th>
-                                        <th>Student</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+
+                    <!-- Edit Payment Modal -->
+                    <div id="editPaymentModal" class="modal" style="display:none;">
+                        <div class="modal-content payment-modal-upgraded">
+                            <div class="modal-header upgraded-modal-header">
+                                <div class="modal-header-left">
+                                    <div class="modal-header-icon">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="modal-header-title">
+                                        <h2><i class="fas fa-edit"></i> Edit Payment</h2>
+                                        <p class="modal-subtitle">Update payment details including receipt number</p>
+                                    </div>
+                                </div>
+                                <button class="close-btn" id="closeEditPaymentModalBtn" title="Close Edit Payment Modal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editPaymentForm" class="payment-form-upgraded">
+                                    <input type="hidden" id="editPaymentId" name="paymentId">
+                                    
+                                    <div class="form-section">
+                                        <h4 class="form-section-title"><i class="fas fa-user"></i> Student Information</h4>
+                                        <div class="form-grid-2col">
+                                            <div class="form-group">
+                                                <label for="editStudentName">Student Name</label>
+                                                <input type="text" id="editStudentName" readonly class="readonly-field">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editStudentCourse">Course</label>
+                                                <input type="text" id="editStudentCourse" readonly class="readonly-field">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h4 class="form-section-title"><i class="fas fa-receipt"></i> Payment Details</h4>
+                                        <div class="form-grid-2col">
+                                            <div class="form-group">
+                                                <label for="editReceiptNumber">Receipt Number *</label>
+                                                <input type="text" id="editReceiptNumber" name="receiptNumber" required 
+                                                       placeholder="Enter receipt number">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentAmount">Amount (₹) *</label>
+                                                <input type="number" id="editPaymentAmount" name="amount" min="0" step="0.01" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentMethod">Payment Method *</label>
+                                                <select id="editPaymentMethod" name="paymentMethod" required>
+                                                    <option value="">Select Method</option>
+                                                    <option value="Cash">Cash</option>
+                                                    <option value="Card">Card</option>
+                                                    <option value="UPI">UPI</option>
+                                                    <option value="Bank Transfer">Bank Transfer</option>
+                                                    <option value="Cheque">Cheque</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentDate">Payment Date *</label>
+                                                <input type="date" id="editPaymentDate" name="paymentDate" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentStatus">Status</label>
+                                                <select id="editPaymentStatus" name="status">
+                                                    <option value="Completed">Completed</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Failed">Failed</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editPaymentDescription">Description</label>
+                                                <input type="text" id="editPaymentDescription" name="description" 
+                                                       placeholder="Payment description (optional)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary" id="cancelEditPaymentBtn">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-save"></i> Update Payment
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Edit Payment Modal -->
+
+                    <!-- Student Ledger Modal -->
+                    <div id="studentLedgerModal" class="modal" style="display:none;">
+                        <div class="modal-content ledger-modal">
+                            <div class="modal-header">
+                                <div class="modal-header-left">
+                                    <div class="modal-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="modal-header-title">
+                                        <h2><i class="fas fa-book"></i> Student Payment Ledger</h2>
+                                        <p class="modal-subtitle" id="ledgerModalSubtitle">Payment history for student
+                                        </p>
+                                    </div>
+                                </div>
+                                <button class="close-btn" id="closeLedgerModalBtn" title="Close Ledger Modal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="student-info-card">
+                                    <div class="student-avatar">
+                                        <i class="fas fa-user-graduate"></i>
+                                    </div>
+                                    <div class="student-details">
+                                        <h3 id="ledgerStudentName">Student Name</h3>
+                                        <p id="ledgerStudentId">ID: </p>
+                                    </div>
+                                    <div class="payment-summary">
+                                        <div class="summary-item">
+                                            <span class="label">Total Paid:</span>
+                                            <span class="value" id="totalPaid">₹0</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="label">Total Payments:</span>
+                                            <span class="value" id="totalPayments">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ledger-table-container">
+                                    <table id="studentLedgerTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Receipt No</th>
+                                                <th>Description</th>
+                                                <th>Method</th>
+                                                <th>Amount</th>
+                                                <th>Status</th>
+                                                <th>Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Student Ledger Modal -->
+                    
+                    <!-- Payment List Tab Content -->
+                    <div id="payment-list-content" class="payment-tab-content active">
+                        <div class="payments-list">
+                            <div class="table-container">
+                                <table id="paymentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>Student</th>
+                                            <th>Amount</th>
+                                            <th>Method</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Ledger Tab Content -->
+                    <div id="student-ledger-content" class="payment-tab-content">
+                        <div class="student-ledger-container">
+                            <!-- Ledger Header -->
+                            <div class="ledger-header">
+                                <div class="ledger-controls">
+                                    <div class="ledger-search-container">
+                                        <div class="ledger-search-box">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" id="ledgerSearchInput" class="ledger-search-input" 
+                                                   placeholder="Search students by name, ID, or course...">
+                                        </div>
+                                    </div>
+                                    <div class="ledger-filter-container">
+                                        <select id="ledgerStatusFilter" class="ledger-filter-select">
+                                            <option value="all">All Students</option>
+                                            <option value="paid">Fully Paid</option>
+                                            <option value="partial">Partial Payment</option>
+                                            <option value="outstanding">Outstanding</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Summary Cards -->
+                                <div class="ledger-summary">
+                                    <div class="ledger-summary-card">
+                                        <div class="ledger-summary-icon total">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div class="ledger-summary-content">
+                                            <h3 id="totalStudentsCount">0</h3>
+                                            <p>Total Students</p>
+                                        </div>
+                                    </div>
+                                    <div class="ledger-summary-card">
+                                        <div class="ledger-summary-icon paid">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="ledger-summary-content">
+                                            <h3 id="fullyPaidCount">0</h3>
+                                            <p>Fully Paid</p>
+                                        </div>
+                                    </div>
+                                    <div class="ledger-summary-card">
+                                        <div class="ledger-summary-icon outstanding">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        </div>
+                                        <div class="ledger-summary-content">
+                                            <h3 id="outstandingCount">0</h3>
+                                            <p>Outstanding</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Student Ledger Table -->
+                            <div class="table-container">
+                                <table id="studentLedgerTable" class="student-ledger-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Info</th>
+                                            <th>Total Fees</th>
+                                            <th>Total Paid</th>
+                                            <th>Outstanding</th>
+                                            <th>Status</th>
+                                            <th>Last Payment</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentLedgerTableBody">
+                                        <!-- Student ledger rows will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- Reports Panel -->
             <div id="reports-panel" class="tab-content">
@@ -430,7 +707,7 @@
                         <p class="subtitle">View detailed reports and analytics</p>
                     </div>
                 </div>
-                
+
                 <div class="panel-content">
                     <div class="reports-grid">
                         <!-- Current Month Enquiries -->
@@ -477,19 +754,19 @@
                                 </div>
                                 <div class="report-list" id="pendingEnquiriesList">
                                     <div class="table-container">
-                                    <table class="mini-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Course</th>
-                                                <th>Phone</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Pending enquiries will be listed here -->
-                                        </tbody>
-                                    </table>
+                                        <table class="mini-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Course</th>
+                                                    <th>Phone</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Pending enquiries will be listed here -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -659,41 +936,180 @@
     <script src="js/pagination.js"></script>
     <script src="js/script.js"></script>
     <script>
-    // Sidebar submenu toggle for Certificates
-    const certMenuBtn = document.getElementById('certificatesMenuBtn');
-    const certSubMenu = document.getElementById('certificatesSubMenu');
-    if (certMenuBtn && certSubMenu) {
-        // Show submenu on hover instead of click
-        certMenuBtn.addEventListener('mouseenter', function() {
-            certSubMenu.style.display = 'flex';
-        });
+        // API Base URL
+        const API_BASE = 'https://aalekhapi.sahaedu.in';
         
-        // Hide submenu when mouse leaves the entire certificates section
-        const certificatesSection = certMenuBtn.parentElement;
-        certificatesSection.addEventListener('mouseleave', function() {
-            // Only hide if we're not on a certificate page
-            if (!window.location.pathname.includes('certificate')) {
-                certSubMenu.style.display = 'none';
+        // Sidebar submenu toggle for Certificates
+        const certMenuBtn = document.getElementById('certificatesMenuBtn');
+        const certSubMenu = document.getElementById('certificatesSubMenu');
+        if (certMenuBtn && certSubMenu) {
+            // Show submenu on hover instead of click
+            certMenuBtn.addEventListener('mouseenter', function () {
+                certSubMenu.style.display = 'flex';
+            });
+
+            // Hide submenu when mouse leaves the entire certificates section
+            const certificatesSection = certMenuBtn.parentElement;
+            certificatesSection.addEventListener('mouseleave', function () {
+                // Only hide if we're not on a certificate page
+                if (!window.location.pathname.includes('certificate')) {
+                    certSubMenu.style.display = 'none';
+                }
+            });
+
+            // Always show submenu if on certificate or hardcopy certificate page
+            if (window.location.pathname.includes('certificate')) {
+                certSubMenu.style.display = 'flex';
+            }
+        }
+        // Intercept Attendance link click
+        const attendanceLink = document.getElementById('attendanceLink');
+        if (attendanceLink) {
+            attendanceLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                alert('This is under working. Please contact admin for more details.');
+            });
+        }
+
+        // Toggle receipt input based on selection
+        function toggleReceiptInput() {
+            const receiptType = document.getElementById('receiptType').value;
+            const manualReceiptGroup = document.getElementById('manualReceiptGroup');
+            const manualReceiptInput = document.getElementById('manualReceiptNumber');
+
+            if (receiptType === 'manual') {
+                manualReceiptGroup.style.display = 'block';
+                manualReceiptInput.required = true;
+            } else {
+                manualReceiptGroup.style.display = 'none';
+                manualReceiptInput.required = false;
+                manualReceiptInput.value = '';
+            }
+        }
+
+        // Load student ledger
+        function loadStudentLedger(studentId) {
+            if (!studentId) {
+                return;
+            }
+
+            // Show loading indicator in the table
+            const tableBody = document.querySelector('#studentLedgerTable tbody');
+            if (tableBody) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="loading">Loading payment history...</td></tr>';
+            }
+
+            fetch(`${API_BASE}/api/payments/ledger/${studentId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(payments => {
+                    displayStudentLedger(studentId, payments);
+                })
+                .catch(error => {
+                    console.error('Error loading student ledger:', error);
+
+                    // Show user-friendly error message in table
+                    if (tableBody) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="error-message">
+                                    <div>
+                                        <h3>Unable to load payment history</h3>
+                                        <p>Please check your internet connection and try again.</p>
+                                        <p>Error: ${error.message}</p>
+                                        <button onclick="loadStudentLedger(${studentId})" class="retry-btn">Retry</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }
+
+                    showNotification('Error loading student ledger. Check your connection.', true);
+                });
+        }
+
+        // Display student ledger
+        function displayStudentLedger(studentId, payments) {
+            // Get student details
+            fetch(`${API_BASE}/api/students/${studentId}`)
+                .then(response => response.json())
+                .then(student => {
+                    // Update student info
+                    document.getElementById('ledgerStudentName').textContent = student.name;
+                    document.getElementById('ledgerStudentId').textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+
+                    // Calculate totals
+                    const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
+                    document.getElementById('totalPaid').textContent = `₹${totalPaid.toFixed(2)}`;
+                    document.getElementById('totalPayments').textContent = payments.length;
+
+                    // Populate ledger table
+                    const tbody = document.querySelector('#studentLedgerTable tbody');
+                    tbody.innerHTML = '';
+
+                    if (payments.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                                        <i class="fas fa-receipt" style="font-size: 48px; color: var(--border-color);"></i>
+                                        <p style="margin: 0; font-weight: 600;">No payments found</p>
+                                        <p style="margin: 0; font-size: 14px;">This student has no payment history yet</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        payments.forEach(payment => {
+                            const row = document.createElement('tr');
+                            const paymentDate = new Date(payment.paymentDate).toLocaleDateString();
+                            const receiptType = payment.isManualReceipt ? 'Manual' : 'Auto';
+
+                            row.innerHTML = `
+                            <td>${paymentDate}</td>
+                            <td>${payment.receiptNumber}</td>
+                            <td>${payment.description}</td>
+                            <td>${payment.paymentMethod}</td>
+                            <td>₹${payment.amount.toFixed(2)}</td>
+                            <td><span class="status-badge ${payment.status.toLowerCase()}">${payment.status}</span></td>
+                            <td><span class="receipt-type ${payment.isManualReceipt ? 'manual' : 'auto'}">${receiptType}</span></td>
+                        `;
+                            tbody.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading student details:', error);
+                });
+        }
+
+        // Show student ledger modal (moved to script.js)
+
+        // Close ledger modal
+        const closeLedgerModalBtn = document.getElementById('closeLedgerModalBtn');
+        if (closeLedgerModalBtn) {
+            closeLedgerModalBtn.addEventListener('click', function () {
+                const modal = document.getElementById('studentLedgerModal');
+                if (modal) modal.style.display = 'none';
+            });
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function (event) {
+            const modal = document.getElementById('studentLedgerModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
             }
         });
-        
-        // Always show submenu if on certificate or hardcopy certificate page
-        if (window.location.pathname.includes('certificate')) {
-            certSubMenu.style.display = 'flex';
-        }
-    }
-    // Intercept Attendance link click
-    const attendanceLink = document.getElementById('attendanceLink');
-    if (attendanceLink) {
-        attendanceLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('This is under working. Please contact admin for more details.');
-        });
-    }
 
     </script>
 </body>
-</html>    <
-script>
 
-    </script>
+</html>
+< script>
+
+</script>

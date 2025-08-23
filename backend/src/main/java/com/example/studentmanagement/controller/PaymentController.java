@@ -55,4 +55,9 @@ public class PaymentController {
         paymentService.deletePayment(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/ledger/{studentId}")
+    public ResponseEntity<List<Payment>> getStudentLedger(@PathVariable Long studentId) {
+        return ResponseEntity.ok(paymentService.getStudentLedger(studentId));
+    }
 } 
