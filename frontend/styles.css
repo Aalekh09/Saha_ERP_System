@@ -8314,4 +8314,274 @@ hanced Feedback Modal Scrolling */
         height: 40px;
         font-size: 1rem;
     }
+}/* Student
+ Ledger Styles */
+.ledger-container {
+    padding: var(--spacing-lg);
+}
+
+.student-selector {
+    margin-bottom: var(--spacing-lg);
+}
+
+.student-selector select {
+    width: 100%;
+    max-width: 400px;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    background-color: var(--surface-color);
+}
+
+.student-info-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.student-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.student-details {
+    flex: 1;
+}
+
+.student-details h3 {
+    margin: 0 0 var(--spacing-xs);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.student-details p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.payment-summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 150px;
+}
+
+.summary-item .label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.summary-item .value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.ledger-table-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.receipt-type {
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.receipt-type.manual {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.receipt-type.auto {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Manual Receipt Input Styles */
+#manualReceiptGroup {
+    transition: all 0.3s ease;
+}
+
+#manualReceiptNumber {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    background-color: var(--surface-color);
+}
+
+#manualReceiptNumber:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Responsive adjustments for ledger */
+@media (max-width: 768px) {
+    .student-info-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .payment-summary {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    
+    .summary-item {
+        flex-direction: column;
+        text-align: center;
+        min-width: auto;
+    }
+}/* Ledger
+ Modal Styles */
+.ledger-modal {
+    max-width: 900px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.ledger-modal .modal-body {
+    padding: var(--spacing-lg);
+}
+
+.ledger-modal .student-info-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.ledger-modal .student-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.ledger-modal .student-details {
+    flex: 1;
+}
+
+.ledger-modal .student-details h3 {
+    margin: 0 0 var(--spacing-xs);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ledger-modal .student-details p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.ledger-modal .payment-summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.ledger-modal .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 150px;
+}
+
+.ledger-modal .summary-item .label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.ledger-modal .summary-item .value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.ledger-modal .ledger-table-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Ledger button in student actions */
+.action-btn.ledger-btn {
+    background-color: #8b5cf6;
+    color: white;
+}
+
+.action-btn.ledger-btn:hover {
+    background-color: #7c3aed;
+}
+
+/* Responsive adjustments for ledger modal */
+@media (max-width: 768px) {
+    .ledger-modal {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .ledger-modal .student-info-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .ledger-modal .payment-summary {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    
+    .ledger-modal .summary-item {
+        flex-direction: column;
+        text-align: center;
+        min-width: auto;
+    }
 }

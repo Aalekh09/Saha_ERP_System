@@ -28,6 +28,8 @@ public class Payment {
     private String status; // PAID, PENDING, FAILED
     private String description;
     private String receiptNumber;
+    private String manualReceiptNumber;
+    private Boolean isManualReceipt = false;
 
     // Getters and Setters
     public Long getId() {
@@ -100,5 +102,21 @@ public class Payment {
 
     public void setReceiptNumber(String receiptNumber) {
         this.receiptNumber = receiptNumber;
+    }
+
+    public String getManualReceiptNumber() {
+        return manualReceiptNumber;
+    }
+
+    public void setManualReceiptNumber(String manualReceiptNumber) {
+        this.manualReceiptNumber = manualReceiptNumber;
+    }
+
+    public Boolean getIsManualReceipt() {
+        return isManualReceipt;
+    }
+
+    public void setIsManualReceipt(Boolean isManualReceipt) {
+        this.isManualReceipt = isManualReceipt;
     }
 } 

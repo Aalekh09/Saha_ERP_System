@@ -11,4 +11,5 @@ import com.example.studentmanagement.model.Payment;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByStudentId(Long studentId);
     List<Payment> findByStatus(String status);
+    List<Payment> findByStudentIdOrderByPaymentDateDesc(Long studentId);
 } 

@@ -1,4 +1,4 @@
-// === Mobile Support Enabled ===
+﻿// === Mobile Support Enabled ===
 // Device check removed - Full mobile support now available
 
 // === Mobile Menu Functionality ===
@@ -419,6 +419,9 @@ function renderStudentRow(student, index) {
                     <button class="action-btn payment-btn" data-id="${student.id}" data-name="${toUpperCase(student.name)}" data-phone="${student.phoneNumber}" title="Add Payment">
                         <i class="fas fa-money-bill"></i>
                     </button>
+                    <button class="action-btn ledger-btn" data-id="${student.id}" data-name="${toUpperCase(student.name)}" title="View Payment Ledger">
+                        <i class="fas fa-book"></i>
+                    </button>
                     <button class="action-btn delete-btn" data-id="${student.id}" title="Delete Student">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -501,6 +504,26 @@ function attachStudentRowEventListeners(student) {
             }, 100);
         });
         paymentBtn.setAttribute('data-listener-attached', 'true');
+    }
+
+    // Ledger event
+    const ledgerBtn = document.querySelector(`[data-id="${student.id}"].ledger-btn`);
+    console.log('Looking for ledger button:', `[data-id="${student.id}"].ledger-btn`);
+    console.log('Found ledger button:', ledgerBtn);
+
+    if (ledgerBtn && !ledgerBtn.hasAttribute('data-listener-attached')) {
+        console.log('Attaching click listener to ledger button');
+        ledgerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('LEDGER BUTTON CLICKED! Student ID:', student.id, 'Name:', student.name);
+            showStudentLedger(student.id, student.name);
+        });
+        ledgerBtn.setAttribute('data-listener-attached', 'true');
+        console.log('Ledger button listener attached successfully');
+    } else if (ledgerBtn) {
+        console.log('Ledger button already has listener attached');
+    } else {
+        console.log('Ledger button not found!');
     }
 
     // Profile view event
@@ -988,6 +1011,9 @@ if (paymentForm) {
             return;
         }
 
+        const receiptType = document.getElementById('receiptType').value;
+        const manualReceiptNumber = document.getElementById('manualReceiptNumber').value;
+
         const paymentData = {
             student: {
                 id: studentId,
@@ -996,7 +1022,8 @@ if (paymentForm) {
             },
             amount: paymentAmount,
             paymentMethod: document.getElementById('paymentMethod').value,
-            description: document.getElementById('description').value || 'Course fee payment'
+            description: document.getElementById('description').value || 'Course fee payment',
+            manualReceiptNumber: receiptType === 'manual' ? manualReceiptNumber : null
         };
 
         try {
@@ -1145,6 +1172,9 @@ function initializePaymentsPagination() {
 
 // Render a single payment row for pagination
 function renderPaymentRow(payment, index) {
+    const receiptType = payment.isManualReceipt ? 'Manual' : 'Auto';
+    const receiptTypeClass = payment.isManualReceipt ? 'manual' : 'auto';
+
     return `
         <tr>
             <td>${payment.receiptNumber || 'N/A'}</td>
@@ -1154,6 +1184,9 @@ function renderPaymentRow(payment, index) {
             <td>${payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : 'N/A'}</td>
             <td>
                 <span class="status-badge ${payment.status ? payment.status.toLowerCase() : 'pending'}">${payment.status || 'Pending'}</span>
+            </td>
+            <td>
+                <span class="receipt-type ${receiptTypeClass}">${receiptType}</span>
             </td>
             <td>
                 <div class="action-buttons">
@@ -1560,7 +1593,7 @@ function generateReceipt(payment) {
                     </div>
                     <div class="info-card">
                         <div class="info-label">Transaction Status</div>
-                        <div class="info-value" style="color: #28a745;">✓ Completed</div>
+                        <div class="info-value" style="color: #28a745;">âœ“ Completed</div>
                     </div>
                 </div>
                 
@@ -1608,7 +1641,7 @@ function generateReceipt(payment) {
                 <div class="payment-summary">
                     <div class="summary-item">
                         <div class="summary-label">Payment Status</div>
-                        <div class="summary-value" style="color: #28a745;">✓ Completed</div>
+                        <div class="summary-value" style="color: #28a745;">âœ“ Completed</div>
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Transaction ID</div>
@@ -1637,7 +1670,7 @@ function generateReceipt(payment) {
             </div>
             
             <div style="text-align: center;">
-                <button class="print-button" onclick="window.print()">🖨️ Print Receipt</button>
+                <button class="print-button" onclick="window.print()">ðŸ–¨ï¸ Print Receipt</button>
             </div>
         </body>
         </html>
@@ -2036,10 +2069,21 @@ document.getElementById('shareIdCard').addEventListener('click', async () => {
     }
 });
 
-// Add html2canvas library to your HTML file
+// Add html2canvas library with fallback
 const html2canvasScript = document.createElement('script');
 html2canvasScript.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+html2canvasScript.onerror = function () {
+    // Load fallback if CDN fails
+    const fallbackScript = document.createElement('script');
+    fallbackScript.src = 'libs/simple-html2canvas.js';
+    document.head.appendChild(fallbackScript);
+};
 document.head.appendChild(html2canvasScript);
+
+// Also load fallback immediately for offline scenarios
+const fallbackHtml2Canvas = document.createElement('script');
+fallbackHtml2Canvas.src = 'libs/simple-html2canvas.js';
+document.head.appendChild(fallbackHtml2Canvas);
 
 // Reports functionality
 async function loadReports() {
@@ -2307,14 +2351,28 @@ function initializeStudentGrowthChart(students) {
 }
 
 // Add event listener for reports tab
-document.querySelector('[data-tab="reports"]').addEventListener('click', () => {
-    loadReports();
-});
+const reportsTab = document.querySelector('[data-tab="reports"]');
+if (reportsTab) {
+    reportsTab.addEventListener('click', () => {
+        loadReports();
+    });
+}
 
-// Add Chart.js library
+// Add Chart.js library with fallback
 const chartScript = document.createElement('script');
 chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+chartScript.onerror = function () {
+    // Load fallback if CDN fails
+    const fallbackScript = document.createElement('script');
+    fallbackScript.src = 'libs/simple-chart.js';
+    document.head.appendChild(fallbackScript);
+};
 document.head.appendChild(chartScript);
+
+// Also load fallback immediately for offline scenarios
+const fallbackChart = document.createElement('script');
+fallbackChart.src = 'libs/simple-chart.js';
+document.head.appendChild(fallbackChart);
 
 // Function to display student profile in a modal
 async function showStudentProfile(studentId) {
@@ -2440,4 +2498,147 @@ window.addEventListener('click', (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
     }
+});
+
+// Show student ledger modal
+function showStudentLedger(studentId, studentName) {
+    console.log('🚀 showStudentLedger called with ID:', studentId, 'Name:', studentName);
+
+    const modal = document.getElementById('studentLedgerModal');
+    const subtitle = document.getElementById('ledgerModalSubtitle');
+
+    console.log('Modal element found:', !!modal);
+    console.log('Subtitle element found:', !!subtitle);
+
+    if (modal && subtitle) {
+        console.log('✅ Opening modal for student:', studentName);
+        subtitle.textContent = `Payment history for ${studentName}`;
+        modal.style.display = 'block';
+        console.log('Modal display set to block');
+        loadStudentLedger(studentId);
+    } else {
+        console.error('❌ Modal or subtitle element not found!');
+        console.error('Modal:', modal);
+        console.error('Subtitle:', subtitle);
+    }
+}
+
+// Load student ledger data
+function loadStudentLedger(studentId) {
+    if (!studentId) {
+        return;
+    }
+
+    // Show loading indicator in the table
+    const tableBody = document.querySelector('#studentLedgerTable tbody');
+    if (tableBody) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="loading">Loading payment history...</td></tr>';
+    }
+
+    fetch(`http://localhost:4455/api/payments/ledger/${studentId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(payments => {
+            displayStudentLedger(studentId, payments);
+        })
+        .catch(error => {
+            console.error('Error loading student ledger:', error);
+
+            // Show user-friendly error message in table
+            if (tableBody) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="error-message">
+                            <div>
+                                <h3>Unable to load payment history</h3>
+                                <p>Please check your internet connection and try again.</p>
+                                <p>Error: ${error.message}</p>
+                                <button onclick="loadStudentLedger(${studentId})" class="retry-btn">Retry</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            showNotification('Error loading student ledger. Check your connection.', true);
+        });
+}
+
+// Display student ledger data
+function displayStudentLedger(studentId, payments) {
+    // Get student details
+    fetch(`http://localhost:4455/api/students/${studentId}`)
+        .then(response => response.json())
+        .then(student => {
+            // Update student info
+            document.getElementById('ledgerStudentName').textContent = student.name;
+            document.getElementById('ledgerStudentId').textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+
+            // Calculate totals
+            const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
+            document.getElementById('totalPaid').textContent = `₹${totalPaid.toFixed(2)}`;
+            document.getElementById('totalPayments').textContent = payments.length;
+
+            // Populate ledger table
+            const tbody = document.querySelector('#studentLedgerTable tbody');
+            tbody.innerHTML = '';
+
+            if (payments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                                <i class="fas fa-receipt" style="font-size: 48px; color: var(--border-color);"></i>
+                                <p style="margin: 0; font-weight: 600;">No payments found</p>
+                                <p style="margin: 0; font-size: 14px;">This student has no payment history yet</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                payments.forEach(payment => {
+                    const row = document.createElement('tr');
+                    const paymentDate = new Date(payment.paymentDate).toLocaleDateString();
+                    const receiptType = payment.isManualReceipt ? 'Manual' : 'Auto';
+
+                    row.innerHTML = `
+                        <td>${paymentDate}</td>
+                        <td>${payment.receiptNumber}</td>
+                        <td>${payment.description}</td>
+                        <td>${payment.paymentMethod}</td>
+                        <td>₹${payment.amount.toFixed(2)}</td>
+                        <td><span class="status-badge ${payment.status.toLowerCase()}">${payment.status}</span></td>
+                        <td><span class="receipt-type ${payment.isManualReceipt ? 'manual' : 'auto'}">${receiptType}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading student details:', error);
+        });
+}
+
+// Initialize ledger modal close functionality
+document.addEventListener('DOMContentLoaded', function () {
+    // Close ledger modal
+    const closeLedgerModalBtn = document.getElementById('closeLedgerModalBtn');
+    if (closeLedgerModalBtn) {
+        closeLedgerModalBtn.addEventListener('click', function () {
+            const modal = document.getElementById('studentLedgerModal');
+            if (modal) modal.style.display = 'none';
+        });
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function (event) {
+        const modal = document.getElementById('studentLedgerModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 });

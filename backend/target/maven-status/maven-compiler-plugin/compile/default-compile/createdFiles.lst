@@ -8,7 +8,9 @@ com\example\studentmanagement\controller\AttendanceController$AttendanceRequest.
 com\example\studentmanagement\controller\StudentController.class
 com\example\studentmanagement\controller\PaymentController.class
 com\example\studentmanagement\StudentManagementApplication.class
+com\example\studentmanagement\controller\DashboardController.class
 com\example\studentmanagement\model\Batch.class
+com\example\studentmanagement\service\DashboardService.class
 com\example\studentmanagement\repository\StudentRepository.class
 com\example\studentmanagement\controller\EnquiryController.class
 com\example\studentmanagement\model\Certificate.class

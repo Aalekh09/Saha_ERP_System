@@ -1,0 +1,32 @@
+/* Fallback icons - only active when Font Awesome fails to load */
+/* This CSS will only be applied when the main Font Awesome CSS fails */
+
+/* Only apply fallbacks when Font Awesome is not available */
+body.fa-fallback .fa-user::before, body.fa-fallback .fas.fa-user::before { content: "👤"; }
+body.fa-fallback .fa-home::before, body.fa-fallback .fas.fa-home::before { content: "🏠"; }
+body.fa-fallback .fa-chart-bar::before, body.fa-fallback .fas.fa-chart-bar::before { content: "📊"; }
+body.fa-fallback .fa-file::before, body.fa-fallback .fas.fa-file::before { content: "📄"; }
+body.fa-fallback .fa-download::before, body.fa-fallback .fas.fa-download::before { content: "⬇️"; }
+body.fa-fallback .fa-print::before, body.fa-fallback .fas.fa-print::before { content: "🖨️"; }
+body.fa-fallback .fa-search::before, body.fa-fallback .fas.fa-search::before { content: "🔍"; }
+body.fa-fallback .fa-plus::before, body.fa-fallback .fas.fa-plus::before { content: "+"; }
+body.fa-fallback .fa-edit::before, body.fa-fallback .fas.fa-edit::before { content: "✏️"; }
+body.fa-fallback .fa-trash::before, body.fa-fallback .fas.fa-trash::before { content: "🗑️"; }
+body.fa-fallback .fa-save::before, body.fa-fallback .fas.fa-save::before { content: "💾"; }
+body.fa-fallback .fa-times::before, body.fa-fallback .fas.fa-times::before { content: "✖"; }
+body.fa-fallback .fa-check::before, body.fa-fallback .fas.fa-check::before { content: "✓"; }
+body.fa-fallback .fa-arrow-left::before, body.fa-fallback .fas.fa-arrow-left::before { content: "←"; }
+body.fa-fallback .fa-arrow-right::before, body.fa-fallback .fas.fa-arrow-right::before { content: "→"; }
+body.fa-fallback .fa-calendar::before, body.fa-fallback .fas.fa-calendar::before { content: "📅"; }
+body.fa-fallback .fa-money-bill::before, body.fa-fallback .fas.fa-money-bill::before { content: "💰"; }
+body.fa-fallback .fa-graduation-cap::before, body.fa-fallback .fas.fa-graduation-cap::before { content: "🎓"; }
+body.fa-fallback .fa-book::before, body.fa-fallback .fas.fa-book::before { content: "📚"; }
+body.fa-fallback .fa-bars::before, body.fa-fallback .fas.fa-bars::before { content: "☰"; }
+
+/* Fallback font styles when Font Awesome fails to load */
+body.fa-fallback .fa, body.fa-fallback .fas, body.fa-fallback .far, body.fa-fallback .fab {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+}

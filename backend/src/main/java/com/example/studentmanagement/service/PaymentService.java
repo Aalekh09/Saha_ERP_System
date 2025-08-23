@@ -21,8 +21,14 @@ public class PaymentService {
     private StudentRepository studentRepository;
 
     public Payment createPayment(Payment payment) {
-        // Generate receipt number
-        payment.setReceiptNumber(generateReceiptNumber(payment));
+        // Set receipt number based on manual entry or auto-generation
+        if (payment.getManualReceiptNumber() != null && !payment.getManualReceiptNumber().trim().isEmpty()) {
+            payment.setReceiptNumber(payment.getManualReceiptNumber());
+            payment.setIsManualReceipt(true);
+        } else {
+            payment.setReceiptNumber(generateReceiptNumber(payment));
+            payment.setIsManualReceipt(false);
+        }
         payment.setPaymentDate(LocalDateTime.now());
         payment.setStatus("PAID");
         return paymentRepository.save(payment);
@@ -47,6 +53,14 @@ public class PaymentService {
             payment.setPaymentMethod(paymentDetails.getPaymentMethod());
             payment.setDescription(paymentDetails.getDescription());
             payment.setStatus(paymentDetails.getStatus());
+            
+            // Update receipt number if manual receipt is provided
+            if (paymentDetails.getManualReceiptNumber() != null && !paymentDetails.getManualReceiptNumber().trim().isEmpty()) {
+                payment.setReceiptNumber(paymentDetails.getManualReceiptNumber());
+                payment.setManualReceiptNumber(paymentDetails.getManualReceiptNumber());
+                payment.setIsManualReceipt(true);
+            }
+            
             return paymentRepository.save(payment);
         }
         return null;
@@ -54,6 +68,10 @@ public class PaymentService {
 
     public void deletePayment(Long id) {
         paymentRepository.deleteById(id);
+    }
+
+    public List<Payment> getStudentLedger(Long studentId) {
+        return paymentRepository.findByStudentIdOrderByPaymentDateDesc(studentId);
     }
 
     private String generateReceiptNumber(Payment payment) {
