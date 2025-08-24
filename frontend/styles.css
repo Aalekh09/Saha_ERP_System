@@ -8471,6 +8471,34 @@ hanced Feedback Modal Scrolling */
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
+    background: #ffffff !important;
+    color: #1e293b !important;
+}
+
+/* Ensure proper text contrast in ledger modal */
+#studentLedgerModal * {
+    color: #1e293b !important;
+}
+
+#studentLedgerModal .modal-subtitle,
+#studentLedgerModal .student-id,
+#studentLedgerModal .label,
+#studentLedgerModal th {
+    color: #64748b !important;
+}
+
+#studentLedgerModal .modal-content {
+    background: #ffffff !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+#studentLedgerModal table {
+    background: #ffffff !important;
+}
+
+#studentLedgerModal td,
+#studentLedgerModal th {
+    border-color: #e2e8f0 !important;
 }
 
 .ledger-modal .modal-body {
@@ -8516,6 +8544,18 @@ hanced Feedback Modal Scrolling */
     margin: 0;
     color: var(--text-secondary);
     font-size: 0.875rem;
+}
+
+.ledger-modal .student-details .father-name {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-top: var(--spacing-xs);
+}
+
+.ledger-modal .student-details .course-info {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-top: var(--spacing-xs);
 }
 
 .ledger-modal .payment-summary {

@@ -2529,6 +2529,14 @@ window.addEventListener('click', (event) => {
 function showStudentLedger(studentId, studentName) {
     console.log('🚀 showStudentLedger called with ID:', studentId, 'Name:', studentName);
 
+    // First, close any other open modals
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
+        if (modal.id !== 'studentLedgerModal') {
+            modal.style.display = 'none';
+        }
+    });
+
     const modal = document.getElementById('studentLedgerModal');
     const subtitle = document.getElementById('ledgerModalSubtitle');
 
@@ -2537,16 +2545,65 @@ function showStudentLedger(studentId, studentName) {
 
     if (modal && subtitle) {
         console.log('✅ Opening modal for student:', studentName);
-        subtitle.textContent = `Payment history for ${studentName}`;
-        modal.style.display = 'block';
-        console.log('Modal display set to block');
-        loadStudentLedger(studentId);
+        subtitle.textContent = `Payment history for ${toUpperCase(studentName)}`;
+
+        // Force modal to be visible with important styles
+        modal.style.cssText = `
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 10000 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+        `;
+
+        // Ensure modal content has proper contrast
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+            modalContent.style.cssText = `
+                background: #ffffff !important;
+                color: #1e293b !important;
+                border-radius: 12px !important;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            `;
+        }
+
+        // Fix text colors in the modal
+        const textElements = modal.querySelectorAll('h2, h3, p, td, th, span, .student-name, .student-id, .father-name, .course-info');
+        textElements.forEach(element => {
+            element.style.color = '#1e293b !important';
+        });
+
+        // Fix secondary text colors
+        const secondaryElements = modal.querySelectorAll('.student-id, .modal-subtitle, .label, th');
+        secondaryElements.forEach(element => {
+            element.style.color = '#64748b !important';
+        });
+
+        // Add body class to prevent scrolling
+        document.body.style.overflow = 'hidden';
+
+        console.log('Modal forced to display with important styles');
+        console.log('Modal computed style:', window.getComputedStyle(modal).display);
+
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+            loadStudentLedger(studentId);
+        }, 100);
     } else {
         console.error('❌ Modal or subtitle element not found!');
         console.error('Modal:', modal);
         console.error('Subtitle:', subtitle);
+        showNotification('Error opening student ledger', true);
     }
 }
+
+// Make function globally accessible
+window.showStudentLedger = showStudentLedger;
 
 // Load student ledger data
 function loadStudentLedger(studentId) {
@@ -2600,8 +2657,10 @@ function displayStudentLedger(studentId, payments) {
         .then(response => response.json())
         .then(student => {
             // Update student info
-            document.getElementById('ledgerStudentName').textContent = student.name;
+            document.getElementById('ledgerStudentName').textContent = toUpperCase(student.name);
             document.getElementById('ledgerStudentId').textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+            document.getElementById('ledgerFatherName').textContent = `Father: ${toUpperCase(student.fatherName || 'N/A')}`;
+            document.getElementById('ledgerCourse').textContent = `Course: ${toUpperCase(student.courses || 'N/A')}`;
 
             // Calculate totals
             const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
@@ -2654,8 +2713,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeLedgerModalBtn = document.getElementById('closeLedgerModalBtn');
     if (closeLedgerModalBtn) {
         closeLedgerModalBtn.addEventListener('click', function () {
+            console.log('Close ledger modal button clicked');
             const modal = document.getElementById('studentLedgerModal');
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                document.body.style.overflow = '';
+                console.log('Ledger modal closed');
+            }
         });
     }
 
@@ -2663,7 +2729,11 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('click', function (event) {
         const modal = document.getElementById('studentLedgerModal');
         if (event.target === modal) {
+            console.log('Clicked outside ledger modal, closing');
             modal.style.display = 'none';
+            modal.style.visibility = 'hidden';
+            modal.style.opacity = '0';
+            document.body.style.overflow = '';
         }
     });
 });
