@@ -286,6 +286,25 @@ let paymentsPagination = null;
 let allPayments = [];
 let allTeachers = [];
 
+// Toggle receipt input based on selection
+function toggleReceiptInput() {
+    const receiptType = document.getElementById('receiptType').value;
+    const manualReceiptGroup = document.getElementById('manualReceiptGroup');
+    const manualReceiptInput = document.getElementById('manualReceiptNumber');
+
+    if (receiptType === 'manual') {
+        manualReceiptGroup.style.display = 'block';
+        manualReceiptInput.required = true;
+    } else {
+        manualReceiptGroup.style.display = 'none';
+        manualReceiptInput.required = false;
+        manualReceiptInput.value = '';
+    }
+}
+
+// Make function globally accessible
+window.toggleReceiptInput = toggleReceiptInput;
+
 // Additional pagination instances
 let teachersPagination = null;
 
@@ -1065,6 +1084,8 @@ if (paymentForm) {
                 const modal = document.getElementById('addPaymentModal');
                 if (modal) modal.style.display = 'none';
                 paymentForm.reset();
+                // Reset receipt input visibility after form reset
+                toggleReceiptInput();
                 fetchPayments();
                 fetchStudents(); // Refresh the student list to show updated payment info
                 generateReceipt(payment);
@@ -1094,6 +1115,8 @@ if (closeAddPaymentModalBtn) {
         const modal = document.getElementById('addPaymentModal');
         if (modal) modal.style.display = 'none';
         paymentForm.reset();
+        // Reset receipt input visibility after form reset
+        toggleReceiptInput();
     });
 }
 
@@ -1103,6 +1126,8 @@ if (cancelPaymentBtn) {
         const modal = document.getElementById('addPaymentModal');
         if (modal) modal.style.display = 'none';
         paymentForm.reset();
+        // Reset receipt input visibility after form reset
+        toggleReceiptInput();
     });
 }
 

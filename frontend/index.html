@@ -971,21 +971,7 @@
             });
         }
 
-        // Toggle receipt input based on selection
-        function toggleReceiptInput() {
-            const receiptType = document.getElementById('receiptType').value;
-            const manualReceiptGroup = document.getElementById('manualReceiptGroup');
-            const manualReceiptInput = document.getElementById('manualReceiptNumber');
-
-            if (receiptType === 'manual') {
-                manualReceiptGroup.style.display = 'block';
-                manualReceiptInput.required = true;
-            } else {
-                manualReceiptGroup.style.display = 'none';
-                manualReceiptInput.required = false;
-                manualReceiptInput.value = '';
-            }
-        }
+        // toggleReceiptInput function moved to script.js
 
         // Load student ledger
         function loadStudentLedger(studentId) {
