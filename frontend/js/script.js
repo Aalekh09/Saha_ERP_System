@@ -1719,10 +1719,7 @@ async function deletePayment(id) {
     }
 }
 
-// Add payment search functionality
-document.getElementById('paymentSearchInput').addEventListener('input', () => {
-    fetchPayments();
-});
+// Payment search functionality is handled by pagination system above
 
 // Student search for Add Payment modal
 const studentSearchInput = document.getElementById('studentSearchInput');
