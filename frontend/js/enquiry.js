@@ -11,7 +11,7 @@ if (username) {
 }
 
 // Dynamic API base URL for cross-device compatibility
-const API_BASE = window.location.protocol + '//' + window.location.hostname + ':4455';
+const API_BASE = 'http://localhost:4455';
 const API_URL = API_BASE + '/api/enquiries';
 
 const enquiryForm = document.getElementById('enquiryForm');
@@ -89,6 +89,50 @@ function initializeMobileMenu() {
 
 // Initialize mobile menu when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+
+// === Theme Toggle Functionality ===
+function initializeThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle?.querySelector('i');
+    
+    // Get saved theme from localStorage or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply saved theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme, themeIcon);
+    
+    // Add click event listener
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Apply new theme
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme, themeIcon);
+            
+            // Show notification
+            showNotification(`Switched to ${newTheme} mode`);
+        });
+    }
+}
+
+function updateThemeIcon(theme, iconElement) {
+    if (!iconElement) return;
+    
+    if (theme === 'dark') {
+        iconElement.className = 'fas fa-sun';
+        iconElement.parentElement.title = 'Switch to Light Mode';
+    } else {
+        iconElement.className = 'fas fa-moon';
+        iconElement.parentElement.title = 'Switch to Dark Mode';
+    }
+}
+
+// Initialize theme toggle when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeThemeToggle);
 
 // Show notification function
 function showNotification(message, isError = false) {

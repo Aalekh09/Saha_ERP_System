@@ -21,7 +21,7 @@ class MonthlyAdmissionReports {
         this.viewToggleText = document.getElementById('viewToggleText');
         
         // API base URL
-        this.API_BASE = `${window.location.protocol}//${window.location.hostname}:4455/api/reports`;
+        this.API_BASE = `http://localhost:4455/api/reports`;
         
         // Initialize the component
         this.init();

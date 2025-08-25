@@ -385,7 +385,7 @@ function showNotification(message, type = 'success') {
 }
 
 // Reports.js - Professional Reports Dashboard
-const API_BASE = `${window.location.protocol}//${window.location.hostname}:4455/api/reports`;
+const API_BASE = `http://localhost:4455/api/reports`;
 
 // Global pagination instances for reports
 let studentAdmissionsPagination = null;

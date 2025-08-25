@@ -39,6 +39,50 @@ function initializeMobileMenu() {
 // Initialize mobile menu when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeMobileMenu);
 
+// === Theme Toggle Functionality ===
+function initializeThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle?.querySelector('i');
+    
+    // Get saved theme from localStorage or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply saved theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme, themeIcon);
+    
+    // Add click event listener
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Apply new theme
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme, themeIcon);
+            
+            // Show notification
+            showNotification(`Switched to ${newTheme} mode`);
+        });
+    }
+}
+
+function updateThemeIcon(theme, iconElement) {
+    if (!iconElement) return;
+    
+    if (theme === 'dark') {
+        iconElement.className = 'fas fa-sun';
+        iconElement.parentElement.title = 'Switch to Light Mode';
+    } else {
+        iconElement.className = 'fas fa-moon';
+        iconElement.parentElement.title = 'Switch to Dark Mode';
+    }
+}
+
+// Initialize theme toggle when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeThemeToggle);
+
 // File upload preview functionality
 document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('tenthClassDocument');
@@ -109,7 +153,7 @@ function hideServerOverlay() {
 async function checkServer() {
     try {
         // Try a lightweight API endpoint
-        const res = await fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/reports/monthly-student-admissions`, { method: 'GET' });
+        const res = await fetch(`${API_BASE}/api/reports/monthly-student-admissions`, { method: 'GET' });
         if (!res.ok) throw new Error('Not OK');
         hideServerOverlay();
     } catch (e) {
@@ -158,8 +202,8 @@ if (username) {
     document.getElementById('username').textContent = username;
 }
 
-// Dynamic API base URL for cross-device compatibility
-const API_BASE = window.location.protocol + '//' + window.location.hostname + ':4455';
+// Local development API base URL
+const API_BASE = 'http://localhost:4455';
 // Replace all API URLs
 const API_URL = API_BASE + '/api/students';
 const PAYMENT_API_URL = API_BASE + '/api/payments';
@@ -285,6 +329,25 @@ let paymentsPagination = null;
 // Global data arrays
 let allPayments = [];
 let allTeachers = [];
+
+// Toggle receipt input based on selection
+function toggleReceiptInput() {
+    const receiptType = document.getElementById('receiptType').value;
+    const manualReceiptGroup = document.getElementById('manualReceiptGroup');
+    const manualReceiptInput = document.getElementById('manualReceiptNumber');
+
+    if (receiptType === 'manual') {
+        manualReceiptGroup.style.display = 'block';
+        manualReceiptInput.required = true;
+    } else {
+        manualReceiptGroup.style.display = 'none';
+        manualReceiptInput.required = false;
+        manualReceiptInput.value = '';
+    }
+}
+
+// Make function globally accessible
+window.toggleReceiptInput = toggleReceiptInput;
 
 // Additional pagination instances
 let teachersPagination = null;
@@ -1065,6 +1128,8 @@ if (paymentForm) {
                 const modal = document.getElementById('addPaymentModal');
                 if (modal) modal.style.display = 'none';
                 paymentForm.reset();
+                // Reset receipt input visibility after form reset
+                toggleReceiptInput();
                 fetchPayments();
                 fetchStudents(); // Refresh the student list to show updated payment info
                 generateReceipt(payment);
@@ -1094,6 +1159,8 @@ if (closeAddPaymentModalBtn) {
         const modal = document.getElementById('addPaymentModal');
         if (modal) modal.style.display = 'none';
         paymentForm.reset();
+        // Reset receipt input visibility after form reset
+        toggleReceiptInput();
     });
 }
 
@@ -1103,6 +1170,8 @@ if (cancelPaymentBtn) {
         const modal = document.getElementById('addPaymentModal');
         if (modal) modal.style.display = 'none';
         paymentForm.reset();
+        // Reset receipt input visibility after form reset
+        toggleReceiptInput();
     });
 }
 
@@ -1719,10 +1788,7 @@ async function deletePayment(id) {
     }
 }
 
-// Add payment search functionality
-document.getElementById('paymentSearchInput').addEventListener('input', () => {
-    fetchPayments();
-});
+// Payment search functionality is handled by pagination system above
 
 // Student search for Add Payment modal
 const studentSearchInput = document.getElementById('studentSearchInput');
@@ -1828,7 +1894,7 @@ function renderTeacherRow(teacher, index) {
 }
 
 function loadTeachers() {
-    fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/teachers`)
+    fetch(`${API_BASE}/api/teachers`)
         .then(response => {
             if (!response.ok) {
                 // If 404, suppress error notification
@@ -1858,7 +1924,7 @@ function loadTeachers() {
 }
 
 function editTeacher(id) {
-    fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/teachers/${id}`)
+    fetch(`${API_BASE}/api/teachers/${id}`)
         .then(response => response.json())
         .then(teacher => {
             document.getElementById('teacherId').value = teacher.id;
@@ -1883,7 +1949,7 @@ function editTeacher(id) {
 
 function deleteTeacher(id) {
     if (confirm('Are you sure you want to delete this teacher?')) {
-        fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/teachers/${id}`, {
+        fetch(`${API_BASE}/api/teachers/${id}`, {
             method: 'DELETE'
         })
             .then(response => {
@@ -1931,7 +1997,7 @@ if (teacherFormEl) {
             formData.append('photo', photoFile);
         }
 
-        const url = teacherId ? `${window.location.protocol}//${window.location.hostname}:4455/api/teachers/${teacherId}` : `${window.location.protocol}//${window.location.hostname}:4455/api/teachers`;
+        const url = teacherId ? `${API_BASE}/api/teachers/${teacherId}` : `${API_BASE}/api/teachers`;
         const method = teacherId ? 'PUT' : 'POST';
 
         fetch(url, {
@@ -2094,7 +2160,7 @@ async function loadReports() {
         console.log('Loading reports...');
 
         // Fetch enquiries
-        const enquiriesResponse = await fetch(`${window.location.protocol}//${window.location.hostname}:4455/api/enquiries`);
+        const enquiriesResponse = await fetch(`${API_BASE}/api/enquiries`);
         if (!enquiriesResponse.ok) {
             throw new Error(`Failed to fetch enquiries: ${enquiriesResponse.status}`);
         }
@@ -2507,6 +2573,14 @@ window.addEventListener('click', (event) => {
 function showStudentLedger(studentId, studentName) {
     console.log('🚀 showStudentLedger called with ID:', studentId, 'Name:', studentName);
 
+    // First, close any other open modals
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
+        if (modal.id !== 'studentLedgerModal') {
+            modal.style.display = 'none';
+        }
+    });
+
     const modal = document.getElementById('studentLedgerModal');
     const subtitle = document.getElementById('ledgerModalSubtitle');
 
@@ -2515,16 +2589,65 @@ function showStudentLedger(studentId, studentName) {
 
     if (modal && subtitle) {
         console.log('✅ Opening modal for student:', studentName);
-        subtitle.textContent = `Payment history for ${studentName}`;
-        modal.style.display = 'block';
-        console.log('Modal display set to block');
-        loadStudentLedger(studentId);
+        subtitle.textContent = `Payment history for ${toUpperCase(studentName)}`;
+
+        // Force modal to be visible with important styles
+        modal.style.cssText = `
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 10000 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+        `;
+
+        // Ensure modal content has proper contrast
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+            modalContent.style.cssText = `
+                background: #ffffff !important;
+                color: #1e293b !important;
+                border-radius: 12px !important;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            `;
+        }
+
+        // Fix text colors in the modal
+        const textElements = modal.querySelectorAll('h2, h3, p, td, th, span, .student-name, .student-id, .father-name, .course-info');
+        textElements.forEach(element => {
+            element.style.color = '#1e293b !important';
+        });
+
+        // Fix secondary text colors
+        const secondaryElements = modal.querySelectorAll('.student-id, .modal-subtitle, .label, th');
+        secondaryElements.forEach(element => {
+            element.style.color = '#64748b !important';
+        });
+
+        // Add body class to prevent scrolling
+        document.body.style.overflow = 'hidden';
+
+        console.log('Modal forced to display with important styles');
+        console.log('Modal computed style:', window.getComputedStyle(modal).display);
+
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+            loadStudentLedger(studentId);
+        }, 100);
     } else {
         console.error('❌ Modal or subtitle element not found!');
         console.error('Modal:', modal);
         console.error('Subtitle:', subtitle);
+        showNotification('Error opening student ledger', true);
     }
 }
+
+// Make function globally accessible
+window.showStudentLedger = showStudentLedger;
 
 // Load student ledger data
 function loadStudentLedger(studentId) {
@@ -2538,7 +2661,7 @@ function loadStudentLedger(studentId) {
         tableBody.innerHTML = '<tr><td colspan="7" class="loading">Loading payment history...</td></tr>';
     }
 
-    fetch(`http://localhost:4455/api/payments/ledger/${studentId}`)
+    fetch(`${API_BASE}/api/payments/ledger/${studentId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -2574,12 +2697,14 @@ function loadStudentLedger(studentId) {
 // Display student ledger data
 function displayStudentLedger(studentId, payments) {
     // Get student details
-    fetch(`http://localhost:4455/api/students/${studentId}`)
+    fetch(`${API_BASE}/api/students/${studentId}`)
         .then(response => response.json())
         .then(student => {
             // Update student info
-            document.getElementById('ledgerStudentName').textContent = student.name;
+            document.getElementById('ledgerStudentName').textContent = toUpperCase(student.name);
             document.getElementById('ledgerStudentId').textContent = `ID: STU${String(student.id).padStart(4, '0')}`;
+            document.getElementById('ledgerFatherName').textContent = `Father: ${toUpperCase(student.fatherName || 'N/A')}`;
+            document.getElementById('ledgerCourse').textContent = `Course: ${toUpperCase(student.courses || 'N/A')}`;
 
             // Calculate totals
             const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
@@ -2632,8 +2757,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeLedgerModalBtn = document.getElementById('closeLedgerModalBtn');
     if (closeLedgerModalBtn) {
         closeLedgerModalBtn.addEventListener('click', function () {
+            console.log('Close ledger modal button clicked');
             const modal = document.getElementById('studentLedgerModal');
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                document.body.style.overflow = '';
+                console.log('Ledger modal closed');
+            }
         });
     }
 
@@ -2641,7 +2773,11 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('click', function (event) {
         const modal = document.getElementById('studentLedgerModal');
         if (event.target === modal) {
+            console.log('Clicked outside ledger modal, closing');
             modal.style.display = 'none';
+            modal.style.visibility = 'hidden';
+            modal.style.opacity = '0';
+            document.body.style.overflow = '';
         }
     });
 });
@@ -2654,18 +2790,18 @@ document.addEventListener('DOMContentLoaded', function () {
 function populateEditPaymentForm(payment) {
     // Set payment ID
     document.getElementById('editPaymentId').value = payment.id;
-    
+
     // Set student information (readonly)
     document.getElementById('editStudentName').value = payment.student ? payment.student.name : 'N/A';
     document.getElementById('editStudentCourse').value = payment.student ? payment.student.courses : 'N/A';
-    
+
     // Set payment details (editable)
     document.getElementById('editReceiptNumber').value = payment.receiptNumber || '';
     document.getElementById('editPaymentAmount').value = payment.amount || '';
     document.getElementById('editPaymentMethod').value = payment.paymentMethod || '';
     document.getElementById('editPaymentStatus').value = payment.status || 'Completed';
     document.getElementById('editPaymentDescription').value = payment.description || '';
-    
+
     // Set payment date
     if (payment.paymentDate) {
         const date = new Date(payment.paymentDate);
@@ -2677,47 +2813,47 @@ function populateEditPaymentForm(payment) {
 // Handle edit payment form submission
 async function handleEditPaymentSubmit(event) {
     event.preventDefault();
-    
+
     const formData = new FormData(event.target);
     const paymentId = formData.get('paymentId');
-    
+
     // Build payment update object with proper validation
     const paymentUpdate = {};
-    
+
     // Only include fields that have values
     const receiptNumber = formData.get('receiptNumber');
     if (receiptNumber && receiptNumber.trim()) {
         paymentUpdate.receiptNumber = receiptNumber.trim();
     }
-    
+
     const amount = formData.get('amount');
     if (amount && !isNaN(parseFloat(amount))) {
         paymentUpdate.amount = parseFloat(amount);
     }
-    
+
     const paymentMethod = formData.get('paymentMethod');
     if (paymentMethod && paymentMethod.trim()) {
         paymentUpdate.paymentMethod = paymentMethod.trim();
     }
-    
+
     const paymentDate = formData.get('paymentDate');
     if (paymentDate) {
         // Convert date to LocalDateTime format expected by backend
         paymentUpdate.paymentDate = paymentDate + 'T12:00:00';
     }
-    
+
     const status = formData.get('status');
     if (status && status.trim()) {
         paymentUpdate.status = status.trim();
     }
-    
+
     const description = formData.get('description');
     if (description && description.trim()) {
         paymentUpdate.description = description.trim();
     }
-    
+
     console.log('Updating payment with data:', paymentUpdate);
-    
+
     try {
         const response = await fetch(`${PAYMENT_API_URL}/${paymentId}`, {
             method: 'PUT',
@@ -2726,21 +2862,21 @@ async function handleEditPaymentSubmit(event) {
             },
             body: JSON.stringify(paymentUpdate)
         });
-        
+
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Server error:', errorText);
             throw new Error(`Failed to update payment: ${response.status} - ${errorText}`);
         }
-        
+
         // Close modal
         closeEditPaymentModal();
-        
+
         // Refresh payments list
         await fetchPayments();
-        
+
         showNotification('Payment updated successfully', 'success');
-        
+
     } catch (error) {
         console.error('Error updating payment:', error);
         showNotification('Error updating payment', 'error');
@@ -2750,29 +2886,29 @@ async function handleEditPaymentSubmit(event) {
 // Close edit payment modal (enhanced version is below)
 
 // Initialize edit payment modal event listeners
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Edit payment form submission
     const editPaymentForm = document.getElementById('editPaymentForm');
     if (editPaymentForm) {
         editPaymentForm.addEventListener('submit', handleEditPaymentSubmit);
     }
-    
+
     // Close edit payment modal buttons
     const closeEditPaymentModalBtn = document.getElementById('closeEditPaymentModalBtn');
     const cancelEditPaymentBtn = document.getElementById('cancelEditPaymentBtn');
-    
+
     if (closeEditPaymentModalBtn) {
         closeEditPaymentModalBtn.addEventListener('click', closeEditPaymentModal);
     }
-    
+
     if (cancelEditPaymentBtn) {
         cancelEditPaymentBtn.addEventListener('click', closeEditPaymentModal);
     }
-    
+
     // Close modal when clicking outside
     const editPaymentModal = document.getElementById('editPaymentModal');
     if (editPaymentModal) {
-        editPaymentModal.addEventListener('click', function(event) {
+        editPaymentModal.addEventListener('click', function (event) {
             if (event.target === editPaymentModal) {
                 closeEditPaymentModal();
             }
@@ -2788,17 +2924,17 @@ function enhanceModalScrolling() {
     const editModal = document.getElementById('editPaymentModal');
     if (editModal) {
         // Prevent body scroll when modal is open
-        editModal.addEventListener('show', function() {
+        editModal.addEventListener('show', function () {
             document.body.style.overflow = 'hidden';
         });
-        
+
         // Restore body scroll when modal is closed
-        editModal.addEventListener('hide', function() {
+        editModal.addEventListener('hide', function () {
             document.body.style.overflow = '';
         });
-        
+
         // Handle modal backdrop clicks
-        editModal.addEventListener('click', function(event) {
+        editModal.addEventListener('click', function (event) {
             if (event.target === editModal) {
                 closeEditPaymentModal();
             }
@@ -2810,13 +2946,13 @@ function enhanceModalScrolling() {
 function closeEditPaymentModal() {
     const editModal = document.getElementById('editPaymentModal');
     editModal.style.display = 'none';
-    
+
     // Restore body scroll
     document.body.style.overflow = '';
-    
+
     // Reset form
     document.getElementById('editPaymentForm').reset();
-    
+
     // Trigger hide event
     editModal.dispatchEvent(new Event('hide'));
 }
@@ -2829,22 +2965,22 @@ async function editPayment(paymentId) {
         if (!response.ok) {
             throw new Error('Failed to fetch payment details');
         }
-        
+
         const payment = await response.json();
-        
+
         // Populate the edit form
         populateEditPaymentForm(payment);
-        
+
         // Show the edit modal
         const editModal = document.getElementById('editPaymentModal');
         editModal.style.display = 'flex'; // Use flex for proper centering
-        
+
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
-        
+
         // Trigger show event
         editModal.dispatchEvent(new Event('show'));
-        
+
         // Focus on first input after a short delay
         setTimeout(() => {
             const firstInput = editModal.querySelector('input:not([readonly]):not([type="hidden"])');
@@ -2852,7 +2988,7 @@ async function editPayment(paymentId) {
                 firstInput.focus();
             }
         }, 300);
-        
+
     } catch (error) {
         console.error('Error fetching payment for edit:', error);
         showNotification('Error loading payment details', 'error');
@@ -2860,6 +2996,6 @@ async function editPayment(paymentId) {
 }
 
 // Initialize enhanced modal behavior
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     enhanceModalScrolling();
 });

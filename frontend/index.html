@@ -31,6 +31,11 @@
         </div>
     </header>
 
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
     <div class="main-container">
@@ -340,94 +345,157 @@
                     </div>
                 </div>
                 <div class="panel-content">
+                    <!-- Payment Tab Navigation -->
+                    <div class="payment-tabs">
+                        <button class="payment-tab-btn active" data-tab="payment-list">
+                            <i class="fas fa-list"></i>
+                            <span>Payment List</span>
+                        </button>
+                        <button class="payment-tab-btn" data-tab="student-ledger">
+                            <i class="fas fa-book"></i>
+                            <span>Student Ledger</span>
+                        </button>
+                    </div>
+
                     <!-- Payment Modal (hidden by default) -->
                     <div id="addPaymentModal" class="modal" style="display:none;">
-                        <div class="modal-content payment-modal-upgraded">
-                            <div class="modal-header upgraded-modal-header">
-                                <div class="modal-header-left">
-                                    <div class="modal-icon-bg">
-                                        <i class="fas fa-wallet"></i>
+                        <div class="modal-content modern-payment-modal">
+                            <div class="modern-modal-header">
+                                <div class="header-content">
+                                    <div class="header-icon">
+                                        <div class="icon-circle payment-icon">
+                                            <i class="fas fa-credit-card"></i>
+                                        </div>
                                     </div>
-                                    <div class="modal-header-title">
-                                        <h2><i class="fas fa-plus-circle"></i> Add New Payment</h2>
-                                        <p class="modal-subtitle">Fill in the details to record a new payment for a
-                                            student.</p>
+                                    <div class="header-text">
+                                        <h2>Add New Payment</h2>
+                                        <p>Record a new payment transaction for a student</p>
                                     </div>
                                 </div>
-                                <button class="close-btn" id="closeAddPaymentModalBtn" title="Close Add Payment Modal">
+                                <button class="modern-close-btn" id="closeAddPaymentModalBtn" title="Close">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
-                            <div class="modal-body-upgraded">
-                                <!-- Student summary card (hidden by default, can be shown with JS if student is selected) -->
-                                <div id="selectedStudentSummary" class="student-summary-card" style="display:none;">
-                                    <div class="student-summary-avatar"><i class="fas fa-user-graduate"></i></div>
-                                    <div class="student-summary-details">
-                                        <div class="student-summary-name" id="summaryStudentName">Student Name</div>
-                                        <div class="student-summary-id" id="summaryStudentId">ID: 123</div>
-                                    </div>
-                                </div>
-                                <form id="paymentForm" class="payment-form-upgraded">
-                                    <div class="form-section">
-                                        <h4 class="form-section-title"><i class="fas fa-user"></i> Student</h4>
-                                        <div class="form-group">
-                                            <label for="studentSearchInput">Search Student:</label>
-                                            <input type="text" id="studentSearchInput"
-                                                placeholder="Type to search by name or ID...">
+                            
+                            <div class="modern-modal-body">
+                                <!-- Student Selection Card -->
+                                <div class="payment-card student-selection-card">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-user-graduate"></i>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="studentSelect" id="studentSelectLabel">Student:</label>
-                                            <select id="studentSelect" required title="Select Student"
-                                                aria-labelledby="studentSelectLabel">
-                                                <option value="">Select Student</option>
+                                        <h3>Student Selection</h3>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="search-field">
+                                            <div class="input-group">
+                                                <div class="input-icon">
+                                                    <i class="fas fa-search"></i>
+                                                </div>
+                                                <input type="text" id="studentSearchInput" placeholder="Search by name or ID..." class="modern-input">
+                                            </div>
+                                        </div>
+                                        <div class="select-field">
+                                            <select id="studentSelect" required class="modern-select">
+                                                <option value="">Choose a student...</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="form-section">
-                                        <h4 class="form-section-title"><i class="fas fa-rupee-sign"></i> Payment Details
-                                        </h4>
-                                        <div class="form-grid-2col">
-                                            <div class="form-group">
-                                                <label for="amount">Amount:</label>
-                                                <input type="number" id="amount" required min="0" step="0.01">
+                                        <!-- Selected Student Summary -->
+                                        <div id="selectedStudentSummary" class="selected-student-card" style="display:none;">
+                                            <div class="student-avatar">
+                                                <i class="fas fa-user-circle"></i>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="paymentMethod">Payment Method:</label>
-                                                <select id="paymentMethod" required>
-                                                    <option value="CASH">Cash</option>
-                                                    <option value="ONLINE">Online</option>
-                                                    <option value="CHEQUE">Cheque</option>
-                                                </select>
+                                            <div class="student-info">
+                                                <div class="student-name" id="summaryStudentName">Student Name</div>
+                                                <div class="student-id" id="summaryStudentId">ID: STU0000</div>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="description">Description:</label>
-                                                <input type="text" id="description" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-grid-2col">
-                                            <div class="form-group">
-                                                <label for="receiptType">Receipt Number:</label>
-                                                <select id="receiptType" onchange="toggleReceiptInput()">
-                                                    <option value="auto">Auto Generate</option>
-                                                    <option value="manual">Manual Entry</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group" id="manualReceiptGroup" style="display: none;">
-                                                <label for="manualReceiptNumber">Manual Receipt No:</label>
-                                                <input type="text" id="manualReceiptNumber"
-                                                    placeholder="Enter receipt number">
+                                            <div class="selection-badge">
+                                                <i class="fas fa-check-circle"></i>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-actions upgraded-form-actions">
-                                        <button type="submit" class="btn-primary">
-                                            <i class="fas fa-save"></i> Submit Payment
-                                        </button>
-                                        <button type="button" id="cancelPaymentBtn" class="btn-secondary">
-                                            <i class="fas fa-times"></i> Cancel
-                                        </button>
+                                </div>
+
+                                <!-- Payment Details Card -->
+                                <div class="payment-card payment-details-card">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-rupee-sign"></i>
+                                        </div>
+                                        <h3>Payment Information</h3>
                                     </div>
-                                </form>
+                                    <form id="paymentForm" class="modern-payment-form">
+                                        <div class="card-content">
+                                            <div class="form-row">
+                                                <div class="form-field">
+                                                    <label for="amount">Amount (₹)</label>
+                                                    <div class="input-group">
+                                                        <div class="input-icon">
+                                                            <i class="fas fa-rupee-sign"></i>
+                                                        </div>
+                                                        <input type="number" id="amount" required min="0" step="0.01" placeholder="0.00" class="modern-input">
+                                                    </div>
+                                                </div>
+                                                <div class="form-field">
+                                                    <label for="paymentMethod">Payment Method</label>
+                                                    <select id="paymentMethod" required class="modern-select">
+                                                        <option value="">Select method...</option>
+                                                        <option value="CASH">💵 Cash</option>
+                                                        <option value="ONLINE">💳 Online/UPI</option>
+                                                        <option value="CHEQUE">📄 Cheque</option>
+                                                        <option value="CARD">💳 Card</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-field">
+                                                <label for="description">Description</label>
+                                                <div class="input-group">
+                                                    <div class="input-icon">
+                                                        <i class="fas fa-comment-alt"></i>
+                                                    </div>
+                                                    <input type="text" id="description" required placeholder="e.g., Course fee payment, Registration fee..." class="modern-input">
+                                                </div>
+                                            </div>
+
+                                            <div class="receipt-section">
+                                                <div class="section-header">
+                                                    <i class="fas fa-receipt"></i>
+                                                    <span>Receipt Configuration</span>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-field">
+                                                        <label for="receiptType">Receipt Generation</label>
+                                                        <select id="receiptType" onchange="toggleReceiptInput()" class="modern-select">
+                                                            <option value="auto">🔄 Auto Generate</option>
+                                                            <option value="manual">✏️ Manual Entry</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-field" id="manualReceiptGroup" style="display: none;">
+                                                        <label for="manualReceiptNumber">Receipt Number</label>
+                                                        <div class="input-group">
+                                                            <div class="input-icon">
+                                                                <i class="fas fa-hashtag"></i>
+                                                            </div>
+                                                            <input type="text" id="manualReceiptNumber" placeholder="Enter receipt number" class="modern-input">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="modal-actions">
+                                            <button type="button" id="cancelPaymentBtn" class="btn-cancel">
+                                                <i class="fas fa-times"></i>
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="btn-submit">
+                                                <i class="fas fa-check"></i>
+                                                Submit Payment
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -435,91 +503,146 @@
 
                     <!-- Edit Payment Modal -->
                     <div id="editPaymentModal" class="modal" style="display:none;">
-                        <div class="modal-content payment-modal-upgraded">
-                            <div class="modal-header upgraded-modal-header">
-                                <div class="modal-header-left">
-                                    <div class="modal-header-icon">
-                                        <i class="fas fa-edit"></i>
+                        <div class="modal-content modern-payment-modal">
+                            <div class="modern-modal-header">
+                                <div class="header-content">
+                                    <div class="header-icon">
+                                        <div class="icon-circle edit-icon">
+                                            <i class="fas fa-edit"></i>
+                                        </div>
                                     </div>
-                                    <div class="modal-header-title">
-                                        <h2><i class="fas fa-edit"></i> Edit Payment</h2>
-                                        <p class="modal-subtitle">Update payment details including receipt number</p>
+                                    <div class="header-text">
+                                        <h2>Edit Payment</h2>
+                                        <p>Update payment details and transaction information</p>
                                     </div>
                                 </div>
-                                <button class="close-btn" id="closeEditPaymentModalBtn" title="Close Edit Payment Modal">
+                                <button class="modern-close-btn" id="closeEditPaymentModalBtn" title="Close">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <form id="editPaymentForm" class="payment-form-upgraded">
-                                    <input type="hidden" id="editPaymentId" name="paymentId">
-                                    
-                                    <div class="form-section">
-                                        <h4 class="form-section-title"><i class="fas fa-user"></i> Student Information</h4>
-                                        <div class="form-grid-2col">
-                                            <div class="form-group">
+                            
+                            <div class="modern-modal-body">
+                                <!-- Student Information Card -->
+                                <div class="payment-card student-info-card">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                        <h3>Student Information</h3>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="form-row">
+                                            <div class="form-field">
                                                 <label for="editStudentName">Student Name</label>
-                                                <input type="text" id="editStudentName" readonly class="readonly-field">
+                                                <div class="input-group readonly">
+                                                    <div class="input-icon">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                    <input type="text" id="editStudentName" readonly class="modern-input readonly-field">
+                                                </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-field">
                                                 <label for="editStudentCourse">Course</label>
-                                                <input type="text" id="editStudentCourse" readonly class="readonly-field">
+                                                <div class="input-group readonly">
+                                                    <div class="input-icon">
+                                                        <i class="fas fa-book"></i>
+                                                    </div>
+                                                    <input type="text" id="editStudentCourse" readonly class="modern-input readonly-field">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="form-section">
-                                        <h4 class="form-section-title"><i class="fas fa-receipt"></i> Payment Details</h4>
-                                        <div class="form-grid-2col">
-                                            <div class="form-group">
-                                                <label for="editReceiptNumber">Receipt Number *</label>
-                                                <input type="text" id="editReceiptNumber" name="receiptNumber" required 
-                                                       placeholder="Enter receipt number">
+                                <!-- Payment Details Card -->
+                                <div class="payment-card payment-details-card">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-receipt"></i>
+                                        </div>
+                                        <h3>Payment Details</h3>
+                                    </div>
+                                    <form id="editPaymentForm" class="modern-payment-form">
+                                        <input type="hidden" id="editPaymentId" name="paymentId">
+                                        
+                                        <div class="card-content">
+                                            <div class="form-row">
+                                                <div class="form-field">
+                                                    <label for="editReceiptNumber">Receipt Number *</label>
+                                                    <div class="input-group">
+                                                        <div class="input-icon">
+                                                            <i class="fas fa-hashtag"></i>
+                                                        </div>
+                                                        <input type="text" id="editReceiptNumber" name="receiptNumber" required placeholder="Enter receipt number" class="modern-input">
+                                                    </div>
+                                                </div>
+                                                <div class="form-field">
+                                                    <label for="editPaymentAmount">Amount (₹) *</label>
+                                                    <div class="input-group">
+                                                        <div class="input-icon">
+                                                            <i class="fas fa-rupee-sign"></i>
+                                                        </div>
+                                                        <input type="number" id="editPaymentAmount" name="amount" min="0" step="0.01" required placeholder="0.00" class="modern-input">
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="editPaymentAmount">Amount (₹) *</label>
-                                                <input type="number" id="editPaymentAmount" name="amount" min="0" step="0.01" required>
+                                            
+                                            <div class="form-row">
+                                                <div class="form-field">
+                                                    <label for="editPaymentMethod">Payment Method *</label>
+                                                    <select id="editPaymentMethod" name="paymentMethod" required class="modern-select">
+                                                        <option value="">Select method...</option>
+                                                        <option value="Cash">💵 Cash</option>
+                                                        <option value="Card">💳 Card</option>
+                                                        <option value="UPI">📱 UPI</option>
+                                                        <option value="Bank Transfer">🏦 Bank Transfer</option>
+                                                        <option value="Cheque">📄 Cheque</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-field">
+                                                    <label for="editPaymentDate">Payment Date *</label>
+                                                    <div class="input-group">
+                                                        <div class="input-icon">
+                                                            <i class="fas fa-calendar-alt"></i>
+                                                        </div>
+                                                        <input type="date" id="editPaymentDate" name="paymentDate" required class="modern-input">
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="editPaymentMethod">Payment Method *</label>
-                                                <select id="editPaymentMethod" name="paymentMethod" required>
-                                                    <option value="">Select Method</option>
-                                                    <option value="Cash">Cash</option>
-                                                    <option value="Card">Card</option>
-                                                    <option value="UPI">UPI</option>
-                                                    <option value="Bank Transfer">Bank Transfer</option>
-                                                    <option value="Cheque">Cheque</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="editPaymentDate">Payment Date *</label>
-                                                <input type="date" id="editPaymentDate" name="paymentDate" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="editPaymentStatus">Status</label>
-                                                <select id="editPaymentStatus" name="status">
-                                                    <option value="Completed">Completed</option>
-                                                    <option value="Pending">Pending</option>
-                                                    <option value="Failed">Failed</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="editPaymentDescription">Description</label>
-                                                <input type="text" id="editPaymentDescription" name="description" 
-                                                       placeholder="Payment description (optional)">
+                                            
+                                            <div class="form-row">
+                                                <div class="form-field">
+                                                    <label for="editPaymentStatus">Payment Status</label>
+                                                    <select id="editPaymentStatus" name="status" class="modern-select">
+                                                        <option value="Completed">✅ Completed</option>
+                                                        <option value="Pending">⏳ Pending</option>
+                                                        <option value="Failed">❌ Failed</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-field">
+                                                    <label for="editPaymentDescription">Description</label>
+                                                    <div class="input-group">
+                                                        <div class="input-icon">
+                                                            <i class="fas fa-comment-alt"></i>
+                                                        </div>
+                                                        <input type="text" id="editPaymentDescription" name="description" placeholder="Payment description (optional)" class="modern-input">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="form-actions">
-                                        <button type="button" class="btn-secondary" id="cancelEditPaymentBtn">
-                                            <i class="fas fa-times"></i> Cancel
-                                        </button>
-                                        <button type="submit" class="btn-primary">
-                                            <i class="fas fa-save"></i> Update Payment
-                                        </button>
-                                    </div>
-                                </form>
+                                        
+                                        <div class="modal-actions">
+                                            <button type="button" class="btn-cancel" id="cancelEditPaymentBtn">
+                                                <i class="fas fa-times"></i>
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="btn-submit">
+                                                <i class="fas fa-save"></i>
+                                                Update Payment
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -551,6 +674,8 @@
                                     <div class="student-details">
                                         <h3 id="ledgerStudentName">Student Name</h3>
                                         <p id="ledgerStudentId">ID: </p>
+                                        <p id="ledgerFatherName" class="father-name">Father: </p>
+                                        <p id="ledgerCourse" class="course-info">Course: </p>
                                     </div>
                                     <div class="payment-summary">
                                         <div class="summary-item">
@@ -583,23 +708,104 @@
                         </div>
                     </div>
                     <!-- End Student Ledger Modal -->
-                    <div class="payments-list" id="payments-panel">
-                        <div class="table-container">
-                            <table id="paymentsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Receipt No</th>
-                                        <th>Student</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Type</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                    
+                    <!-- Payment List Tab Content -->
+                    <div id="payment-list-content" class="payment-tab-content active">
+                        <div class="payments-list">
+                            <div class="table-container">
+                                <table id="paymentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>Student</th>
+                                            <th>Amount</th>
+                                            <th>Method</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Ledger Tab Content -->
+                    <div id="student-ledger-content" class="payment-tab-content">
+                        <div class="student-ledger-container">
+                            <!-- Ledger Header -->
+                            <div class="ledger-header">
+                                <div class="ledger-controls">
+                                    <div class="ledger-search-container">
+                                        <div class="ledger-search-box">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" id="ledgerSearchInput" class="ledger-search-input" 
+                                                   placeholder="Search students by name, ID, or course...">
+                                        </div>
+                                    </div>
+                                    <div class="ledger-filter-container">
+                                        <select id="ledgerStatusFilter" class="ledger-filter-select">
+                                            <option value="all">All Students</option>
+                                            <option value="paid">Fully Paid</option>
+                                            <option value="partial">Partial Payment</option>
+                                            <option value="outstanding">Outstanding</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Summary Cards -->
+                                <div class="ledger-summary">
+                                    <div class="ledger-summary-card">
+                                        <div class="ledger-summary-icon total">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div class="ledger-summary-content">
+                                            <h3 id="totalStudentsCount">0</h3>
+                                            <p>Total Students</p>
+                                        </div>
+                                    </div>
+                                    <div class="ledger-summary-card">
+                                        <div class="ledger-summary-icon paid">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="ledger-summary-content">
+                                            <h3 id="fullyPaidCount">0</h3>
+                                            <p>Fully Paid</p>
+                                        </div>
+                                    </div>
+                                    <div class="ledger-summary-card">
+                                        <div class="ledger-summary-icon outstanding">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        </div>
+                                        <div class="ledger-summary-content">
+                                            <h3 id="outstandingCount">0</h3>
+                                            <p>Outstanding</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Student Ledger Table -->
+                            <div class="table-container">
+                                <table id="studentLedgerTable" class="student-ledger-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Info</th>
+                                            <th>Total Fees</th>
+                                            <th>Total Paid</th>
+                                            <th>Outstanding</th>
+                                            <th>Status</th>
+                                            <th>Last Payment</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentLedgerTableBody">
+                                        <!-- Student ledger rows will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -769,71 +975,101 @@
                         <h3>ID Card Preview</h3>
                     </div>
                     <div class="id-card-wrapper">
-                        <div class="id-card professional-id-card">
-                            <div class="id-card-header">
-                                <div class="institute-logo">SIMT</div>
-                                <div class="institute-info">
-                                    <h2>Saha Institute of Management & Technology</h2>
-                                    <p>Excellence in Education & Technology</p>
+                        <div class="id-card corporate-id-card">
+                            <div class="card-background">
+                                <!-- Top Header Strip -->
+                                <div class="header-strip">
+                                    <div class="strip-pattern"></div>
                                 </div>
-                            </div>
-                            <div class="id-card-body">
-                                <div class="student-photo-placeholder">
-                                    <i class="fas fa-user-graduate"></i>
-                                </div>
-                                <div class="student-details">
-                                    <div class="detail-row">
-                                        <span class="label">Name:</span>
-                                        <span id="idCardName" class="value"></span>
+                                
+                                <!-- Institute Header -->
+                                <div class="institute-header">
+                                    <div class="institute-logo">
+                                        <div class="logo-hexagon">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="label">Student ID:</span>
-                                        <span id="idCardId" class="value"></span>
-                                    </div>
-                                    <div class="detail-row">
-                                        <span class="label">Course:</span>
-                                        <span id="idCardCourse" class="value"></span>
-                                    </div>
-                                    <div class="detail-row">
-                                        <span class="label">Duration:</span>
-                                        <span id="idCardDuration" class="value"></span>
-                                    </div>
-                                    <div class="detail-row">
-                                        <span class="label">Valid Till:</span>
-                                        <span id="idCardValidTill" class="value"></span>
+                                    <div class="institute-details">
+                                        <h1 class="institute-name">SIMT</h1>
+                                        <p class="institute-full-name">Saha Institute of Management & Technology</p>
+                                        <div class="institute-tagline">STUDENT IDENTIFICATION CARD</div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="id-card-footer">
-                                <div class="signature-section">
-                                    <div class="signature-line"></div>
-                                    <p>Authorized Signature</p>
+                                
+                                <!-- Main Content Area -->
+                                <div class="card-main-content">
+                                    <div class="student-photo-container">
+                                        <div class="photo-border">
+                                            <div class="student-photo">
+                                                <i class="fas fa-user-graduate"></i>
+                                            </div>
+                                        </div>
+                                        <div class="photo-label">STUDENT PHOTO</div>
+                                    </div>
+                                    
+                                    <div class="student-information">
+                                        <div class="info-header">
+                                            <div class="student-name-section">
+                                                <div class="name-label">STUDENT NAME</div>
+                                                <div id="idCardName" class="student-name-display">STUDENT NAME</div>
+                                            </div>
+                                            <div class="id-section">
+                                                <div class="id-label">STUDENT ID</div>
+                                                <div id="idCardId" class="id-display">STU0000</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="academic-details">
+                                            <div class="detail-row">
+                                                <div class="detail-group">
+                                                    <span class="field-label">COURSE</span>
+                                                    <span id="idCardCourse" class="field-value">Course Name</span>
+                                                </div>
+                                            </div>
+                                            <div class="detail-row">
+                                                <div class="detail-group">
+                                                    <span class="field-label">DURATION</span>
+                                                    <span id="idCardDuration" class="field-value">Duration</span>
+                                                </div>
+                                            </div>
+                                            <div class="detail-row">
+                                                <div class="detail-group">
+                                                    <span class="field-label">VALID UNTIL</span>
+                                                    <span id="idCardValidTill" class="field-value">Valid Date</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="qr-code-placeholder">
-                                    <i class="fas fa-qrcode"></i>
+                                
+                                <!-- Footer Section -->
+                                <div class="card-footer">
+                                    <div class="footer-left">
+                                        <div class="signature-section">
+                                            <div class="signature-line"></div>
+                                            <div class="signature-text">AUTHORIZED SIGNATURE</div>
+                                        </div>
+                                    </div>
+                                    <div class="footer-center">
+                                        <div class="validity-badge">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>OFFICIAL</span>
+                                        </div>
+                                    </div>
+                                    <div class="footer-right">
+                                        <div class="qr-code-section">
+                                            <div class="qr-code">
+                                                <i class="fas fa-qrcode"></i>
+                                            </div>
+                                            <div class="qr-text">VERIFY</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="id-card-actions-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <h3>Actions</h3>
-                    </div>
-                    <div class="id-card-actions">
-                        <button id="downloadIdCard" class="btn-primary professional-action-btn">
-                            <i class="fas fa-download"></i>
-                            <span>Download ID Card</span>
-                        </button>
-                        <button id="shareIdCard" class="btn-secondary professional-action-btn">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Share ID Card</span>
-                        </button>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -843,6 +1079,9 @@
     <script src="js/pagination.js"></script>
     <script src="js/script.js"></script>
     <script>
+        // API Base URL
+        const API_BASE = 'https://aalekhapi.sahaedu.in';
+        
         // Sidebar submenu toggle for Certificates
         const certMenuBtn = document.getElementById('certificatesMenuBtn');
         const certSubMenu = document.getElementById('certificatesSubMenu');
@@ -875,21 +1114,7 @@
             });
         }
 
-        // Toggle receipt input based on selection
-        function toggleReceiptInput() {
-            const receiptType = document.getElementById('receiptType').value;
-            const manualReceiptGroup = document.getElementById('manualReceiptGroup');
-            const manualReceiptInput = document.getElementById('manualReceiptNumber');
-
-            if (receiptType === 'manual') {
-                manualReceiptGroup.style.display = 'block';
-                manualReceiptInput.required = true;
-            } else {
-                manualReceiptGroup.style.display = 'none';
-                manualReceiptInput.required = false;
-                manualReceiptInput.value = '';
-            }
-        }
+        // toggleReceiptInput function moved to script.js
 
         // Load student ledger
         function loadStudentLedger(studentId) {
@@ -903,7 +1128,7 @@
                 tableBody.innerHTML = '<tr><td colspan="7" class="loading">Loading payment history...</td></tr>';
             }
 
-            fetch(`http://localhost:4455/api/payments/ledger/${studentId}`)
+            fetch(`${API_BASE}/api/payments/ledger/${studentId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -939,7 +1164,7 @@
         // Display student ledger
         function displayStudentLedger(studentId, payments) {
             // Get student details
-            fetch(`http://localhost:4455/api/students/${studentId}`)
+            fetch(`${API_BASE}/api/students/${studentId}`)
                 .then(response => response.json())
                 .then(student => {
                     // Update student info
