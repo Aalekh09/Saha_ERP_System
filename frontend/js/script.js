@@ -485,6 +485,9 @@ function renderStudentRow(student, index) {
                     <button class="action-btn ledger-btn" data-id="${student.id}" data-name="${toUpperCase(student.name)}" title="View Payment Ledger">
                         <i class="fas fa-book"></i>
                     </button>
+                    <button class="action-btn certificate-btn ${(parseFloat(student.totalCourseFee) || 0) - (parseFloat(student.paidAmount) || 0) > 0 ? 'disabled' : ''}" data-id="${student.id}" data-name="${toUpperCase(student.name)}" title="${(parseFloat(student.totalCourseFee) || 0) - (parseFloat(student.paidAmount) || 0) > 0 ? 'Payment incomplete - Certificate unavailable' : 'Generate Certificate'}">
+                        <i class="fas fa-certificate"></i>
+                    </button>
                     <button class="action-btn delete-btn" data-id="${student.id}" title="Delete Student">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -605,6 +608,15 @@ function attachStudentRowEventListeners(student) {
             showIdCard(student.id);
         });
         idCardBtn.setAttribute('data-listener-attached', 'true');
+    }
+
+    // Certificate event
+    const certificateBtn = document.querySelector(`[data-id="${student.id}"].certificate-btn`);
+    if (certificateBtn && !certificateBtn.hasAttribute('data-listener-attached')) {
+        certificateBtn.addEventListener('click', () => {
+            handleCertificateGeneration(student);
+        });
+        certificateBtn.setAttribute('data-listener-attached', 'true');
     }
 
     // Student name click event
@@ -3472,3 +3484,58 @@ function generateReceiptFixed(payment) {
 
 // Override the original function with the fixed version
 generateReceipt = generateReceiptFixed;
+
+// Handle certificate generation with payment validation
+function handleCertificateGeneration(student) {
+    console.log('Certificate generation requested for student:', student);
+    
+    // Check if payment is fully paid
+    const totalFee = parseFloat(student.totalCourseFee) || 0;
+    const paidAmount = parseFloat(student.paidAmount) || 0;
+    const remainingAmount = totalFee - paidAmount;
+    
+    console.log('Payment check:', { totalFee, paidAmount, remainingAmount });
+    
+    if (remainingAmount > 0) {
+        // Payment not fully completed
+        showNotification(`Certificate cannot be generated. Remaining payment: ₹${formatCurrency(remainingAmount)}`, true);
+        return;
+    }
+    
+    if (totalFee === 0) {
+        // No fee structure defined
+        showNotification('Certificate cannot be generated. No fee structure defined for this student.', true);
+        return;
+    }
+    
+    // Payment is fully completed, redirect to hardcopy certificate with pre-filled data
+    const certificateData = {
+        studentId: student.id,
+        name: student.name || '',
+        fathersname: student.fatherName || '',
+        mothersname: student.motherName || '',
+        dob: student.dob || '',
+        certificate: student.courses || '',
+        duration: student.courseDuration || '',
+        registration: `STU${String(student.id).padStart(4, '0')}`,
+        rollno: `STU${String(student.id).padStart(4, '0')}`,
+        erollno: `EXAM${String(student.id).padStart(4, '0')}`,
+        // Set current date as issue date
+        IssueDay: new Date().getDate(),
+        IssueMonth: new Date().toLocaleString('default', { month: 'long' }),
+        IssueYear: new Date().getFullYear(),
+        IssueSession: `${new Date().getFullYear()}-${(new Date().getFullYear() + 1).toString().slice(-2)}`,
+        performance: 'Excellent',
+        Grade: 'A+'
+    };
+    
+    // Store data in sessionStorage for the certificate page
+    sessionStorage.setItem('certificatePreFillData', JSON.stringify(certificateData));
+    
+    // Show success message and redirect
+    showNotification('Payment verified! Redirecting to certificate generation...', false);
+    
+    setTimeout(() => {
+        window.location.href = 'hardcopy-certificate.html';
+    }, 1500);
+}

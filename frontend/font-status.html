@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Font Status Dashboard - Saha Institute</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"
-        onerror="this.onerror=null;this.href='libs/fallback-fonts.css';">
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"
         onerror="this.onerror=null;this.href='libs/fallback-fonts.css';">
     <link rel="stylesheet" href="libs/fallback-fonts.css">
@@ -77,18 +76,18 @@
                     <div class="fonts-grid">
                         <div class="font-card">
                             <div class="font-header">
-                                <h4>Inter (Primary)</h4>
-                                <div class="font-status" id="interStatus">
+                                <h4>System Font (Primary)</h4>
+                                <div class="font-status" id="systemStatus">
                                     <i class="fas fa-circle"></i>
                                     <span>Checking...</span>
                                 </div>
                             </div>
                             <div class="font-sample">
-                                <p style="font-family: 'Inter', sans-serif;">
+                                <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
                                     The quick brown fox jumps over the lazy dog. 1234567890
                                 </p>
-                                <p style="font-family: 'Inter', sans-serif; font-weight: 600;">
-                                    <strong>Bold: Professional interface typography</strong>
+                                <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 600;">
+                                    <strong>Bold: System font typography</strong>
                                 </p>
                             </div>
                         </div>
@@ -310,12 +309,12 @@
 
         function refreshFontStatus() {
             // Update individual font statuses
-            updateFontStatus('interStatus', 'Inter');
+            updateFontStatus('systemStatus', 'System Font');
             updateFontStatus('playfairStatus', 'Playfair Display');
             updateFontStatus('crimsonStatus', 'Crimson Text');
             
             // Update overall status
-            const interLoaded = checkFontStatus('Inter') === 'loaded';
+            const systemLoaded = true; // System fonts are always available
             const playfairLoaded = checkFontStatus('Playfair Display') === 'loaded';
             const crimsonLoaded = checkFontStatus('Crimson Text') === 'loaded';
             

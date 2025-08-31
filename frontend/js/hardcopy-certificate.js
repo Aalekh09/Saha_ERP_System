@@ -3,6 +3,124 @@ function titleCase(str) {
     return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
+// Function to check for pre-fill data and populate the form
+function checkAndPreFillForm() {
+    console.log('Checking for pre-fill data...');
+    
+    const preFillData = sessionStorage.getItem('certificatePreFillData');
+    if (preFillData) {
+        try {
+            const data = JSON.parse(preFillData);
+            console.log('Pre-fill data found:', data);
+            
+            // Pre-fill the form fields
+            const form = document.getElementById('certificateForm');
+            if (form) {
+                // Student Information
+                if (data.registration) document.getElementById('registration').value = data.registration;
+                if (data.name) document.getElementById('name').value = data.name.toUpperCase();
+                if (data.fathersname) document.getElementById('fathersname').value = data.fathersname.toUpperCase();
+                if (data.mothersname) document.getElementById('mothersname').value = data.mothersname.toUpperCase();
+                if (data.dob) document.getElementById('dob').value = data.dob;
+                if (data.rollno) document.getElementById('rollno').value = data.rollno;
+                
+                // Academic Information
+                if (data.erollno) document.getElementById('erollno').value = data.erollno;
+                if (data.IssueSession) document.getElementById('IssueSession').value = data.IssueSession;
+                if (data.duration) document.getElementById('duration').value = data.duration;
+                if (data.performance) document.getElementById('performance').value = data.performance;
+                if (data.certificate) document.getElementById('certificate').value = data.certificate.toUpperCase();
+                if (data.Grade) document.getElementById('Grade').value = data.Grade;
+                
+                // Issue Information
+                if (data.IssueDay) document.getElementById('IssueDay').value = data.IssueDay;
+                if (data.IssueMonth) document.getElementById('IssueMonth').value = data.IssueMonth;
+                if (data.IssueYear) document.getElementById('IssueYear').value = data.IssueYear;
+                
+                console.log('Form pre-filled successfully');
+                
+                // Show notification
+                showPreFillNotification(data.name);
+                
+                // Scroll to the form
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+            
+            // Clear the session storage data after use
+            sessionStorage.removeItem('certificatePreFillData');
+            
+        } catch (error) {
+            console.error('Error parsing pre-fill data:', error);
+            sessionStorage.removeItem('certificatePreFillData');
+        }
+    }
+}
+
+// Function to show pre-fill notification
+function showPreFillNotification(studentName) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'prefill-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span>Certificate form pre-filled for ${studentName.toUpperCase()}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .prefill-notification .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .prefill-notification .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
 // Test function to manually show certificate details panel
 function testCertificateDetails() {
     console.log('Test function called');
@@ -383,6 +501,9 @@ async function saveCertificateToBackend(data) {
 // Ensure the DOM is fully loaded before running the script
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, initializing certificate page...');
+    
+    // Check for pre-fill data from student list
+    checkAndPreFillForm();
     
     // Load existing certificates when page loads
     await loadExistingCertificates();
