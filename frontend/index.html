@@ -358,17 +358,7 @@
                     </div>
                 </div>
                 <div class="panel-content">
-                    <!-- Payment Tab Navigation -->
-                    <div class="payment-tabs">
-                        <button class="payment-tab-btn active" data-tab="payment-list">
-                            <i class="fas fa-list"></i>
-                            <span>Payment List</span>
-                        </button>
-                        <button class="payment-tab-btn" data-tab="student-ledger">
-                            <i class="fas fa-book"></i>
-                            <span>Student Ledger</span>
-                        </button>
-                    </div>
+
 
                     <!-- Payment Modal (hidden by default) -->
                     <div id="addPaymentModal" class="modal" style="display:none;">
@@ -722,103 +712,24 @@
                     </div>
                     <!-- End Student Ledger Modal -->
                     
-                    <!-- Payment List Tab Content -->
-                    <div id="payment-list-content" class="payment-tab-content active">
-                        <div class="payments-list">
-                            <div class="table-container">
-                                <table id="paymentsTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Receipt No</th>
-                                            <th>Student</th>
-                                            <th>Amount</th>
-                                            <th>Method</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Type</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Student Ledger Tab Content -->
-                    <div id="student-ledger-content" class="payment-tab-content">
-                        <div class="student-ledger-container">
-                            <!-- Ledger Header -->
-                            <div class="ledger-header">
-                                <div class="ledger-controls">
-                                    <div class="ledger-search-container">
-                                        <div class="ledger-search-box">
-                                            <i class="fas fa-search"></i>
-                                            <input type="text" id="ledgerSearchInput" class="ledger-search-input" 
-                                                   placeholder="Search students by name, ID, or course...">
-                                        </div>
-                                    </div>
-                                    <div class="ledger-filter-container">
-                                        <select id="ledgerStatusFilter" class="ledger-filter-select">
-                                            <option value="all">All Students</option>
-                                            <option value="paid">Fully Paid</option>
-                                            <option value="partial">Partial Payment</option>
-                                            <option value="outstanding">Outstanding</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Summary Cards -->
-                                <div class="ledger-summary">
-                                    <div class="ledger-summary-card">
-                                        <div class="ledger-summary-icon total">
-                                            <i class="fas fa-users"></i>
-                                        </div>
-                                        <div class="ledger-summary-content">
-                                            <h3 id="totalStudentsCount">0</h3>
-                                            <p>Total Students</p>
-                                        </div>
-                                    </div>
-                                    <div class="ledger-summary-card">
-                                        <div class="ledger-summary-icon paid">
-                                            <i class="fas fa-check-circle"></i>
-                                        </div>
-                                        <div class="ledger-summary-content">
-                                            <h3 id="fullyPaidCount">0</h3>
-                                            <p>Fully Paid</p>
-                                        </div>
-                                    </div>
-                                    <div class="ledger-summary-card">
-                                        <div class="ledger-summary-icon outstanding">
-                                            <i class="fas fa-exclamation-circle"></i>
-                                        </div>
-                                        <div class="ledger-summary-content">
-                                            <h3 id="outstandingCount">0</h3>
-                                            <p>Outstanding</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Student Ledger Table -->
-                            <div class="table-container">
-                                <table id="studentLedgerTable" class="student-ledger-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Student Info</th>
-                                            <th>Total Fees</th>
-                                            <th>Total Paid</th>
-                                            <th>Outstanding</th>
-                                            <th>Status</th>
-                                            <th>Last Payment</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="studentLedgerTableBody">
-                                        <!-- Student ledger rows will be populated here -->
-                                    </tbody>
-                                </table>
-                            </div>
+                    <!-- Payments Table -->
+                    <div class="payments-list">
+                        <div class="table-container">
+                            <table id="paymentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Receipt No</th>
+                                        <th>Student</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
