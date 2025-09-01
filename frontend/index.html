@@ -8,14 +8,26 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"
-        onerror="this.onerror=null;this.href='libs/fallback-fonts.css';">
+
     <link rel="stylesheet" href="libs/fallback-fonts.css">
+    
+    <!-- Prevent Roboto font loading errors -->
+    <style>
+        /* Ensure no external font requests for Roboto */
+        @font-face {
+            font-family: 'Roboto';
+            src: local('Arial'), local('Helvetica'), local('sans-serif');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" id="font-awesome-css">
     <link rel="stylesheet" href="libs/offline-styles.css">
     <script src="libs/offline-handler.js"></script>
     <script src="libs/font-awesome-fallback.js"></script>
+    <script src="js/receipt-fix.js"></script>
 </head>
 
 <body>
@@ -30,6 +42,8 @@
             </div>
         </div>
     </header>
+
+
 
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
@@ -340,17 +354,7 @@
                     </div>
                 </div>
                 <div class="panel-content">
-                    <!-- Payment Tab Navigation -->
-                    <div class="payment-tabs">
-                        <button class="payment-tab-btn active" data-tab="payment-list">
-                            <i class="fas fa-list"></i>
-                            <span>Payment List</span>
-                        </button>
-                        <button class="payment-tab-btn" data-tab="student-ledger">
-                            <i class="fas fa-book"></i>
-                            <span>Student Ledger</span>
-                        </button>
-                    </div>
+
 
                     <!-- Payment Modal (hidden by default) -->
                     <div id="addPaymentModal" class="modal" style="display:none;">
@@ -704,103 +708,24 @@
                     </div>
                     <!-- End Student Ledger Modal -->
                     
-                    <!-- Payment List Tab Content -->
-                    <div id="payment-list-content" class="payment-tab-content active">
-                        <div class="payments-list">
-                            <div class="table-container">
-                                <table id="paymentsTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Receipt No</th>
-                                            <th>Student</th>
-                                            <th>Amount</th>
-                                            <th>Method</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Type</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Student Ledger Tab Content -->
-                    <div id="student-ledger-content" class="payment-tab-content">
-                        <div class="student-ledger-container">
-                            <!-- Ledger Header -->
-                            <div class="ledger-header">
-                                <div class="ledger-controls">
-                                    <div class="ledger-search-container">
-                                        <div class="ledger-search-box">
-                                            <i class="fas fa-search"></i>
-                                            <input type="text" id="ledgerSearchInput" class="ledger-search-input" 
-                                                   placeholder="Search students by name, ID, or course...">
-                                        </div>
-                                    </div>
-                                    <div class="ledger-filter-container">
-                                        <select id="ledgerStatusFilter" class="ledger-filter-select">
-                                            <option value="all">All Students</option>
-                                            <option value="paid">Fully Paid</option>
-                                            <option value="partial">Partial Payment</option>
-                                            <option value="outstanding">Outstanding</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Summary Cards -->
-                                <div class="ledger-summary">
-                                    <div class="ledger-summary-card">
-                                        <div class="ledger-summary-icon total">
-                                            <i class="fas fa-users"></i>
-                                        </div>
-                                        <div class="ledger-summary-content">
-                                            <h3 id="totalStudentsCount">0</h3>
-                                            <p>Total Students</p>
-                                        </div>
-                                    </div>
-                                    <div class="ledger-summary-card">
-                                        <div class="ledger-summary-icon paid">
-                                            <i class="fas fa-check-circle"></i>
-                                        </div>
-                                        <div class="ledger-summary-content">
-                                            <h3 id="fullyPaidCount">0</h3>
-                                            <p>Fully Paid</p>
-                                        </div>
-                                    </div>
-                                    <div class="ledger-summary-card">
-                                        <div class="ledger-summary-icon outstanding">
-                                            <i class="fas fa-exclamation-circle"></i>
-                                        </div>
-                                        <div class="ledger-summary-content">
-                                            <h3 id="outstandingCount">0</h3>
-                                            <p>Outstanding</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Student Ledger Table -->
-                            <div class="table-container">
-                                <table id="studentLedgerTable" class="student-ledger-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Student Info</th>
-                                            <th>Total Fees</th>
-                                            <th>Total Paid</th>
-                                            <th>Outstanding</th>
-                                            <th>Status</th>
-                                            <th>Last Payment</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="studentLedgerTableBody">
-                                        <!-- Student ledger rows will be populated here -->
-                                    </tbody>
-                                </table>
-                            </div>
+                    <!-- Payments Table -->
+                    <div class="payments-list">
+                        <div class="table-container">
+                            <table id="paymentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Receipt No</th>
+                                        <th>Student</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -970,71 +895,101 @@
                         <h3>ID Card Preview</h3>
                     </div>
                     <div class="id-card-wrapper">
-                        <div class="id-card professional-id-card">
-                            <div class="id-card-header">
-                                <div class="institute-logo">SIMT</div>
-                                <div class="institute-info">
-                                    <h2>Saha Institute of Management & Technology</h2>
-                                    <p>Excellence in Education & Technology</p>
+                        <div class="id-card corporate-id-card">
+                            <div class="card-background">
+                                <!-- Top Header Strip -->
+                                <div class="header-strip">
+                                    <div class="strip-pattern"></div>
                                 </div>
-                            </div>
-                            <div class="id-card-body">
-                                <div class="student-photo-placeholder">
-                                    <i class="fas fa-user-graduate"></i>
-                                </div>
-                                <div class="student-details">
-                                    <div class="detail-row">
-                                        <span class="label">Name:</span>
-                                        <span id="idCardName" class="value"></span>
+                                
+                                <!-- Institute Header -->
+                                <div class="institute-header">
+                                    <div class="institute-logo">
+                                        <div class="logo-hexagon">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="label">Student ID:</span>
-                                        <span id="idCardId" class="value"></span>
-                                    </div>
-                                    <div class="detail-row">
-                                        <span class="label">Course:</span>
-                                        <span id="idCardCourse" class="value"></span>
-                                    </div>
-                                    <div class="detail-row">
-                                        <span class="label">Duration:</span>
-                                        <span id="idCardDuration" class="value"></span>
-                                    </div>
-                                    <div class="detail-row">
-                                        <span class="label">Valid Till:</span>
-                                        <span id="idCardValidTill" class="value"></span>
+                                    <div class="institute-details">
+                                        <h1 class="institute-name">SIMT</h1>
+                                        <p class="institute-full-name">Saha Institute of Management & Technology</p>
+                                        <div class="institute-tagline">STUDENT IDENTIFICATION CARD</div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="id-card-footer">
-                                <div class="signature-section">
-                                    <div class="signature-line"></div>
-                                    <p>Authorized Signature</p>
+                                
+                                <!-- Main Content Area -->
+                                <div class="card-main-content">
+                                    <div class="student-photo-container">
+                                        <div class="photo-border">
+                                            <div class="student-photo">
+                                                <i class="fas fa-user-graduate"></i>
+                                            </div>
+                                        </div>
+                                        <div class="photo-label">STUDENT PHOTO</div>
+                                    </div>
+                                    
+                                    <div class="student-information">
+                                        <div class="info-header">
+                                            <div class="student-name-section">
+                                                <div class="name-label">STUDENT NAME</div>
+                                                <div id="idCardName" class="student-name-display">STUDENT NAME</div>
+                                            </div>
+                                            <div class="id-section">
+                                                <div class="id-label">STUDENT ID</div>
+                                                <div id="idCardId" class="id-display">STU0000</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="academic-details">
+                                            <div class="detail-row">
+                                                <div class="detail-group">
+                                                    <span class="field-label">COURSE</span>
+                                                    <span id="idCardCourse" class="field-value">Course Name</span>
+                                                </div>
+                                            </div>
+                                            <div class="detail-row">
+                                                <div class="detail-group">
+                                                    <span class="field-label">DURATION</span>
+                                                    <span id="idCardDuration" class="field-value">Duration</span>
+                                                </div>
+                                            </div>
+                                            <div class="detail-row">
+                                                <div class="detail-group">
+                                                    <span class="field-label">VALID UNTIL</span>
+                                                    <span id="idCardValidTill" class="field-value">Valid Date</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="qr-code-placeholder">
-                                    <i class="fas fa-qrcode"></i>
+                                
+                                <!-- Footer Section -->
+                                <div class="card-footer">
+                                    <div class="footer-left">
+                                        <div class="signature-section">
+                                            <div class="signature-line"></div>
+                                            <div class="signature-text">AUTHORIZED SIGNATURE</div>
+                                        </div>
+                                    </div>
+                                    <div class="footer-center">
+                                        <div class="validity-badge">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>OFFICIAL</span>
+                                        </div>
+                                    </div>
+                                    <div class="footer-right">
+                                        <div class="qr-code-section">
+                                            <div class="qr-code">
+                                                <i class="fas fa-qrcode"></i>
+                                            </div>
+                                            <div class="qr-text">VERIFY</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="id-card-actions-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <h3>Actions</h3>
-                    </div>
-                    <div class="id-card-actions">
-                        <button id="downloadIdCard" class="btn-primary professional-action-btn">
-                            <i class="fas fa-download"></i>
-                            <span>Download ID Card</span>
-                        </button>
-                        <button id="shareIdCard" class="btn-secondary professional-action-btn">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Share ID Card</span>
-                        </button>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -1183,14 +1138,7 @@
 
         // Show student ledger modal (moved to script.js)
 
-        // Close ledger modal
-        const closeLedgerModalBtn = document.getElementById('closeLedgerModalBtn');
-        if (closeLedgerModalBtn) {
-            closeLedgerModalBtn.addEventListener('click', function () {
-                const modal = document.getElementById('studentLedgerModal');
-                if (modal) modal.style.display = 'none';
-            });
-        }
+        // Close ledger modal - handled in script.js
 
         // Close modal when clicking outside
         window.addEventListener('click', function (event) {

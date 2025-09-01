@@ -3,16 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Content-Security-Policy" content="font-src 'self' data:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;")
     <title>Reports - Saha Institute of Management & Technology</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <script>
+        // Block font loading IMMEDIATELY before anything else loads
+        (function() {
+            // Block fetch requests
+            const originalFetch = window.fetch;
+            if (originalFetch) {
+                window.fetch = function(...args) {
+                    const url = args[0];
+                    if (typeof url === 'string' && (url.includes('.ttf') || url.includes('.woff') || url.includes('.eot') || url.includes('Roboto') || url.includes('Inter'))) {
+                        console.log('🚫 Blocked fetch font request:', url);
+                        return Promise.reject(new Error('Font loading blocked'));
+                    }
+                    return originalFetch.apply(this, args);
+                };
+            }
+            
+            // Block XMLHttpRequest
+            const originalXHROpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(method, url, ...args) {
+                if (typeof url === 'string' && (url.includes('.ttf') || url.includes('.woff') || url.includes('.eot') || url.includes('Roboto') || url.includes('Inter'))) {
+                    console.log('🚫 Blocked XHR font request:', url);
+                    return;
+                }
+                return originalXHROpen.call(this, method, url, ...args);
+            };
+            
+            // Override createElement to block font-related link elements
+            const originalCreateElement = document.createElement;
+            document.createElement = function(tagName) {
+                const element = originalCreateElement.call(this, tagName);
+                if (tagName.toLowerCase() === 'link') {
+                    const originalSetAttribute = element.setAttribute;
+                    element.setAttribute = function(name, value) {
+                        if (name === 'href' && typeof value === 'string' && 
+                            (value.includes('.ttf') || value.includes('.woff') || value.includes('.eot') || 
+                             value.includes('Roboto') || value.includes('Inter') || value.includes('fonts.googleapis'))) {
+                            console.log('🚫 Blocked link font request:', value);
+                            return;
+                        }
+                        return originalSetAttribute.call(this, name, value);
+                    };
+                }
+                return element;
+            };
+        })();
+    </script>
+    <style>
+        /* NUCLEAR OPTION: Override ALL possible font declarations */
+        @font-face {
+            font-family: 'Roboto';
+            src: local('Arial') !important;
+            unicode-range: U+0000-FFFF;
+        }
+        @font-face {
+            font-family: 'Roboto-Regular';
+            src: local('Arial') !important;
+            unicode-range: U+0000-FFFF;
+        }
+        @font-face {
+            font-family: 'Roboto-Medium';
+            src: local('Arial') !important;
+            unicode-range: U+0000-FFFF;
+        }
+        @font-face {
+            font-family: 'Roboto-Bold';
+            src: local('Arial') !important;
+            unicode-range: U+0000-FFFF;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: local('Arial') !important;
+            unicode-range: U+0000-FFFF;
+        }
+        
+        /* Override any external @font-face that might be loaded */
+        @font-face {
+            font-family: 'FontAwesome';
+            src: local('Arial') !important;
+        }
+        
+        /* Block any font requests and force system fonts */
+        * {
+            font-display: block !important;
+        }
+        
+        /* Nuclear font override - force system fonts on everything */
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+        }
+        
+        /* Use system fonts everywhere - Force override any cached fonts */
+        *, *::before, *::after {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+        }
+        
+        /* Additional font override for specific elements */
+        body, html, div, span, h1, h2, h3, h4, h5, h6, p, a, button, input, select, textarea, table, th, td {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+        }
+        
+        /* Block any potential font requests */
+        @supports (font-display: block) {
+            * {
+                font-display: block !important;
+            }
+        }
+    </style>
     <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../css/pages/reports.css">
+    <link rel="stylesheet" href="../css/pages/reports-minimal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Override Chart.js font settings immediately after loading
+        if (typeof Chart !== 'undefined') {
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif';
+        }
+    </script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -26,6 +143,8 @@
             </div>
         </div>
     </header>
+
+
 
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     <div class="main-container">
@@ -89,43 +208,50 @@
         <div class="content-panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    <h2><i class="fas fa-chart-bar"></i> Reports Dashboard</h2>
-                    <p class="subtitle">Comprehensive analytics and insights for data-driven decisions</p>
+                    <h2>Analytics Dashboard</h2>
+                    <p class="subtitle">Comprehensive reporting and insights</p>
                 </div>
                 <div class="header-actions">
-                    <div class="date-range-selector">
-                        <select id="reportPeriod" class="period-select">
-                            <option value="current-month">Current Month</option>
-                            <option value="last-month">Last Month</option>
-                            <option value="last-3-months">Last 3 Months</option>
-                            <option value="last-6-months">Last 6 Months</option>
-                            <option value="current-year">Current Year</option>
-                            <option value="all-time" selected>All Time</option>
-                        </select>
-                    </div>
-                    <button class="action-btn refresh-btn" onclick="refreshAllReports()">
-                        <i class="fas fa-sync-alt"></i> Refresh
+                    <button class="action-btn" onclick="refreshAllReports()">
+                        <i class="fas fa-sync-alt"></i>
                     </button>
-                    <button class="action-btn print-btn" onclick="window.print()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button class="action-btn export-btn" onclick="exportAllReports()">
-                        <i class="fas fa-download"></i> Export All
+                    <button class="action-btn" onclick="exportAllReports()">
+                        <i class="fas fa-download"></i>
                     </button>
                 </div>
             </div>
             <div class="panel-content">
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalStudents">-</div>
+                        <div class="metric-label">Total Students</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalRevenue">-</div>
+                        <div class="metric-label">Total Revenue</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="pendingAmount">-</div>
+                        <div class="metric-label">Outstanding</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="thisMonthAdmissions">-</div>
+                        <div class="metric-label">This Month</div>
+                    </div>
+                </div>
+                
                 <div class="reports-grid">
-                    <!-- Monthly Student Admissions - Enhanced Interactive Version -->
-                    <div class="report-card">
+                    <!-- Student Admissions -->
+                    <div class="report-card full-width">
                         <div class="report-header">
-                            <h3><i class="fas fa-user-graduate"></i> Monthly Student Admissions</h3>
+                            <h3>Student Admissions</h3>
                             <div class="report-actions">
                                 <button class="action-btn" onclick="monthlyAdmissionReports.toggleView()">
-                                    <i class="fas fa-th-large"></i> <span id="viewToggleText">Grid View</span>
+                                    <i class="fas fa-th-large"></i>
                                 </button>
                                 <button class="action-btn" onclick="exportTableToExcel('studentAdmissionsTable')">
-                                    <i class="fas fa-file-excel"></i> Excel
+                                    <i class="fas fa-download"></i>
                                 </button>
                             </div>
                         </div>
@@ -162,19 +288,17 @@
                         </div>
                     </div>
                     
-                    <!-- Monthly Payments Collected -->
+                    <!-- Revenue -->
                     <div class="report-card">
                         <div class="report-header">
-                            <h3><i class="fas fa-money-bill-wave"></i> Monthly Payments Collected</h3>
+                            <h3>Revenue</h3>
                             <div class="report-actions">
-                                <div class="receipt-lookup">
-                                    <input type="text" id="receiptNumberInput" placeholder="Enter receipt number..." class="receipt-input">
-                                    <button class="action-btn lookup-btn" onclick="lookupReceiptNumber()">
-                                        <i class="fas fa-search"></i> Lookup
-                                    </button>
-                                </div>
+                                <input type="text" id="receiptNumberInput" placeholder="Receipt #" class="search-input">
+                                <button class="action-btn" onclick="lookupReceiptNumber()">
+                                    <i class="fas fa-search"></i>
+                                </button>
                                 <button class="action-btn" onclick="exportTableToExcel('monthlyPaymentsTable')">
-                                    <i class="fas fa-file-excel"></i> Excel
+                                    <i class="fas fa-download"></i>
                                 </button>
                             </div>
                         </div>
@@ -195,7 +319,7 @@
                             <div class="table-container">
                                 <table class="report-table" id="monthlyPaymentsTable">
                                     <thead>
-                                        <tr><th>Month</th><th>Total Payments</th></tr>
+                                        <tr><th>Month</th><th>Total Revenue</th></tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
@@ -203,23 +327,17 @@
                         </div>
                     </div>
                     
-                    <!-- Pending Fees -->
+                    <!-- Outstanding -->
                     <div class="report-card">
                         <div class="report-header">
-                            <h3><i class="fas fa-exclamation-triangle"></i> Pending Fees</h3>
+                            <h3>Outstanding</h3>
                             <div class="report-actions">
-                                <div class="form-group">
-                                    <label for="pendingFeesMonthPicker">Month:</label>
-                                    <input type="month" id="pendingFeesMonthPicker" name="pendingFeesMonthPicker">
-                                </div>
+                                <input type="month" id="pendingFeesMonthPicker" class="month-input">
                                 <button class="action-btn" onclick="loadPendingFeesByMonth()">
-                                    <i class="fas fa-search"></i> Filter
-                                </button>
-                                <button class="action-btn" onclick="loadPendingFees()">
-                                    <i class="fas fa-refresh"></i> All
+                                    <i class="fas fa-filter"></i>
                                 </button>
                                 <button class="action-btn" onclick="exportTableToExcel('pendingFeesTable')">
-                                    <i class="fas fa-file-excel"></i> Excel
+                                    <i class="fas fa-download"></i>
                                 </button>
                             </div>
                         </div>
@@ -228,7 +346,7 @@
                             <div class="table-container">
                                 <table class="report-table" id="pendingFeesTable">
                                     <thead>
-                                        <tr><th>Student Name</th><th>Course</th><th>Pending Amount</th><th>Admission Date</th></tr>
+                                        <tr><th>Student</th><th>Course</th><th>Amount Due</th><th>Since</th></tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
@@ -236,32 +354,7 @@
                         </div>
                     </div>
                     
-                    <!-- Students Added This Month -->
-                    <div class="report-card">
-                        <div class="report-header">
-                            <h3><i class="fas fa-calendar-plus"></i> Students Added This Month</h3>
-                            <div class="report-actions">
-                                <div class="form-group">
-                                    <label for="studentsMonthPicker">Month:</label>
-                                    <input type="month" id="studentsMonthPicker" name="studentsMonthPicker">
-                                </div>
-                                <button class="action-btn" onclick="loadStudentsByMonth()">
-                                    <i class="fas fa-search"></i> Show
-                                </button>
-                            </div>
-                        </div>
-                        <div class="report-body" id="students-by-month-container">
-                            <div id="studentsByMonthCount" class="report-stat"></div>
-                            <div class="table-container">
-                                <table class="report-table" id="studentsByMonthTable">
-                                    <thead>
-                                        <tr><th>S.No</th><th>Name</th><th>Father's Name</th><th>Course</th></tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -293,6 +386,8 @@
                 // Ensure chevron has transition
                 menuBtn.querySelector('.fa-chevron-down').style.transition = 'transform 0.3s';
             }
+
+
         });
     </script>
 </body>

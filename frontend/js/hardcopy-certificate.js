@@ -3,6 +3,124 @@ function titleCase(str) {
     return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
+// Function to check for pre-fill data and populate the form
+function checkAndPreFillForm() {
+    console.log('Checking for pre-fill data...');
+    
+    const preFillData = sessionStorage.getItem('certificatePreFillData');
+    if (preFillData) {
+        try {
+            const data = JSON.parse(preFillData);
+            console.log('Pre-fill data found:', data);
+            
+            // Pre-fill the form fields
+            const form = document.getElementById('certificateForm');
+            if (form) {
+                // Student Information
+                if (data.registration) document.getElementById('registration').value = data.registration;
+                if (data.name) document.getElementById('name').value = data.name.toUpperCase();
+                if (data.fathersname) document.getElementById('fathersname').value = data.fathersname.toUpperCase();
+                if (data.mothersname) document.getElementById('mothersname').value = data.mothersname.toUpperCase();
+                if (data.dob) document.getElementById('dob').value = data.dob;
+                if (data.rollno) document.getElementById('rollno').value = data.rollno;
+                
+                // Academic Information
+                if (data.erollno) document.getElementById('erollno').value = data.erollno;
+                if (data.IssueSession) document.getElementById('IssueSession').value = data.IssueSession;
+                if (data.duration) document.getElementById('duration').value = data.duration;
+                if (data.performance) document.getElementById('performance').value = data.performance;
+                if (data.certificate) document.getElementById('certificate').value = data.certificate.toUpperCase();
+                if (data.Grade) document.getElementById('Grade').value = data.Grade;
+                
+                // Issue Information
+                if (data.IssueDay) document.getElementById('IssueDay').value = data.IssueDay;
+                if (data.IssueMonth) document.getElementById('IssueMonth').value = data.IssueMonth;
+                if (data.IssueYear) document.getElementById('IssueYear').value = data.IssueYear;
+                
+                console.log('Form pre-filled successfully');
+                
+                // Show notification
+                showPreFillNotification(data.name);
+                
+                // Scroll to the form
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+            
+            // Clear the session storage data after use
+            sessionStorage.removeItem('certificatePreFillData');
+            
+        } catch (error) {
+            console.error('Error parsing pre-fill data:', error);
+            sessionStorage.removeItem('certificatePreFillData');
+        }
+    }
+}
+
+// Function to show pre-fill notification
+function showPreFillNotification(studentName) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'prefill-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span>Certificate form pre-filled for ${studentName.toUpperCase()}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .prefill-notification .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .prefill-notification .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
 // Test function to manually show certificate details panel
 function testCertificateDetails() {
     console.log('Test function called');
@@ -183,11 +301,6 @@ function populateCertificatesTable(certificates) {
         return;
     }
     
-    // Update certificate count
-    if (certificateCount) {
-        certificateCount.textContent = `${certificates.length} certificate${certificates.length !== 1 ? 's' : ''} found`;
-    }
-    
     // Clear existing rows
     tableBody.innerHTML = '';
     
@@ -208,12 +321,69 @@ function populateCertificatesTable(certificates) {
         return;
     }
     
+    // Group certificates by student name + father's name to detect potential duplicates
+    const certificateGroups = {};
+    let duplicateCount = 0;
+    certificates.forEach(cert => {
+        const key = `${(cert.studentName || '').toLowerCase().trim()}_${(cert.fathersName || '').toLowerCase().trim()}`;
+        if (!certificateGroups[key]) {
+            certificateGroups[key] = [];
+        }
+        certificateGroups[key].push(cert);
+    });
+    
+    // Calculate duplicate statistics
+    Object.values(certificateGroups).forEach(group => {
+        if (group.length > 1) {
+            duplicateCount += group.length;
+        }
+    });
+    
+    // Update certificate count with duplicate info
+    if (certificateCount) {
+        let countText = `${certificates.length} certificate${certificates.length !== 1 ? 's' : ''} found`;
+        if (duplicateCount > 0) {
+            countText += ` (${duplicateCount} duplicates detected)`;
+        }
+        certificateCount.textContent = countText;
+        
+        // Add duplicate warning if any found
+        if (duplicateCount > 0) {
+            certificateCount.style.color = '#f59e0b';
+            certificateCount.innerHTML += ' <i class="fas fa-exclamation-triangle" style="margin-left: 8px;"></i>';
+            
+            // Show notification about duplicates
+            const duplicateGroups = Object.values(certificateGroups).filter(group => group.length > 1).length;
+            showCertificateNotification(
+                `Warning: ${duplicateCount} duplicate certificates found in ${duplicateGroups} group${duplicateGroups !== 1 ? 's' : ''}. Please review and remove duplicates.`, 
+                'info'
+            );
+        } else {
+            certificateCount.style.color = '';
+        }
+    }
+
     // Populate table with certificates
     certificates.forEach((certificate, index) => {
+        const groupKey = `${(certificate.studentName || '').toLowerCase().trim()}_${(certificate.fathersName || '').toLowerCase().trim()}`;
+        const isDuplicate = certificateGroups[groupKey] && certificateGroups[groupKey].length > 1;
+        
         const row = document.createElement('tr');
+        if (isDuplicate) {
+            row.classList.add('duplicate-certificate');
+        }
+        
         row.innerHTML = `
-            <td class="certificate-id">CERT-${certificate.id || (index + 1)}</td>
-            <td class="student-name">${certificate.studentName || certificate.student?.name || 'Unknown Student'}</td>
+            <td class="certificate-id">
+                CERT-${certificate.id || (index + 1)}
+                ${isDuplicate ? '<i class="fas fa-exclamation-triangle duplicate-icon" title="Duplicate detected"></i>' : ''}
+            </td>
+            <td class="student-name">
+                <div class="student-info-cell">
+                    <div class="name">${certificate.studentName || certificate.student?.name || 'Unknown Student'}</div>
+                    <div class="father-name">Father: ${certificate.fathersName || 'N/A'}</div>
+                </div>
+            </td>
             <td>${certificate.registrationNumber || '-'}</td>
             <td>${certificate.type || '-'}</td>
             <td>${certificate.grade || '-'}</td>
@@ -222,6 +392,7 @@ function populateCertificatesTable(certificates) {
                 <span class="status-badge ${getStatusClass(certificate.status)}">
                     ${certificate.status || 'Active'}
                 </span>
+                ${isDuplicate ? '<div class="duplicate-badge">Duplicate</div>' : ''}
             </td>
             <td>
                 <div class="table-actions">
@@ -234,6 +405,9 @@ function populateCertificatesTable(certificates) {
                     <button class="table-action-btn btn-table-edit" onclick="editCertificateFromTable(${certificate.id})" title="Edit Certificate">
                         <i class="fas fa-edit"></i>
                     </button>
+                    ${isDuplicate ? `<button class="table-action-btn btn-table-delete" onclick="deleteDuplicateCertificate(${certificate.id})" title="Delete Duplicate">
+                        <i class="fas fa-trash"></i>
+                    </button>` : ''}
                 </div>
             </td>
         `;
@@ -324,6 +498,448 @@ function filterCertificates() {
     }
 }
 
+// Function to check for duplicate certificates
+async function checkDuplicateCertificate(studentName, fathersName) {
+    try {
+        console.log('Checking for duplicate certificate:', { studentName, fathersName });
+        
+        const response = await fetch(`https://aalekhapi.sahaedu.in/api/certificates`);
+        if (response.ok) {
+            const certificates = await response.json();
+            console.log('Existing certificates:', certificates);
+            
+            // Check for duplicate: same student name + father's name combination
+            const duplicate = certificates.find(cert => 
+                cert.studentName && cert.fathersName &&
+                cert.studentName.toLowerCase().trim() === studentName.toLowerCase().trim() &&
+                cert.fathersName.toLowerCase().trim() === fathersName.toLowerCase().trim()
+            );
+            
+            if (duplicate) {
+                console.log('Duplicate certificate found:', duplicate);
+                return {
+                    isDuplicate: true,
+                    existingCertificate: duplicate
+                };
+            }
+            
+            return { isDuplicate: false };
+        } else {
+            console.error('Failed to fetch certificates for duplicate check');
+            return { isDuplicate: false }; // Allow creation if we can't check
+        }
+    } catch (error) {
+        console.error('Error checking for duplicates:', error);
+        return { isDuplicate: false }; // Allow creation if we can't check
+    }
+}
+
+// Function to show duplicate certificate warning
+function showDuplicateWarning(existingCertificate) {
+    const warningHtml = `
+        <div class="duplicate-warning-overlay" id="duplicateWarningOverlay">
+            <div class="duplicate-warning-modal">
+                <div class="warning-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Duplicate Certificate Detected</h3>
+                </div>
+                <div class="warning-content">
+                    <p><strong>A certificate already exists for this student:</strong></p>
+                    <div class="existing-cert-info">
+                        <div class="cert-detail">
+                            <span class="label">Student Name:</span>
+                            <span class="value">${titleCase(existingCertificate.studentName)}</span>
+                        </div>
+                        <div class="cert-detail">
+                            <span class="label">Father's Name:</span>
+                            <span class="value">${titleCase(existingCertificate.fathersName)}</span>
+                        </div>
+                        <div class="cert-detail">
+                            <span class="label">Certificate ID:</span>
+                            <span class="value">CERT-${existingCertificate.id}</span>
+                        </div>
+                        <div class="cert-detail">
+                            <span class="label">Issue Date:</span>
+                            <span class="value">${existingCertificate.issueDate ? new Date(existingCertificate.issueDate).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                        <div class="cert-detail">
+                            <span class="label">Course:</span>
+                            <span class="value">${existingCertificate.type || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <p class="warning-message">
+                        <i class="fas fa-info-circle"></i>
+                        Only one certificate is allowed per student (same name + father's name combination).
+                    </p>
+                </div>
+                <div class="warning-actions">
+                    <button class="btn-warning-close" onclick="closeDuplicateWarning()">
+                        <i class="fas fa-times"></i>
+                        Close
+                    </button>
+                    <button class="btn-view-existing" onclick="viewExistingCertificate(${existingCertificate.id})">
+                        <i class="fas fa-eye"></i>
+                        View Existing Certificate
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add styles for the warning modal
+    if (!document.getElementById('duplicateWarningStyles')) {
+        const styles = document.createElement('style');
+        styles.id = 'duplicateWarningStyles';
+        styles.textContent = `
+            .duplicate-warning-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease-out;
+            }
+            
+            .duplicate-warning-modal {
+                background: white;
+                border-radius: 12px;
+                padding: 0;
+                max-width: 500px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                animation: slideIn 0.3s ease-out;
+            }
+            
+            .warning-header {
+                background: #f59e0b;
+                color: white;
+                padding: 20px;
+                border-radius: 12px 12px 0 0;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .warning-header i {
+                font-size: 24px;
+            }
+            
+            .warning-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+            }
+            
+            .warning-content {
+                padding: 24px;
+            }
+            
+            .existing-cert-info {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 16px;
+                margin: 16px 0;
+                border-left: 4px solid #f59e0b;
+            }
+            
+            .cert-detail {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                padding: 4px 0;
+            }
+            
+            .cert-detail:last-child {
+                margin-bottom: 0;
+            }
+            
+            .cert-detail .label {
+                font-weight: 600;
+                color: #374151;
+            }
+            
+            .cert-detail .value {
+                color: #6b7280;
+                text-align: right;
+            }
+            
+            .warning-message {
+                background: #fef3c7;
+                border: 1px solid #f59e0b;
+                border-radius: 6px;
+                padding: 12px;
+                margin-top: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #92400e;
+            }
+            
+            .warning-actions {
+                padding: 0 24px 24px;
+                display: flex;
+                gap: 12px;
+                justify-content: flex-end;
+            }
+            
+            .btn-warning-close, .btn-view-existing {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s;
+            }
+            
+            .btn-warning-close {
+                background: #6b7280;
+                color: white;
+            }
+            
+            .btn-warning-close:hover {
+                background: #4b5563;
+            }
+            
+            .btn-view-existing {
+                background: #3b82f6;
+                color: white;
+            }
+            
+            .btn-view-existing:hover {
+                background: #2563eb;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes slideIn {
+                from { transform: translateY(-20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            
+            /* Duplicate certificate styles */
+            .duplicate-certificate {
+                background-color: #fef3c7 !important;
+                border-left: 4px solid #f59e0b;
+            }
+            
+            .duplicate-icon {
+                color: #f59e0b;
+                margin-left: 8px;
+                font-size: 14px;
+            }
+            
+            .student-info-cell {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .student-info-cell .name {
+                font-weight: 600;
+                color: #374151;
+            }
+            
+            .student-info-cell .father-name {
+                font-size: 12px;
+                color: #6b7280;
+                font-style: italic;
+            }
+            
+            .duplicate-badge {
+                background: #f59e0b;
+                color: white;
+                font-size: 10px;
+                padding: 2px 6px;
+                border-radius: 4px;
+                margin-top: 4px;
+                display: inline-block;
+                font-weight: 500;
+            }
+            
+            .btn-table-delete {
+                background: #ef4444 !important;
+                color: white !important;
+            }
+            
+            .btn-table-delete:hover {
+                background: #dc2626 !important;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    // Add the warning to the page
+    document.body.insertAdjacentHTML('beforeend', warningHtml);
+}
+
+// Function to close duplicate warning
+function closeDuplicateWarning() {
+    const overlay = document.getElementById('duplicateWarningOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+// Function to view existing certificate
+function viewExistingCertificate(certificateId) {
+    console.log('Viewing existing certificate:', certificateId);
+    closeDuplicateWarning();
+    
+    // Scroll to the certificates table and highlight the existing certificate
+    const certificatesTable = document.getElementById('certificatesTable');
+    if (certificatesTable) {
+        certificatesTable.scrollIntoView({ behavior: 'smooth' });
+        
+        // Highlight the existing certificate row
+        setTimeout(() => {
+            const rows = certificatesTable.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const certIdCell = row.querySelector('.certificate-id');
+                if (certIdCell && certIdCell.textContent.includes(`CERT-${certificateId}`)) {
+                    row.style.background = '#fef3c7';
+                    row.style.border = '2px solid #f59e0b';
+                    setTimeout(() => {
+                        row.style.background = '';
+                        row.style.border = '';
+                    }, 3000);
+                }
+            });
+        }, 500);
+    }
+}
+
+// Function to delete duplicate certificate
+async function deleteDuplicateCertificate(certificateId) {
+    if (!confirm('Are you sure you want to delete this duplicate certificate? This action cannot be undone.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://aalekhapi.sahaedu.in/api/certificates/${certificateId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            console.log('Certificate deleted successfully');
+            // Refresh the certificates table
+            await loadExistingCertificates();
+            
+            // Show success notification
+            showCertificateNotification('Duplicate certificate deleted successfully', 'success');
+            
+        } else {
+            console.error('Failed to delete certificate');
+            showCertificateNotification('Failed to delete certificate. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting certificate:', error);
+        showCertificateNotification('Error deleting certificate. Please try again.', 'error');
+    }
+}
+
+// Function to show notification
+function showCertificateNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `certificate-notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <span>${message}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add styles if not already added
+    if (!document.getElementById('certificateNotificationStyles')) {
+        const styles = document.createElement('style');
+        styles.id = 'certificateNotificationStyles';
+        styles.textContent = `
+            .certificate-notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+            }
+            
+            .certificate-notification.success {
+                background: #10b981;
+                color: white;
+            }
+            
+            .certificate-notification.error {
+                background: #ef4444;
+                color: white;
+            }
+            
+            .certificate-notification.info {
+                background: #3b82f6;
+                color: white;
+            }
+            
+            .certificate-notification .notification-content {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .certificate-notification .notification-close {
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                padding: 0;
+                margin-left: auto;
+                opacity: 0.8;
+            }
+            
+            .certificate-notification .notification-close:hover {
+                opacity: 1;
+            }
+            
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Make functions globally accessible
+window.closeDuplicateWarning = closeDuplicateWarning;
+window.viewExistingCertificate = viewExistingCertificate;
+window.deleteDuplicateCertificate = deleteDuplicateCertificate;
+window.showCertificateNotification = showCertificateNotification;
+
 // Function to save certificate to backend
 async function saveCertificateToBackend(data) {
     try {
@@ -383,6 +999,9 @@ async function saveCertificateToBackend(data) {
 // Ensure the DOM is fully loaded before running the script
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, initializing certificate page...');
+    
+    // Check for pre-fill data from student list
+    checkAndPreFillForm();
     
     // Load existing certificates when page loads
     await loadExistingCertificates();
@@ -536,6 +1155,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (el.name && el.type !== 'file') data[el.name] = el.value;
             }
             console.log('Form data gathered:', data);
+            
+            // Check for duplicate certificate before proceeding
+            if (data.name && data.fathersname) {
+                const duplicateCheck = await checkDuplicateCertificate(data.name, data.fathersname);
+                if (duplicateCheck.isDuplicate) {
+                    console.log('Duplicate certificate detected, showing warning');
+                    showDuplicateWarning(duplicateCheck.existingCertificate);
+                    return; // Stop form submission
+                }
+            }
             
             // Gather subjects
             const rows = [];

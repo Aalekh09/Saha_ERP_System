@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management - Saha Institute</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="stylesheet" href="libs/fallback-fonts.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/attendance.css">
+    <script src="libs/font-loader.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Welcome, <span id="username"></span></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <div class="main-container">
+        <div class="side-panel" id="sidePanel">
+            <div class="admin-section">
+                <div class="admin-header">
+                    <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
+                    <div class="admin-info">
+                        <h3>Aalekh</h3>
+                        <span class="admin-role">Administrator</span>
+                    </div>
+                </div>
+            </div>
+            <div class="student-section">
+                <h4>Navigation</h4>
+                <a href="dashboard.html" class="tab-btn">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <h4>Student Management</h4>
+                <a href="index.html" class="tab-btn">
+                    <i class="fas fa-list"></i>
+                    <span>List Students</span>
+                </a>
+                <a href="index.html#add-panel" class="tab-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Student</span>
+                </a>
+                <a href="index.html#payments-panel" class="tab-btn">
+                    <i class="fas fa-money-bill"></i>
+                    <span>Payments</span>
+                </a>
+                <a href="attendance.html" class="tab-btn active">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+                <a href="pages/reports.html" class="tab-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="enquiry.html" class="tab-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Enquiries</span>
+                </a>
+                <a href="certificate.html" class="tab-btn">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-panel">
+            <!-- Attendance Management Panel -->
+            <div class="panel-header">
+                <div class="panel-title">
+                    <h2><i class="fas fa-calendar-check"></i> Attendance Management</h2>
+                    <p class="subtitle">Track and manage student attendance efficiently</p>
+                </div>
+                <div class="panel-actions">
+                    <div class="api-status" id="apiStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>Checking API...</span>
+                    </div>
+                    <div class="date-selector">
+                        <input type="date" id="attendanceDate" class="date-input">
+                    </div>
+                    <button class="btn-primary" id="markAllPresentBtn">
+                        <i class="fas fa-check-double"></i> Mark All Present
+                    </button>
+                    <button class="btn-secondary" id="saveAttendanceBtn">
+                        <i class="fas fa-save"></i> Save Attendance
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-content">
+                <!-- Attendance Stats -->
+                <div class="attendance-stats">
+                    <div class="stat-card present">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="presentCount">0</h3>
+                            <p>Present</p>
+                        </div>
+                    </div>
+                    <div class="stat-card absent">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-times"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="absentCount">0</h3>
+                            <p>Absent</p>
+                        </div>
+                    </div>
+                    <div class="stat-card late">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="lateCount">0</h3>
+                            <p>Late</p>
+                        </div>
+                    </div>
+                    <div class="stat-card total">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Total Students</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Filter -->
+                <div class="attendance-filters">
+                    <div class="filter-group">
+                        <label for="courseFilter">Filter by Course:</label>
+                        <select id="courseFilter" class="filter-select">
+                            <option value="">All Courses</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="attendanceSearch">Search Student:</label>
+                        <div class="search-container" id="attendanceSearchContainer">
+                            <!-- Enhanced search will be initialized here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Grid -->
+                <div class="attendance-grid-container">
+                    <!-- Loading skeleton -->
+                    <div class="loading-skeleton-grid" id="loadingSkeleton" style="display: none;">
+                        <div class="skeleton-item">
+                            <div class="loading-skeleton avatar"></div>
+                            <div class="loading-skeleton title"></div>
+                            <div class="loading-skeleton text narrow"></div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="loading-skeleton avatar"></div>
+                            <div class="loading-skeleton title"></div>
+                            <div class="loading-skeleton text narrow"></div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="loading-skeleton avatar"></div>
+                            <div class="loading-skeleton title"></div>
+                            <div class="loading-skeleton text narrow"></div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="loading-skeleton avatar"></div>
+                            <div class="loading-skeleton title"></div>
+                            <div class="loading-skeleton text narrow"></div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="loading-skeleton avatar"></div>
+                            <div class="loading-skeleton title"></div>
+                            <div class="loading-skeleton text narrow"></div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="loading-skeleton avatar"></div>
+                            <div class="loading-skeleton title"></div>
+                            <div class="loading-skeleton text narrow"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendance Grid -->
+                    <div class="attendance-grid" id="attendanceGrid">
+                        <!-- Student attendance cards will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Attendance History -->
+                <div class="attendance-history-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Attendance History</h3>
+                        <div class="history-controls">
+                            <select id="historyPeriod" class="period-select">
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                            <button class="btn-outline" id="exportAttendanceBtn">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="attendance-history-grid" id="attendanceHistory">
+                        <!-- History will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Details Modal -->
+    <div id="attendanceModal" class="modal" style="display: none;">
+        <div class="modal-content attendance-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-graduate"></i> <span id="modalStudentName">Student Name</span></h2>
+                <button class="close-btn" id="closeAttendanceModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="student-attendance-details">
+                    <div class="attendance-summary">
+                        <div class="summary-item">
+                            <span class="label">Total Classes:</span>
+                            <span class="value" id="totalClasses">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Present:</span>
+                            <span class="value present" id="presentDays">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Absent:</span>
+                            <span class="value absent" id="absentDays">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Attendance %:</span>
+                            <span class="value percentage" id="attendancePercentage">0%</span>
+                        </div>
+                    </div>
+                    <div class="attendance-calendar" id="attendanceCalendar">
+                        <!-- Calendar will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <script src="js/mockAPI.js"></script>
+    <script src="js/enhancedSearch.js"></script>
+    <script src="js/attendance.js"></script>
+</body>
+</html>

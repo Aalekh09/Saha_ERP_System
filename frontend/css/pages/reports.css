@@ -107,12 +107,100 @@
     background: rgba(255, 255, 255, 0.98);
 }
 
+/* Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.summary-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.summary-icon.revenue {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+}
+
+.summary-icon.pending {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+}
+
+.summary-icon.monthly {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+    box-shadow: 0 8px 20px rgba(111, 66, 193, 0.3);
+}
+
+.summary-content h3 {
+    margin: 0 0 4px 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #2c3e50;
+    line-height: 1;
+}
+
+.summary-content p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* Professional Reports Grid */
 .reports-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     gap: 32px;
     margin-bottom: 32px;
+}
+
+/* Full width cards for better layout */
+.report-card.full-width {
+    grid-column: 1 / -1;
+    max-width: none;
 }
 
 /* Ultra Professional Report Cards */
@@ -147,9 +235,7 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.report-card.full-width {
-    grid-column: 1 / -1;
-}
+
 
 /* Enhanced Report Header */
 .report-header {
@@ -211,6 +297,36 @@
     align-items: center;
 }
 
+/* Receipt lookup styling */
+.receipt-lookup {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.receipt-input {
+    padding: 10px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #495057;
+    min-width: 180px;
+}
+
+.receipt-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+.receipt-input::placeholder {
+    color: #adb5bd;
+    font-weight: 400;
+}
+
 .report-actions .form-group {
     display: flex;
     align-items: center;
@@ -236,6 +352,24 @@
 }
 
 .report-actions input[type="month"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+/* Month filter styling */
+.month-filter {
+    padding: 10px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #495057;
+}
+
+.month-filter:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     outline: none;
@@ -458,6 +592,27 @@ canvas {
         padding: 20px;
     }
 
+    .summary-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+    
+    .summary-card {
+        padding: 20px;
+        gap: 16px;
+    }
+    
+    .summary-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+    
+    .summary-content h3 {
+        font-size: 1.6rem;
+    }
+
     .reports-grid {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -513,6 +668,31 @@ canvas {
 @media (max-width: 480px) {
     .panel-title h2 {
         font-size: 1.75rem;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    
+    .summary-card {
+        padding: 16px;
+        gap: 12px;
+    }
+    
+    .summary-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+    
+    .summary-content h3 {
+        font-size: 1.4rem;
+    }
+    
+    .summary-content p {
+        font-size: 0.8rem;
     }
     
     .report-header h3 {

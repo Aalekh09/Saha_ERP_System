@@ -124,4 +124,48 @@ document.addEventListener('DOMContentLoaded', () => {
             loginForm.dispatchEvent(new Event('submit'));
         }
     });
+
+    // === Theme Toggle Functionality ===
+    function initializeThemeToggle() {
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle?.querySelector('i');
+        
+        // Get saved theme from localStorage or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        
+        // Apply saved theme
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme, themeIcon);
+        
+        // Add click event listener
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                // Apply new theme
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme, themeIcon);
+                
+                // Show notification
+                showNotification(`Switched to ${newTheme} mode`);
+            });
+        }
+    }
+
+    function updateThemeIcon(theme, iconElement) {
+        if (!iconElement) return;
+        
+        if (theme === 'dark') {
+            iconElement.className = 'fas fa-sun';
+            iconElement.parentElement.title = 'Switch to Light Mode';
+        } else {
+            iconElement.className = 'fas fa-moon';
+            iconElement.parentElement.title = 'Switch to Dark Mode';
+        }
+    }
+
+    // Initialize theme toggle
+    initializeThemeToggle();
 }); 

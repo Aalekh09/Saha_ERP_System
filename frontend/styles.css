@@ -25,12 +25,31 @@
     --spacing-xl: 2rem;
 }
 
+/* Dark Mode Variables */
+[data-theme="dark"] {
+    --primary-color: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #60a5fa;
+    --secondary-color: #94a3b8;
+    --success-color: #22c55e;
+    --warning-color: #fbbf24;
+    --error-color: #f87171;
+    --background-color: #0f172a;
+    --surface-color: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border-color: #334155;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--background-color);
     margin: 0;
     padding: 0;
@@ -978,11 +997,47 @@ tr:last-child td {
     }
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.theme-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.theme-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover i {
+    transform: rotate(180deg);
+}
+
 /* Logout Button */
 .logout-btn {
     position: absolute;
     top: var(--spacing-lg);
-    right: var(--spacing-lg);
+    right: 80px; /* Adjusted to make room for theme toggle */
     background: var(--error-color);
     color: white;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -997,6 +1052,55 @@ tr:last-child td {
 .logout-btn:hover {
     background: #dc2626;
     transform: translateY(-1px);
+}
+
+/* Dark Mode Specific Styles */
+[data-theme="dark"] .table-container::-webkit-scrollbar-track {
+    background: var(--surface-color);
+}
+
+[data-theme="dark"] .table-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+[data-theme="dark"] .table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+[data-theme="dark"] .table-container::before {
+    background: linear-gradient(to left, rgba(15, 23, 42, 0.8), transparent);
+}
+
+[data-theme="dark"] .table-container::after {
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent);
+}
+
+[data-theme="dark"] .login-page {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+[data-theme="dark"] .login-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .login-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .pagination-container {
+    background: linear-gradient(135deg, var(--surface-color) 0%, var(--background-color) 100%);
+}
+
+[data-theme="dark"] input[type="file"] {
+    border-color: var(--border-color);
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] input[type="file"]:hover {
+    border-color: var(--primary-color);
+    background: var(--background-color);
 }
 
 /* Enhanced Mobile Responsiveness */
@@ -1323,6 +1427,10 @@ tr:last-child td {
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     backdrop-filter: blur(4px);
+}
+
+.modal.show {
+    display: block !important;
 }
 
 .modal-content {
@@ -5273,150 +5381,488 @@ fessional Student Profile Modal Styles */
     margin-top: 20px;
 }
 
-/* Professional ID Card Design */
-.professional-id-card {
-    width: 350px;
-    height: 220px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: 16px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    border: 1px solid var(--border-color);
+/* Corporate Professional ID Card Design */
+.corporate-id-card {
+    width: 420px;
+    height: 320px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     position: relative;
-    display: flex;
-    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    transition: all 0.3s ease;
 }
 
-.professional-id-card::before {
-    content: '';
+.corporate-id-card:hover {
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.corporate-id-card .card-background {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    position: relative;
+}
+
+/* Header Strip */
+.corporate-id-card .header-strip {
+    height: 8px;
+    background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #1e40af 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.corporate-id-card .strip-pattern {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #f093fb, #f5576c, #667eea, #764ba2);
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.1) 2px,
+        rgba(255, 255, 255, 0.1) 4px
+    );
 }
 
-.professional-id-card .id-card-header {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    color: white;
-    padding: 12px 16px;
+/* Institute Header */
+.corporate-id-card .institute-header {
+    padding: 16px 24px 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.institute-logo {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #f093fb, #f5576c);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: white;
+.corporate-id-card .institute-logo {
+    flex-shrink: 0;
 }
 
-.institute-info h2 {
-    font-size: 0.9rem;
-    margin: 0;
-    font-weight: 700;
-}
-
-.institute-info p {
-    font-size: 0.7rem;
-    margin: 2px 0 0 0;
-    opacity: 0.9;
-}
-
-.professional-id-card .id-card-body {
-    flex: 1;
-    padding: 16px;
-    display: flex;
-    gap: 12px;
-}
-
-.student-photo-placeholder {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+.corporate-id-card .logo-hexagon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.corporate-id-card .logo-hexagon::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    border-radius: 10px;
+    z-index: -1;
+}
+
+.corporate-id-card .logo-hexagon i {
     font-size: 1.5rem;
-    flex-shrink: 0;
+    color: white;
+    z-index: 2;
 }
 
-.professional-id-card .student-details {
+.corporate-id-card .institute-details {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
 }
 
-.professional-id-card .detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.corporate-id-card .institute-name {
+    margin: 0 0 2px 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: 1px;
+}
+
+.corporate-id-card .institute-full-name {
+    margin: 0 0 4px 0;
     font-size: 0.75rem;
-    padding: 2px 0;
-}
-
-.professional-id-card .label {
-    font-weight: 600;
-    color: var(--text-secondary);
-    min-width: 60px;
-}
-
-.professional-id-card .value {
+    color: #64748b;
     font-weight: 500;
-    color: var(--text-primary);
-    text-align: right;
-    flex: 1;
+    letter-spacing: 0.3px;
 }
 
-.professional-id-card .id-card-footer {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 8px 16px;
+.corporate-id-card .institute-tagline {
+    font-size: 0.65rem;
+    color: #1e40af;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: rgba(30, 64, 175, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Main Content */
+.corporate-id-card .card-main-content {
+    padding: 20px 24px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--border-color);
+    gap: 20px;
+    height: calc(100% - 140px);
+    min-height: 160px;
 }
 
-.signature-section {
+.corporate-id-card .student-photo-container {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
 }
 
-.signature-line {
-    width: 60px;
-    height: 1px;
-    background: var(--text-secondary);
+.corporate-id-card .photo-border {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    border-radius: 8px;
+    padding: 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.signature-section p {
+.corporate-id-card .student-photo {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.corporate-id-card .student-photo i {
+    font-size: 2rem;
+    color: #64748b;
+}
+
+.corporate-id-card .photo-label {
     font-size: 0.6rem;
-    color: var(--text-secondary);
-    margin: 0;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-.qr-code-placeholder {
-    width: 24px;
-    height: 24px;
-    background: var(--text-secondary);
+.corporate-id-card .student-information {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+
+.corporate-id-card .info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.corporate-id-card .student-name-section {
+    flex: 1;
+}
+
+.corporate-id-card .name-label {
+    font-size: 0.65rem;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.corporate-id-card .student-name-display {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.corporate-id-card .id-section {
+    text-align: right;
+}
+
+.corporate-id-card .id-label {
+    font-size: 0.65rem;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.corporate-id-card .id-display {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e40af;
+    background: rgba(30, 64, 175, 0.1);
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(30, 64, 175, 0.2);
+}
+
+.corporate-id-card .academic-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.corporate-id-card .detail-row {
+    display: flex;
+    align-items: center;
+}
+
+.corporate-id-card .detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.corporate-id-card .field-label {
+    font-size: 0.65rem;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.corporate-id-card .field-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+    background: rgba(248, 250, 252, 0.8);
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Footer */
+.corporate-id-card .card-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border-top: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.corporate-id-card .footer-left {
+    flex: 1;
+}
+
+.corporate-id-card .signature-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.corporate-id-card .signature-line {
+    width: 80px;
+    height: 1px;
+    background: #94a3b8;
+}
+
+.corporate-id-card .signature-text {
+    font-size: 0.6rem;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.corporate-id-card .footer-center {
+    flex: 0 0 auto;
+}
+
+.corporate-id-card .validity-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.corporate-id-card .validity-badge i {
+    font-size: 0.7rem;
+}
+
+.corporate-id-card .footer-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.corporate-id-card .qr-code-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.corporate-id-card .qr-code {
+    width: 28px;
+    height: 28px;
+    background: white;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.corporate-id-card .qr-code i {
+    font-size: 0.9rem;
+    color: #1e40af;
+}
+
+.corporate-id-card .qr-text {
+    font-size: 0.6rem;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* Legacy support - redirect to corporate design */
+.professional-id-card {
+    width: 420px;
+    height: 320px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.professional-id-card:hover {
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .corporate-id-card,
+    .professional-id-card {
+        width: 100%;
+        max-width: 380px;
+        height: auto;
+        min-height: 300px;
+    }
+    
+    .corporate-id-card .card-main-content {
+        flex-direction: column;
+        gap: 16px;
+        height: auto;
+        min-height: 180px;
+        padding: 16px 20px;
+    }
+    
+    .corporate-id-card .student-photo-container {
+        align-self: center;
+    }
+    
+    .corporate-id-card .info-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .corporate-id-card .id-section {
+        text-align: center;
+    }
+    
+    .corporate-id-card .institute-header {
+        padding: 12px 20px 10px;
+    }
+    
+    .corporate-id-card .card-footer {
+        position: relative;
+        height: auto;
+        padding: 12px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .corporate-id-card,
+    .professional-id-card {
+        max-width: 340px;
+        min-height: 280px;
+    }
+    
+    .corporate-id-card .institute-header {
+        padding: 10px 16px 8px;
+        gap: 12px;
+    }
+    
+    .corporate-id-card .logo-hexagon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .corporate-id-card .logo-hexagon i {
+        font-size: 1.2rem;
+    }
+    
+    .corporate-id-card .institute-name {
+        font-size: 1.3rem;
+    }
+    
+    .corporate-id-card .card-main-content {
+        padding: 12px 16px;
+        min-height: 160px;
+    }
+    
+    .corporate-id-card .photo-border {
+        width: 70px;
+        height: 85px;
+    }
+    
+    .corporate-id-card .card-footer {
+        padding: 10px 16px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .corporate-id-card .footer-left,
+    .corporate-id-card .footer-right {
+        flex: none;
+    }
 }
 
 /* ID Card Actions Section */
@@ -5633,17 +6079,7 @@ fessional Student Profile Modal Styles */
         gap: 24px;
     }
 
-    .professional-id-card {
-        width: 100%;
-        max-width: 320px;
-        height: auto;
-        min-height: 200px;
-    }
-
-    .id-card-actions {
-        flex-direction: column;
-        gap: 12px;
-    }
+    /* Responsive styles moved to corporate design section */
 
     .professional-action-btn {
         width: 100%;
@@ -5668,9 +6104,7 @@ fessional Student Profile Modal Styles */
         padding: 16px;
     }
 
-    .professional-id-card {
-        transform: scale(0.9);
-    }
+    /* Responsive styles handled in corporate design section */
 }
 
 /* / * Compact Professional Student Profile Modal Styles */
@@ -6940,7 +7374,7 @@ ssional Admin Login Page Styles */
     padding: 0;
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     overflow: hidden;
 }
 
@@ -8600,6 +9034,28 @@ hanced Feedback Modal Scrolling */
     background-color: #7c3aed;
 }
 
+/* Certificate button in student actions */
+.action-btn.certificate-btn {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.action-btn.certificate-btn:hover {
+    background-color: #d97706;
+}
+
+.action-btn.certificate-btn.disabled {
+    background-color: #9ca3af;
+    color: #6b7280;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.action-btn.certificate-btn.disabled:hover {
+    background-color: #9ca3af;
+    transform: none;
+}
+
 /* Responsive adjustments for ledger modal */
 @media (max-width: 768px) {
     .ledger-modal {
@@ -9470,4 +9926,55 @@ dit Payment Button Styling */
     background: #f8fafc !important;
     border-color: #e5e7eb !important;
     color: #374151 !important;
+}
+/* Mo
+dal show/hide states */
+.modal.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.modal-open {
+    overflow: hidden !important;
+}
+
+/* Ensure student ledger modal is properly displayed */
+#studentLedgerModal {
+    z-index: 10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#studentLedgerModal.show {
+    display: block !important;
+}
+
+/* Close button styling for better visibility */
+#closeLedgerModalBtn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+#closeLedgerModalBtn:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+#closeLedgerModalBtn:active {
+    transform: scale(0.95);
 }
