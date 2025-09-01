@@ -56,10 +56,7 @@
                     <i class="fas fa-list"></i>
                     <span>List Students</span>
                 </a>
-                <a href="attendance.html" class="tab-btn">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Attendance</span>
-                </a>
+
                 <a href="notifications.html" class="tab-btn active">
                     <i class="fas fa-envelope"></i>
                     <span>Notifications</span>
@@ -141,15 +138,7 @@
                             </div>
                         </div>
                         
-                        <div class="action-card" onclick="notificationManager.sendAttendanceAlerts()">
-                            <div class="action-icon attendance">
-                                <i class="fas fa-user-clock"></i>
-                            </div>
-                            <div class="action-content">
-                                <h4>Attendance Alerts</h4>
-                                <p>Alert students with low attendance</p>
-                            </div>
-                        </div>
+
                         
                         <div class="action-card" onclick="notificationManager.openBulkEmailModal()">
                             <div class="action-icon bulk">
@@ -220,24 +209,7 @@
                             </div>
                         </div>
                         
-                        <div class="template-card">
-                            <div class="template-header">
-                                <h4>Attendance Alert</h4>
-                                <div class="template-actions">
-                                    <button class="btn-icon" onclick="notificationManager.previewTemplate('attendanceAlert')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="notificationManager.editTemplate('attendanceAlert')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <p>Alert for students with low attendance</p>
-                            <div class="template-stats">
-                                <span class="stat">Used: 12 times</span>
-                                <span class="stat">Success: 95%</span>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 
@@ -285,7 +257,7 @@
                         <select id="recipientFilter" class="form-select">
                             <option value="all">All Students</option>
                             <option value="pending-fees">Students with Pending Fees</option>
-                            <option value="low-attendance">Students with Low Attendance</option>
+
                             <option value="course">Students in Specific Course</option>
                         </select>
                     </div>

@@ -107,42 +107,7 @@ class NotificationManager {
         }
     }
     
-    async sendAttendanceAlerts() {
-        try {
-            // Get students with low attendance (< 75%)
-            const lowAttendanceStudents = this.students.filter(student => {
-                // This would normally come from attendance data
-                // For demo purposes, we'll simulate some students having low attendance
-                return Math.random() < 0.3; // 30% chance of low attendance
-            });
-            
-            if (lowAttendanceStudents.length === 0) {
-                this.showNotification('No students with low attendance found');
-                return;
-            }
-            
-            let sentCount = 0;
-            
-            for (const student of lowAttendanceStudents) {
-                const attendanceData = {
-                    percentage: Math.floor(Math.random() * 25) + 50, // 50-74%
-                    present: Math.floor(Math.random() * 20) + 10,
-                    total: Math.floor(Math.random() * 10) + 30
-                };
-                
-                const sent = await this.emailSystem.sendAttendanceAlert(student, attendanceData);
-                if (sent) sentCount++;
-            }
-            
-            this.showNotification(`Attendance alerts sent to ${sentCount} students`);
-            this.addEmailActivity('Attendance Alerts Sent', `Sent to ${sentCount} students`, 'success');
-            this.updateStats();
-            
-        } catch (error) {
-            console.error('Error sending attendance alerts:', error);
-            this.showNotification('Error sending attendance alerts', true);
-        }
-    }
+
     
     openBulkEmailModal() {
         document.getElementById('bulkEmailModal').style.display = 'block';
