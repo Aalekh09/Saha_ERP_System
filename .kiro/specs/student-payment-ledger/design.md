@@ -143,7 +143,7 @@ Payments Panel
 
 ### Typography
 - **Headers**: Consistent with existing `h2`, `h3` styling
-- **Body Text**: Standard application font stack (System fonts)
+- **Body Text**: Standard application font stack (Inter)
 - **Data**: Monospace for numbers and amounts
 - **Status Text**: Bold for emphasis on payment status
 

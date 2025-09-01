@@ -39,8 +39,6 @@ function initializeMobileMenu() {
 // Initialize mobile menu when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeMobileMenu);
 
-
-
 // File upload preview functionality
 document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('tenthClassDocument');
@@ -443,9 +441,6 @@ function renderStudentRow(student, index) {
                     <button class="action-btn ledger-btn" data-id="${student.id}" data-name="${toUpperCase(student.name)}" title="View Payment Ledger">
                         <i class="fas fa-book"></i>
                     </button>
-                    <button class="action-btn certificate-btn ${(parseFloat(student.totalCourseFee) || 0) - (parseFloat(student.paidAmount) || 0) > 0 ? 'disabled' : ''}" data-id="${student.id}" data-name="${toUpperCase(student.name)}" title="${(parseFloat(student.totalCourseFee) || 0) - (parseFloat(student.paidAmount) || 0) > 0 ? 'Payment incomplete - Certificate unavailable' : 'Generate Certificate'}">
-                        <i class="fas fa-certificate"></i>
-                    </button>
                     <button class="action-btn delete-btn" data-id="${student.id}" title="Delete Student">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -566,15 +561,6 @@ function attachStudentRowEventListeners(student) {
             showIdCard(student.id);
         });
         idCardBtn.setAttribute('data-listener-attached', 'true');
-    }
-
-    // Certificate event
-    const certificateBtn = document.querySelector(`[data-id="${student.id}"].certificate-btn`);
-    if (certificateBtn && !certificateBtn.hasAttribute('data-listener-attached')) {
-        certificateBtn.addEventListener('click', () => {
-            handleCertificateGeneration(student);
-        });
-        certificateBtn.setAttribute('data-listener-attached', 'true');
     }
 
     // Student name click event
@@ -1718,36 +1704,21 @@ function generateReceipt(payment) {
         </html>
     `;
 
-    // Open receipt in new window for viewing (no automatic download)
+    // Create and download the receipt as HTML file
+    const blob = new Blob([receiptHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Receipt_${payment.receiptNumber}_${payment.student.name.replace(/\s+/g, '_')}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    // Also open receipt in new window for immediate viewing
     const receiptWindow = window.open('', '_blank');
     receiptWindow.document.write(receiptHTML);
     receiptWindow.document.close();
-    
-    // Add download functionality to the receipt window
-    receiptWindow.addEventListener('load', function() {
-        // Add download button functionality
-        const downloadBtn = receiptWindow.document.createElement('button');
-        downloadBtn.innerHTML = '💾 Download Receipt';
-        downloadBtn.className = 'print-button';
-        downloadBtn.style.marginLeft = '10px';
-        downloadBtn.onclick = function() {
-            const blob = new Blob([receiptHTML], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const link = receiptWindow.document.createElement('a');
-            link.href = url;
-            link.download = `Receipt_${payment.receiptNumber}_${payment.student.name.replace(/\s+/g, '_')}.html`;
-            receiptWindow.document.body.appendChild(link);
-            link.click();
-            receiptWindow.document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        };
-        
-        // Add the download button next to the print button
-        const printButton = receiptWindow.document.querySelector('.print-button');
-        if (printButton && printButton.parentNode) {
-            printButton.parentNode.appendChild(downloadBtn);
-        }
-    });
 }
 
 // Initialize payments when payments tab is clicked
@@ -2558,59 +2529,77 @@ window.addEventListener('click', (event) => {
 function showStudentLedger(studentId, studentName) {
     console.log('🚀 showStudentLedger called with ID:', studentId, 'Name:', studentName);
 
-    // Use requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-        // First, close any other open modals
-        const allModals = document.querySelectorAll('.modal');
-        allModals.forEach(modal => {
-            if (modal.id !== 'studentLedgerModal') {
-                modal.classList.remove('show');
-                modal.style.display = 'none';
-            }
-        });
-
-        const modal = document.getElementById('studentLedgerModal');
-        const subtitle = document.getElementById('ledgerModalSubtitle');
-
-        console.log('Modal element found:', !!modal);
-        console.log('Subtitle element found:', !!subtitle);
-
-        if (modal) {
-            console.log('✅ Opening modal for student:', studentName);
-            
-            // Update subtitle if it exists
-            if (subtitle) {
-                subtitle.textContent = `Payment history for ${toUpperCase(studentName)}`;
-            }
-
-            // Ensure modal is visible with both approaches
-            modal.style.display = 'block';
-            modal.classList.add('show');
-            
-            // Prevent body scrolling
-            document.body.style.overflow = 'hidden';
-            document.body.classList.add('modal-open');
-
-            console.log('Modal show class added');
-            console.log('Modal classes:', modal.className);
-            console.log('Modal display style:', modal.style.display);
-            
-            // Force a reflow to ensure styles are applied
-            modal.offsetHeight;
-            
-            console.log('Modal computed display:', window.getComputedStyle(modal).display);
-            console.log('Modal computed visibility:', window.getComputedStyle(modal).visibility);
-
-            // Load student data
-            setTimeout(() => {
-                loadStudentLedger(studentId);
-            }, 100);
-        } else {
-            console.error('❌ Modal element not found!');
-            console.error('DOM ready state:', document.readyState);
-            showNotification('Error opening student ledger - modal not found', true);
+    // First, close any other open modals
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
+        if (modal.id !== 'studentLedgerModal') {
+            modal.style.display = 'none';
         }
     });
+
+    const modal = document.getElementById('studentLedgerModal');
+    const subtitle = document.getElementById('ledgerModalSubtitle');
+
+    console.log('Modal element found:', !!modal);
+    console.log('Subtitle element found:', !!subtitle);
+
+    if (modal && subtitle) {
+        console.log('✅ Opening modal for student:', studentName);
+        subtitle.textContent = `Payment history for ${toUpperCase(studentName)}`;
+
+        // Force modal to be visible with important styles
+        modal.style.cssText = `
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 10000 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+        `;
+
+        // Ensure modal content has proper contrast
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+            modalContent.style.cssText = `
+                background: #ffffff !important;
+                color: #1e293b !important;
+                border-radius: 12px !important;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            `;
+        }
+
+        // Fix text colors in the modal
+        const textElements = modal.querySelectorAll('h2, h3, p, td, th, span, .student-name, .student-id, .father-name, .course-info');
+        textElements.forEach(element => {
+            element.style.color = '#1e293b !important';
+        });
+
+        // Fix secondary text colors
+        const secondaryElements = modal.querySelectorAll('.student-id, .modal-subtitle, .label, th');
+        secondaryElements.forEach(element => {
+            element.style.color = '#64748b !important';
+        });
+
+        // Add body class to prevent scrolling
+        document.body.style.overflow = 'hidden';
+
+        console.log('Modal forced to display with important styles');
+        console.log('Modal computed style:', window.getComputedStyle(modal).display);
+
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+            loadStudentLedger(studentId);
+        }, 100);
+    } else {
+        console.error('❌ Modal or subtitle element not found!');
+        console.error('Modal:', modal);
+        console.error('Subtitle:', subtitle);
+        showNotification('Error opening student ledger', true);
+    }
 }
 
 // Make function globally accessible
@@ -2723,11 +2712,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Close ledger modal
     const closeLedgerModalBtn = document.getElementById('closeLedgerModalBtn');
     if (closeLedgerModalBtn) {
-        closeLedgerModalBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+        closeLedgerModalBtn.addEventListener('click', function () {
             console.log('Close ledger modal button clicked');
-            closeStudentLedgerModal();
+            const modal = document.getElementById('studentLedgerModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                document.body.style.overflow = '';
+                console.log('Ledger modal closed');
+            }
         });
     }
 
@@ -2736,48 +2730,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('studentLedgerModal');
         if (event.target === modal) {
             console.log('Clicked outside ledger modal, closing');
-            closeStudentLedgerModal();
-        }
-    });
-
-    // Close modal with ESC key
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            const modal = document.getElementById('studentLedgerModal');
-            if (modal && modal.style.display === 'block') {
-                console.log('ESC key pressed, closing ledger modal');
-                closeStudentLedgerModal();
-            }
+            modal.style.display = 'none';
+            modal.style.visibility = 'hidden';
+            modal.style.opacity = '0';
+            document.body.style.overflow = '';
         }
     });
 });
-
-// Function to properly close the student ledger modal
-function closeStudentLedgerModal() {
-    const modal = document.getElementById('studentLedgerModal');
-    if (modal) {
-        console.log('Closing student ledger modal');
-        
-        // Remove show class and reset styles
-        modal.classList.remove('show');
-        modal.style.display = 'none';
-        
-        // Reset body overflow
-        document.body.style.overflow = '';
-        document.body.classList.remove('modal-open');
-        
-        console.log('Ledger modal closed successfully');
-        
-        // Clear any modal content to prevent memory leaks
-        const tableBody = document.querySelector('#studentLedgerTable tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '';
-        }
-    }
-}
-
-// Make the close function globally accessible
-window.closeStudentLedgerModal = closeStudentLedgerModal;
 
 // === Edit Payment Functionality ===
 
@@ -2996,551 +2955,3 @@ async function editPayment(paymentId) {
 document.addEventListener('DOMContentLoaded', function () {
     enhanceModalScrolling();
 });
-
-// FIXED VERSION - Generate compact professional payment receipt (replaces the corrupted version above)
-function generateReceiptFixed(payment) {
-    console.log('Generating compact professional receipt for:', payment);
-
-    // Create compact professional receipt HTML
-    const receiptHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Payment Receipt - ${payment.receiptNumber}</title>
-            <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    line-height: 1.4;
-                    color: #2c3e50;
-                    background: #f8f9fa;
-                    padding: 20px;
-                    font-size: 14px;
-                }
-                
-                .receipt-container {
-                    max-width: 900px;
-                    width: 100%;
-                    margin: 0 auto;
-                    background: #ffffff;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                    border: 1px solid #e0e0e0;
-                }
-                
-                .receipt-container::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 6px;
-                    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
-                }
-                
-                .header {
-                    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-                    color: white;
-                    padding: 25px 40px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-                
-                .header-left {
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                }
-                
-                .institute-name {
-                    font-size: 2.5rem;
-                    font-weight: 800;
-                    letter-spacing: 2px;
-                    color: white;
-                }
-                
-                .header-right {
-                    text-align: right;
-                }
-                
-                .receipt-badge {
-                    background: rgba(255, 255, 255, 0.15);
-                    padding: 8px 20px;
-                    border-radius: 25px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    display: inline-block;
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                }
-                
-                .receipt-date {
-                    font-size: 0.9rem;
-                    opacity: 0.9;
-                    margin-top: 8px;
-                }
-                
-                .receipt-info {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr 1fr;
-                    gap: 30px;
-                    padding: 30px 40px;
-                    background: #f8f9fa;
-                    border-bottom: 2px solid #e9ecef;
-                }
-                
-                .info-card {
-                    background: white;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-                    border-left: 4px solid #2c3e50;
-                    text-align: center;
-                }
-                
-                .info-label {
-                    font-size: 0.8rem;
-                    color: #6c757d;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    margin-bottom: 8px;
-                    font-weight: 600;
-                }
-                
-                .info-value {
-                    font-size: 1.2rem;
-                    font-weight: 700;
-                    color: #2c3e50;
-                }
-                
-                .receipt-number {
-                    color: #2c3e50;
-                    font-family: 'Courier New', monospace;
-                }
-                
-                .payment-details {
-                    padding: 30px 40px;
-                }
-                
-                .section-title {
-                    font-size: 1.3rem;
-                    font-weight: 700;
-                    color: #2c3e50;
-                    margin-bottom: 25px;
-                    text-align: center;
-                    border-bottom: 2px solid #2c3e50;
-                    padding-bottom: 10px;
-                }
-                
-                .details-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 20px 40px;
-                    margin-bottom: 30px;
-                }
-                
-                .detail-item {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 15px 20px;
-                    background: #f8f9fa;
-                    border-radius: 8px;
-                    border-left: 4px solid #e9ecef;
-                }
-                
-                .detail-label {
-                    font-weight: 600;
-                    color: #495057;
-                    font-size: 0.95rem;
-                }
-                
-                .detail-value {
-                    font-weight: 600;
-                    color: #2c3e50;
-                    font-size: 0.95rem;
-                    text-align: right;
-                }
-                
-                .amount-highlight {
-                    background: linear-gradient(135deg, #28a745, #20c997);
-                    color: white;
-                    border-left-color: #28a745 !important;
-                    grid-column: 1 / -1;
-                    justify-content: center;
-                    text-align: center;
-                    font-size: 1.1rem;
-                }
-                
-                .amount-highlight .detail-label,
-                .amount-highlight .detail-value {
-                    color: white;
-                    font-weight: 700;
-                    font-size: 1.2rem;
-                }
-                
-                .payment-summary {
-                    background: #2c3e50;
-                    color: white;
-                    padding: 25px 40px;
-                    display: grid;
-                    grid-template-columns: 1fr 1fr 1fr;
-                    gap: 30px;
-                    text-align: center;
-                }
-                
-                .summary-item {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-                
-                .summary-label {
-                    font-size: 0.9rem;
-                    opacity: 0.8;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                }
-                
-                .summary-value {
-                    font-size: 1.1rem;
-                    font-weight: 700;
-                }
-                
-                .footer {
-                    background: #f8f9fa;
-                    padding: 30px 40px;
-                    border-top: 2px solid #e9ecef;
-                }
-                
-                .footer-content {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 40px;
-                    align-items: center;
-                }
-                
-                .thank-you {
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    color: #2c3e50;
-                    text-align: left;
-                }
-                
-                .generated-info {
-                    text-align: right;
-                    font-size: 0.8rem;
-                    color: #6c757d;
-                    line-height: 1.4;
-                }
-                
-                .print-button {
-                    background: linear-gradient(135deg, #667eea, #764ba2);
-                    color: white;
-                    border: none;
-                    padding: 15px 30px;
-                    border-radius: 50px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    margin: 20px;
-                    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-                    transition: all 0.3s ease;
-                }
-                
-                .print-button:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-                }
-                
-                @media print {
-                    body {
-                        background: white;
-                        padding: 0;
-                        font-size: 13px;
-                    }
-                    .receipt-container {
-                        box-shadow: none;
-                        border-radius: 0;
-                        max-width: 100%;
-                        width: 100%;
-                    }
-                    .print-button {
-                        display: none;
-                    }
-                    @page {
-                        size: A4 landscape;
-                        margin: 0.5in;
-                    }
-                }
-                
-                @media (max-width: 900px) {
-                    .receipt-info {
-                        grid-template-columns: 1fr;
-                        gap: 15px;
-                        padding: 20px;
-                    }
-                    
-                    .payment-details {
-                        padding: 20px;
-                    }
-                    
-                    .details-grid {
-                        grid-template-columns: 1fr;
-                        gap: 15px;
-                    }
-                    
-                    .payment-summary {
-                        grid-template-columns: 1fr;
-                        gap: 20px;
-                        padding: 20px;
-                    }
-                    
-                    .footer-content {
-                        grid-template-columns: 1fr;
-                        gap: 20px;
-                        text-align: center;
-                    }
-                    
-                    .generated-info {
-                        text-align: center;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="receipt-container">
-                <div class="header">
-                    <div class="header-left">
-                        <h1 class="institute-name">SIMT</h1>
-                    </div>
-                    <div class="header-right">
-                        <div class="receipt-badge">Payment Receipt</div>
-                        <div class="receipt-date">${new Date().toLocaleDateString('en-IN', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })}</div>
-                    </div>
-                </div>
-                
-                <div class="receipt-info">
-                    <div class="info-card">
-                        <div class="info-label">Receipt Number</div>
-                        <div class="info-value receipt-number">${payment.receiptNumber}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Payment Date</div>
-                        <div class="info-value">${new Date(payment.paymentDate).toLocaleDateString('en-IN', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    })}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Transaction Status</div>
-                        <div class="info-value" style="color: #28a745;">✓ Completed</div>
-                    </div>
-                </div>
-                
-                <div class="payment-details">
-                    <h2 class="section-title">Payment Transaction Details</h2>
-                    
-                    <div class="details-grid">
-                        <div class="detail-item">
-                            <div class="detail-label">Student Name</div>
-                            <div class="detail-value">${payment.student.name}</div>
-                        </div>
-                        
-                        <div class="detail-item">
-                            <div class="detail-label">Student Phone</div>
-                            <div class="detail-value">${payment.student.phoneNumber || 'N/A'}</div>
-                        </div>
-                        
-                        <div class="detail-item">
-                            <div class="detail-label">Payment Method</div>
-                            <div class="detail-value">${payment.paymentMethod}</div>
-                        </div>
-                        
-                        <div class="detail-item">
-                            <div class="detail-label">Description</div>
-                            <div class="detail-value">${payment.description}</div>
-                        </div>
-                        
-                        <div class="detail-item">
-                            <div class="detail-label">Transaction Status</div>
-                            <div class="detail-value">${payment.status || 'Completed'}</div>
-                        </div>
-                        
-                        <div class="detail-item">
-                            <div class="detail-label">Transaction ID</div>
-                            <div class="detail-value">${payment.receiptNumber}</div>
-                        </div>
-                        
-                        <div class="detail-item amount-highlight">
-                            <div class="detail-label">Total Amount Paid</div>
-                            <div class="detail-value">₹${parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="payment-summary">
-                    <div class="summary-item">
-                        <div class="summary-label">Payment Status</div>
-                        <div class="summary-value" style="color: #28a745;">✓ Completed</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Transaction ID</div>
-                        <div class="summary-value" style="font-family: 'Courier New', monospace;">${payment.receiptNumber}</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Total Amount</div>
-                        <div class="summary-value">₹${parseFloat(payment.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    </div>
-                </div>
-                
-                <div class="footer">
-                    <div class="footer-content">
-                        <div class="thank-you">
-                            Thank you for your payment!<br>
-                            <small style="font-weight: normal; opacity: 0.8;">This is a computer-generated receipt.</small>
-                        </div>
-                        
-                        <div class="generated-info">
-                            Generated: ${new Date().toLocaleDateString('en-IN')}<br>
-                            Time: ${new Date().toLocaleTimeString('en-IN')}<br>
-                            System: SIMT v2.0
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="text-align: center;">
-                <button class="print-button" onclick="window.print()">🖨️ Print Receipt</button>
-                <button class="print-button" onclick="downloadReceipt()" style="margin-left: 10px;">💾 Download Receipt</button>
-            </div>
-            
-            <script>
-                function downloadReceipt() {
-                    const receiptHTML = document.documentElement.outerHTML;
-                    const blob = new Blob([receiptHTML], { type: 'text/html' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'Receipt_${payment.receiptNumber}_${payment.student.name.replace(/\s+/g, '_')}.html';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                }
-            </script>
-        </body>
-        </html>
-    `;
-
-    // Open receipt in new window for viewing (no automatic download)
-    const receiptWindow = window.open('', '_blank');
-    receiptWindow.document.write(receiptHTML);
-    receiptWindow.document.close();
-}
-
-// Override the original function with the fixed version
-generateReceipt = generateReceiptFixed;
-
-// Handle certificate generation with payment validation
-function handleCertificateGeneration(student) {
-    console.log('Certificate generation requested for student:', student);
-    
-    // Check if payment is fully paid
-    const totalFee = parseFloat(student.totalCourseFee) || 0;
-    const paidAmount = parseFloat(student.paidAmount) || 0;
-    const remainingAmount = totalFee - paidAmount;
-    
-    console.log('Payment check:', { totalFee, paidAmount, remainingAmount });
-    
-    if (remainingAmount > 0) {
-        // Payment not fully completed
-        showNotification(`Certificate cannot be generated. Remaining payment: ₹${formatCurrency(remainingAmount)}`, true);
-        return;
-    }
-    
-    if (totalFee === 0) {
-        // No fee structure defined
-        showNotification('Certificate cannot be generated. No fee structure defined for this student.', true);
-        return;
-    }
-    
-    // Payment is fully completed, redirect to hardcopy certificate with pre-filled data
-    const certificateData = {
-        studentId: student.id,
-        name: student.name || '',
-        fathersname: student.fatherName || '',
-        mothersname: student.motherName || '',
-        dob: student.dob || '',
-        certificate: student.courses || '',
-        duration: student.courseDuration || '',
-        registration: `STU${String(student.id).padStart(4, '0')}`,
-        rollno: `STU${String(student.id).padStart(4, '0')}`,
-        erollno: `EXAM${String(student.id).padStart(4, '0')}`,
-        // Set current date as issue date
-        IssueDay: new Date().getDate(),
-        IssueMonth: new Date().toLocaleString('default', { month: 'long' }),
-        IssueYear: new Date().getFullYear(),
-        IssueSession: `${new Date().getFullYear()}-${(new Date().getFullYear() + 1).toString().slice(-2)}`,
-        performance: 'Excellent',
-        Grade: 'A+'
-    };
-    
-    // Store data in sessionStorage for the certificate page
-    sessionStorage.setItem('certificatePreFillData', JSON.stringify(certificateData));
-    
-    // Show success message and redirect
-    showNotification('Payment verified! Redirecting to certificate generation...', false);
-    
-    setTimeout(() => {
-        window.location.href = 'hardcopy-certificate.html';
-    }, 1500);
-}
-
-// Debug function to test modal visibility
-function debugStudentLedgerModal() {
-    console.log('=== DEBUGGING STUDENT LEDGER MODAL ===');
-    
-    const modal = document.getElementById('studentLedgerModal');
-    console.log('Modal element:', modal);
-    
-    if (modal) {
-        console.log('Modal classes:', modal.className);
-        console.log('Modal style.display:', modal.style.display);
-        console.log('Modal computed display:', window.getComputedStyle(modal).display);
-        console.log('Modal computed visibility:', window.getComputedStyle(modal).visibility);
-        console.log('Modal computed opacity:', window.getComputedStyle(modal).opacity);
-        console.log('Modal computed z-index:', window.getComputedStyle(modal).zIndex);
-        console.log('Modal offsetHeight:', modal.offsetHeight);
-        console.log('Modal offsetWidth:', modal.offsetWidth);
-        
-        // Try to show it manually
-        modal.style.display = 'block';
-        modal.classList.add('show');
-        
-        console.log('After manual show:');
-        console.log('Modal computed display:', window.getComputedStyle(modal).display);
-        console.log('Modal is visible:', modal.offsetHeight > 0 && modal.offsetWidth > 0);
-    } else {
-        console.log('Modal not found!');
-        console.log('All elements with studentLedgerModal:', document.querySelectorAll('#studentLedgerModal'));
-    }
-    
-    console.log('=== END DEBUG ===');
-}
-
-// Make debug function globally accessible
-window.debugStudentLedgerModal = debugStudentLedgerModal;

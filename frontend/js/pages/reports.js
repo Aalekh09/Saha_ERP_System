@@ -297,117 +297,10 @@ function initializeMobileMenu() {
     }
 }
 
-// Load summary metrics
-async function loadSummaryMetrics() {
-    try {
-        console.log('Loading summary metrics from:', API_BASE);
-        
-        // Load total students
-        try {
-            const studentsRes = await fetch(`${API_BASE}/total-students`);
-            if (studentsRes.ok) {
-                const studentsData = await studentsRes.json();
-                document.getElementById('totalStudents').textContent = studentsData.total || '0';
-            } else {
-                console.error('Failed to load total students:', studentsRes.status);
-                document.getElementById('totalStudents').textContent = '0';
-            }
-        } catch (e) {
-            console.error('Error loading total students:', e);
-            document.getElementById('totalStudents').textContent = '0';
-        }
-        
-        // Load total revenue
-        try {
-            const revenueRes = await fetch(`${API_BASE}/total-revenue`);
-            if (revenueRes.ok) {
-                const revenueData = await revenueRes.json();
-                document.getElementById('totalRevenue').textContent = `₹${(revenueData.total || 0).toLocaleString('en-IN')}`;
-            } else {
-                console.error('Failed to load total revenue:', revenueRes.status);
-                document.getElementById('totalRevenue').textContent = '₹0';
-            }
-        } catch (e) {
-            console.error('Error loading total revenue:', e);
-            document.getElementById('totalRevenue').textContent = '₹0';
-        }
-        
-        // Load pending amount
-        try {
-            const pendingRes = await fetch(`${API_BASE}/total-pending`);
-            if (pendingRes.ok) {
-                const pendingData = await pendingRes.json();
-                document.getElementById('pendingAmount').textContent = `₹${(pendingData.total || 0).toLocaleString('en-IN')}`;
-            } else {
-                console.error('Failed to load pending amount:', pendingRes.status);
-                document.getElementById('pendingAmount').textContent = '₹0';
-            }
-        } catch (e) {
-            console.error('Error loading pending amount:', e);
-            document.getElementById('pendingAmount').textContent = '₹0';
-        }
-        
-        // Load this month's admissions
-        try {
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            const monthlyRes = await fetch(`${API_BASE}/students-by-month?month=${currentMonth}`);
-            if (monthlyRes.ok) {
-                const monthlyData = await monthlyRes.json();
-                document.getElementById('thisMonthAdmissions').textContent = monthlyData.length || '0';
-            } else {
-                console.error('Failed to load monthly admissions:', monthlyRes.status);
-                document.getElementById('thisMonthAdmissions').textContent = '0';
-            }
-        } catch (e) {
-            console.error('Error loading monthly admissions:', e);
-            document.getElementById('thisMonthAdmissions').textContent = '0';
-        }
-        
-    } catch (error) {
-        console.error('Error loading summary metrics:', error);
-        // Set fallback values
-        document.getElementById('totalStudents').textContent = '0';
-        document.getElementById('totalRevenue').textContent = '₹0';
-        document.getElementById('pendingAmount').textContent = '₹0';
-        document.getElementById('thisMonthAdmissions').textContent = '0';
-    }
-}
-
-// Refresh all reports
-function refreshAllReports() {
-    showNotification('Refreshing reports...', 'success');
-    
-    // Reload all data
-    loadSummaryMetrics();
-    loadStudentAdmissions();
-    loadMonthlyPayments();
-    loadPendingFees();
-    
-    // Reload monthly data if month picker exists
-    const monthPicker = document.getElementById('studentsMonthPicker');
-    if (monthPicker && monthPicker.value) {
-        loadStudentsByMonth();
-    }
-    
-    const pendingFeesMonthPicker = document.getElementById('pendingFeesMonthPicker');
-    if (pendingFeesMonthPicker && pendingFeesMonthPicker.value) {
-        loadPendingFeesByMonth();
-    }
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize mobile menu
     initializeMobileMenu();
-    
-    // Show loading state for metrics
-    document.getElementById('totalStudents').textContent = '...';
-    document.getElementById('totalRevenue').textContent = '...';
-    document.getElementById('pendingAmount').textContent = '...';
-    document.getElementById('thisMonthAdmissions').textContent = '...';
-    
-    // Load summary metrics first
-    loadSummaryMetrics();
     
     // Wait a bit for MonthlyAdmissionReports to initialize first
     setTimeout(() => {
@@ -879,7 +772,6 @@ function exportTableToExcel(tableId, customName = null) {
 // Make functions globally available
 window.exportAllReports = exportAllReports;
 window.exportTableToExcel = exportTableToExcel;
-window.refreshAllReports = refreshAllReports;
 
 // === Receipt Lookup Functionality ===
 

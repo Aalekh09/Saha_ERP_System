@@ -223,38 +223,4 @@ public class ReportController {
 
         return response;
     }
-
-    // 7. Total Students Count
-    @GetMapping("/total-students")
-    public Map<String, Object> getTotalStudents() {
-        Map<String, Object> response = new HashMap<>();
-        long total = studentRepository.count();
-        response.put("total", total);
-        return response;
-    }
-
-    // 8. Total Revenue
-    @GetMapping("/total-revenue")
-    public Map<String, Object> getTotalRevenue() {
-        Map<String, Object> response = new HashMap<>();
-        List<Payment> payments = paymentRepository.findAll();
-        double total = payments.stream()
-                .mapToDouble(Payment::getAmount)
-                .sum();
-        response.put("total", total);
-        return response;
-    }
-
-    // 9. Total Pending Amount
-    @GetMapping("/total-pending")
-    public Map<String, Object> getTotalPending() {
-        Map<String, Object> response = new HashMap<>();
-        List<Student> students = studentRepository.findAll();
-        double total = students.stream()
-                .filter(s -> s.getRemainingAmount() != null)
-                .mapToDouble(s -> s.getRemainingAmount().doubleValue())
-                .sum();
-        response.put("total", total);
-        return response;
-    }
 }
