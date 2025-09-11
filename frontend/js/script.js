@@ -2765,6 +2765,33 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.style.overflow = '';
         }
     });
+    
+    // Fallback: delegate close click in case the button is re-rendered
+    document.addEventListener('click', function(e){
+        const closeBtn = e.target.closest('#closeLedgerModalBtn');
+        if (closeBtn) {
+            closeStudentLedgerModal();
+        }
+    });
+});
+
+// Provide a global close function in case event listeners fail
+function closeStudentLedgerModal() {
+    const modal = document.getElementById('studentLedgerModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+        document.body.style.overflow = '';
+    }
+}
+window.closeStudentLedgerModal = closeStudentLedgerModal;
+
+// Support closing with ESC key
+document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+        closeStudentLedgerModal();
+    }
 });
 
 // === Edit Payment Functionality ===

@@ -1,38 +1,35 @@
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\CertificateRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\service\TeacherService.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\FeedbackRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\StudentController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\TeacherRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Payment.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\StudentManagementApplication.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\FeedbackEntry.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\service\PaymentService.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\BatchRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\FeedbackRequest.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\ReportController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\TeacherController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\config\DataInitializer.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\service\DashboardService.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Teacher.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\EnquiryRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\service\CertificateService.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\BatchController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Certificate.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\service\StudentService.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\TeacherStatus.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Enquiry.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\PaymentRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\service\EnquiryService.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\config\WebConfig.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\EnquiryController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\school\student\model\TeacherRole.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\HomeController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\DashboardController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Attendance.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Batch.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\CertificateController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\model\Student.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\PaymentController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\StudentRepository.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\controller\AttendanceController.java
-E:\PROJECT\Saha\Full Stack Project Saha Institute ERP Testing\backend\src\main\java\com\example\studentmanagement\repository\AttendanceRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\DashboardController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\service\DashboardService.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\school\student\model\TeacherRole.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\Student.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\Enquiry.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\StudentManagementApplication.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\TeacherRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\HomeController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\FeedbackRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\StudentController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\TeacherStatus.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\Teacher.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\StudentRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\PaymentController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\ReportController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\Certificate.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\Payment.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\Batch.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\BatchController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\service\EnquiryService.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\PaymentRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\CertificateRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\EnquiryController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\service\StudentService.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\FeedbackEntry.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\model\FeedbackRequest.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\service\PaymentService.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\BatchRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\config\WebConfig.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\CertificateController.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\service\CertificateService.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\repository\EnquiryRepository.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\service\TeacherService.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\config\DataInitializer.java
+E:\Projects\Saha\Full Stack Project Saha Institute ERP Testing - Copy\backend\src\main\java\com\example\studentmanagement\controller\TeacherController.java

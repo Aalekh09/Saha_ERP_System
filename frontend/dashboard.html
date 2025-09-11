@@ -152,9 +152,9 @@
                         <h3>Student Enrollment Trend</h3>
                         <div class="chart-actions">
                             <select id="enrollmentPeriod">
-                                <option value="7">Last 7 days</option>
-                                <option value="30" selected>Last 30 days</option>
-                                <option value="90">Last 3 months</option>
+                                <option value="monthly" selected>Monthly (Last 12 months)</option>
+                                <option value="daily-30">Last 30 days</option>
+                                <option value="daily-7">Last 7 days</option>
                             </select>
                         </div>
                     </div>
@@ -218,5 +218,26 @@
     </div>
 
     <script src="js/dashboard.js"></script>
+    <div id="enrollmentDetailsModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="modal-header-title">
+                        <h2 id="enrollmentDetailsTitle">Enrollments</h2>
+                        <p id="enrollmentDetailsMeta" class="modal-subtitle"></p>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="closeEnrollmentDetailsModal()" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul id="enrollmentDetailsList" style="margin:0; padding-left:18px;"></ul>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

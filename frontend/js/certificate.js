@@ -26,6 +26,44 @@ document.addEventListener('DOMContentLoaded', function () {
     const clearFormBtn = document.getElementById('clearForm');
     const fullscreenPreviewBtn = document.getElementById('fullscreenPreview');
 
+    // Auto-complete student name and auto-fill details
+    const API_BASE = 'http://localhost:4455';
+    const studentNameList = document.getElementById('studentNameList');
+    let studentsIndex = [];
+
+    async function loadStudentsIndex() {
+    try {
+        const res = await fetch(`${API_BASE}/api/students`);
+        if (!res.ok) return;
+        const students = await res.json();
+        studentsIndex = students.map(s => ({
+            id: s.id,
+            name: s.name || '',
+            courses: s.courses || '',
+            studentId: `STU${String(s.id).padStart(4,'0')}`
+        }));
+        if (studentNameList) {
+            studentNameList.innerHTML = studentsIndex
+                .map(s => `<option value="${s.name}"></option>`)
+                .join('');
+        }
+    } catch (e) {}
+    }
+
+    loadStudentsIndex();
+
+    if (studentName) {
+        studentName.addEventListener('change', () => {
+            const value = studentName.value.trim();
+            const match = studentsIndex.find(s => s.name.toLowerCase() === value.toLowerCase());
+            if (match) {
+                if (courseName) courseName.value = match.courses;
+                if (studentIdInput) studentIdInput.value = match.studentId;
+                updateLivePreview();
+            }
+        });
+    }
+
     // Add real-time preview updates
     if (studentName) {
         studentName.addEventListener('input', updateLivePreview);

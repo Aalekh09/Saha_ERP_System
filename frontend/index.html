@@ -149,7 +149,7 @@
                                 <p>Total Students</p>
                             </div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card" style="display: none;">
                             <div class="stat-icon">
                                 <i class="fas fa-money-bill-wave"></i>
                             </div>
@@ -647,66 +647,7 @@
                     </div>
                     <!-- End Edit Payment Modal -->
 
-                    <!-- Student Ledger Modal -->
-                    <div id="studentLedgerModal" class="modal" style="display:none;">
-                        <div class="modal-content ledger-modal">
-                            <div class="modal-header">
-                                <div class="modal-header-left">
-                                    <div class="modal-icon">
-                                        <i class="fas fa-book"></i>
-                                    </div>
-                                    <div class="modal-header-title">
-                                        <h2><i class="fas fa-book"></i> Student Payment Ledger</h2>
-                                        <p class="modal-subtitle" id="ledgerModalSubtitle">Payment history for student
-                                        </p>
-                                    </div>
-                                </div>
-                                <button class="close-btn" id="closeLedgerModalBtn" title="Close Ledger Modal">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="student-info-card">
-                                    <div class="student-avatar">
-                                        <i class="fas fa-user-graduate"></i>
-                                    </div>
-                                    <div class="student-details">
-                                        <h3 id="ledgerStudentName">Student Name</h3>
-                                        <p id="ledgerStudentId">ID: </p>
-                                        <p id="ledgerFatherName" class="father-name">Father: </p>
-                                        <p id="ledgerCourse" class="course-info">Course: </p>
-                                    </div>
-                                    <div class="payment-summary">
-                                        <div class="summary-item">
-                                            <span class="label">Total Paid:</span>
-                                            <span class="value" id="totalPaid">₹0</span>
-                                        </div>
-                                        <div class="summary-item">
-                                            <span class="label">Total Payments:</span>
-                                            <span class="value" id="totalPayments">0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ledger-table-container">
-                                    <table id="studentLedgerTable">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Receipt No</th>
-                                                <th>Description</th>
-                                                <th>Method</th>
-                                                <th>Amount</th>
-                                                <th>Status</th>
-                                                <th>Type</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Student Ledger Modal -->
+                    
                     
                     <!-- Payments Table -->
                     <div class="payments-list">
@@ -863,6 +804,66 @@
             </div>
         </div>
     </div>
+
+    <!-- Student Ledger Modal -->
+    <div id="studentLedgerModal" class="modal" style="display:none;">
+        <div class="modal-content ledger-modal">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="modal-header-title">
+                        <h2><i class="fas fa-book"></i> Student Payment Ledger</h2>
+                        <p class="modal-subtitle" id="ledgerModalSubtitle">Payment history for student</p>
+                    </div>
+                </div>
+                <button class="close-btn" id="closeLedgerModalBtn" type="button" title="Close Ledger Modal" onclick="closeStudentLedgerModal()" aria-label="Close Student Ledger">
+                    <i class="fas fa-times" onclick="closeStudentLedgerModal()"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="student-info-card">
+                    <div class="student-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="student-details">
+                        <h3 id="ledgerStudentName">Student Name</h3>
+                        <p id="ledgerStudentId">ID: </p>
+                        <p id="ledgerFatherName" class="father-name">Father: </p>
+                        <p id="ledgerCourse" class="course-info">Course: </p>
+                    </div>
+                    <div class="payment-summary">
+                        <div class="summary-item">
+                            <span class="label">Total Paid:</span>
+                            <span class="value" id="totalPaid">₹0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total Payments:</span>
+                            <span class="value" id="totalPayments">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ledger-table-container">
+                    <table id="studentLedgerTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Receipt No</th>
+                                <th>Description</th>
+                                <th>Method</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Student Ledger Modal -->
 
     <div id="notification" class="notification">
         <span id="notificationMessage"></span>
