@@ -161,7 +161,8 @@ if (username) {
 }
 
 // Local development API base URL
-const API_BASE = 'http://localhost:4455';
+// Respect pre-defined global API_BASE if present
+const API_BASE = window.API_BASE || 'http://localhost:4455';
 // Replace all API URLs
 const API_URL = API_BASE + '/api/students';
 const PAYMENT_API_URL = API_BASE + '/api/payments';
@@ -2057,11 +2058,16 @@ function calculateValidTillDate(duration) {
 }
 
 // Add event listeners for ID card modal
-document.getElementById('closeIdCardModal').addEventListener('click', () => {
-    document.getElementById('idCardModal').style.display = 'none';
-});
+const closeIdCardModalBtn = document.getElementById('closeIdCardModal');
+if (closeIdCardModalBtn) {
+    closeIdCardModalBtn.addEventListener('click', () => {
+        const modal = document.getElementById('idCardModal');
+        if (modal) modal.style.display = 'none';
+    });
+}
 
-document.getElementById('downloadIdCard').addEventListener('click', async () => {
+const downloadIdCardBtn = document.getElementById('downloadIdCard');
+if (downloadIdCardBtn) downloadIdCardBtn.addEventListener('click', async () => {
     const idCard = document.querySelector('.id-card');
 
     try {
@@ -2089,7 +2095,8 @@ document.getElementById('downloadIdCard').addEventListener('click', async () => 
     }
 });
 
-document.getElementById('shareIdCard').addEventListener('click', async () => {
+const shareIdCardBtn = document.getElementById('shareIdCard');
+if (shareIdCardBtn) shareIdCardBtn.addEventListener('click', async () => {
     const idCard = document.querySelector('.id-card');
 
     try {

@@ -1000,8 +1000,8 @@
     <script src="js/pagination.js"></script>
     <script src="js/script.js"></script>
     <script>
-        // API Base URL
-        const API_BASE = 'https://aalekhapi.sahaedu.in';
+        // API Base URL (respect existing if already defined by other scripts)
+        window.API_BASE = window.API_BASE || 'http://localhost:4455';
         
         // Sidebar submenu toggle for Certificates
         const certMenuBtn = document.getElementById('certificatesMenuBtn');
