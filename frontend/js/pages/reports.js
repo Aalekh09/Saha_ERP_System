@@ -385,7 +385,14 @@ function showNotification(message, type = 'success') {
 }
 
 // Reports.js - Professional Reports Dashboard
-const API_BASE = `https://aalekhapi.sahaedu.in/api/reports`;
+// Determine API base dynamically with robust fallbacks
+// Prefer a globally defined API base if present; otherwise use local origin or production
+const API_BASE_ROOT = (typeof window !== 'undefined' && window.API_BASE)
+    ? window.API_BASE
+    : (window.location.origin.includes(':3000')
+        ? window.location.origin.replace(':3000', ':4455')
+        : window.location.origin);
+const API_BASE = `${API_BASE_ROOT}/api/reports`;
 
 // Global pagination instances for reports
 let studentAdmissionsPagination = null;

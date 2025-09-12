@@ -21,7 +21,7 @@ class MonthlyAdmissionReports {
         this.viewToggleText = document.getElementById('viewToggleText');
         
         // API base URL
-        this.API_BASE = `https://aalekhapi.sahaedu.in/api/reports`;
+        this.API_BASE = `http://aalekhapi.sahaedu.in/api/reports`;
         
         // Initialize the component
         this.init();

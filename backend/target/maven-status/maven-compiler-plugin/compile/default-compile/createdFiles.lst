@@ -4,7 +4,6 @@ com\example\studentmanagement\repository\CertificateRepository.class
 com\example\studentmanagement\model\FeedbackRequest.class
 com\example\studentmanagement\model\Payment.class
 com\example\studentmanagement\service\PaymentService.class
-com\example\studentmanagement\controller\AttendanceController$AttendanceRequest.class
 com\example\studentmanagement\controller\StudentController.class
 com\example\studentmanagement\controller\PaymentController.class
 com\example\studentmanagement\StudentManagementApplication.class
@@ -33,7 +32,4 @@ com\example\studentmanagement\controller\ReportController.class
 com\example\studentmanagement\config\DataInitializer.class
 com\example\studentmanagement\model\FeedbackEntry.class
 com\example\studentmanagement\model\Enquiry.class
-com\example\studentmanagement\repository\AttendanceRepository.class
-com\example\studentmanagement\controller\AttendanceController.class
-com\example\studentmanagement\model\Attendance.class
 com\example\studentmanagement\model\TeacherStatus.class

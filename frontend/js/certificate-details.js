@@ -35,7 +35,7 @@ async function loadCertificateDetails(certificateId) {
         
         console.log('Loading certificate details for ID:', certificateId);
         
-        const response = await fetch(`https://aalekhapi.sahaedu.in/api/certificates/${certificateId}`);
+        const response = await fetch(`http://aalekhapi.sahaedu.in/api/certificates/${certificateId}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

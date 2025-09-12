@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Notifications - Saha Institute</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="stylesheet" href="libs/fallback-fonts.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <script src="libs/font-loader.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-info">
+                <h1>Saha Institute of Management & Technology</h1>
+                <p>Welcome, <span id="username"></span></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <div class="main-container">
+        <div class="side-panel" id="sidePanel">
+            <div class="admin-section">
+                <div class="admin-header">
+                    <img src="./uploads/teachers/d.jpg" alt="Admin" class="admin-avatar">
+                    <div class="admin-info">
+                        <h3>Aalekh</h3>
+                        <span class="admin-role">Administrator</span>
+                    </div>
+                </div>
+            </div>
+            <div class="student-section">
+                <h4>Navigation</h4>
+                <a href="dashboard.html" class="tab-btn">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <h4>Student Management</h4>
+                <a href="index.html" class="tab-btn">
+                    <i class="fas fa-list"></i>
+                    <span>List Students</span>
+                </a>
+
+                <a href="notifications.html" class="tab-btn active">
+                    <i class="fas fa-envelope"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="pages/reports.html" class="tab-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="enquiry.html" class="tab-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Enquiries</span>
+                </a>
+                <a href="certificate.html" class="tab-btn">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificates</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <h2><i class="fas fa-envelope"></i> Email Notifications</h2>
+                    <p class="subtitle">Manage and send automated email notifications to students</p>
+                </div>
+                <div class="panel-actions">
+                    <button class="btn-primary" id="sendFeeRemindersBtn">
+                        <i class="fas fa-money-bill-wave"></i> Send Fee Reminders
+                    </button>
+                    <button class="btn-secondary" id="previewEmailBtn">
+                        <i class="fas fa-eye"></i> Preview Templates
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-content">
+                <!-- Notification Stats -->
+                <div class="notification-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon email">
+                            <i class="fas fa-envelope-open"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="emailsSentToday">0</h3>
+                            <p>Emails Sent Today</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pendingReminders">0</h3>
+                            <p>Pending Fee Reminders</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="successRate">0%</h3>
+                            <p>Delivery Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions-section">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <div class="action-card" onclick="notificationManager.sendFeeReminders()">
+                            <div class="action-icon fee">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Fee Reminders</h4>
+                                <p>Send payment reminders to students with pending fees</p>
+                            </div>
+                        </div>
+                        
+
+                        
+                        <div class="action-card" onclick="notificationManager.openBulkEmailModal()">
+                            <div class="action-icon bulk">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Bulk Notifications</h4>
+                                <p>Send custom messages to multiple students</p>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card" onclick="notificationManager.scheduleReminders()">
+                            <div class="action-icon schedule">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Schedule Reminders</h4>
+                                <p>Set up automatic recurring notifications</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Templates -->
+                <div class="templates-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-file-alt"></i> Email Templates</h3>
+                        <button class="btn-outline" id="addTemplateBtn">
+                            <i class="fas fa-plus"></i> Add Template
+                        </button>
+                    </div>
+                    <div class="templates-grid">
+                        <div class="template-card">
+                            <div class="template-header">
+                                <h4>Fee Reminder</h4>
+                                <div class="template-actions">
+                                    <button class="btn-icon" onclick="notificationManager.previewTemplate('feeReminder')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="notificationManager.editTemplate('feeReminder')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p>Automated reminder for pending fee payments</p>
+                            <div class="template-stats">
+                                <span class="stat">Used: 45 times</span>
+                                <span class="stat">Success: 98%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="template-card">
+                            <div class="template-header">
+                                <h4>Welcome Student</h4>
+                                <div class="template-actions">
+                                    <button class="btn-icon" onclick="notificationManager.previewTemplate('welcomeStudent')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="notificationManager.editTemplate('welcomeStudent')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p>Welcome message for new student registrations</p>
+                            <div class="template-stats">
+                                <span class="stat">Used: 23 times</span>
+                                <span class="stat">Success: 100%</span>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-section">
+                    <h3><i class="fas fa-history"></i> Recent Email Activity</h3>
+                    <div class="activity-list" id="emailActivity">
+                        <!-- Activity items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Preview Modal -->
+    <div id="emailPreviewModal" class="modal" style="display: none;">
+        <div class="modal-content email-preview-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-envelope"></i> Email Preview</h2>
+                <button class="close-btn" id="closePreviewModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="email-preview" id="emailPreviewContent">
+                    <!-- Email preview will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Email Modal -->
+    <div id="bulkEmailModal" class="modal" style="display: none;">
+        <div class="modal-content bulk-email-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> Send Bulk Email</h2>
+                <button class="close-btn" id="closeBulkModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="bulkEmailForm">
+                    <div class="form-group">
+                        <label for="recipientFilter">Send to:</label>
+                        <select id="recipientFilter" class="form-select">
+                            <option value="all">All Students</option>
+                            <option value="pending-fees">Students with Pending Fees</option>
+
+                            <option value="course">Students in Specific Course</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="courseFilterGroup" style="display: none;">
+                        <label for="courseSelect">Select Course:</label>
+                        <select id="courseSelect" class="form-select">
+                            <!-- Courses will be populated here -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailSubject">Subject:</label>
+                        <input type="text" id="emailSubject" class="form-input" placeholder="Enter email subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailMessage">Message:</label>
+                        <textarea id="emailMessage" class="form-textarea" rows="6" placeholder="Enter your message here..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="previewBulkEmail">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Emails
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <script src="js/emailNotifications.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+</html>

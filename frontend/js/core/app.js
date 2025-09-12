@@ -6,7 +6,7 @@
 class App {
     constructor() {
         this.config = {
-            API_BASE_URL: 'https://aalekhapi.sahaedu.in',
+            API_BASE_URL: 'http://aalekhapi.sahaedu.in',
             VERSION: '2.0',
             DEBUG: false
         };

@@ -12,7 +12,7 @@ if (username) {
 }
 
 // Dynamic API base URL
-const API_BASE = 'https://aalekhapi.sahaedu.in';
+const API_BASE = 'http://aalekhapi.sahaedu.in';
 
 // Dashboard state
 let dashboardData = {
@@ -29,9 +29,51 @@ let revenueChartInstance = null;
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
     initializeMobileMenu();
+    initializeThemeToggle();
     initializeDashboard();
     setupEventListeners();
 });
+
+// === Theme Toggle Functionality ===
+function initializeThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle?.querySelector('i');
+    
+    // Get saved theme from localStorage or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply saved theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme, themeIcon);
+    
+    // Add click event listener
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Apply new theme
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme, themeIcon);
+            
+            // Show notification (if available)
+            console.log(`Switched to ${newTheme} mode`);
+        });
+    }
+}
+
+function updateThemeIcon(theme, iconElement) {
+    if (!iconElement) return;
+    
+    if (theme === 'dark') {
+        iconElement.className = 'fas fa-sun';
+        iconElement.parentElement.title = 'Switch to Light Mode';
+    } else {
+        iconElement.className = 'fas fa-moon';
+        iconElement.parentElement.title = 'Switch to Dark Mode';
+    }
+}
 
 // Initialize mobile menu functionality
 function initializeMobileMenu() {
@@ -96,7 +138,16 @@ function setupEventListeners() {
     const enrollmentPeriod = document.getElementById('enrollmentPeriod');
     if (enrollmentPeriod) {
         enrollmentPeriod.addEventListener('change', (e) => {
-            loadEnrollmentChart(e.target.value);
+            const val = e.target.value;
+            if (val === 'monthly') {
+                loadEnrollmentChart('monthly');
+            } else if (val === 'daily-7') {
+                loadEnrollmentChart(7);
+            } else if (val === 'daily-30') {
+                loadEnrollmentChart(30);
+            } else {
+                loadEnrollmentChart(30);
+            }
         });
     }
     
@@ -187,23 +238,45 @@ function updateKPIWidgets(kpis) {
 // Load chart data
 async function loadChartData() {
     await Promise.all([
-        loadEnrollmentChart(30),
+        loadEnrollmentChart('monthly'),
         loadRevenueChart('monthly')
     ]);
 }
 
 // Load enrollment chart
-async function loadEnrollmentChart(period = 30) {
+async function loadEnrollmentChart(period = 'monthly') {
     try {
-        const response = await fetch(`${API_BASE}/api/dashboard/enrollment-trend?period=${period}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch enrollment data');
+        let chartPayload;
+        if (period === 'monthly') {
+            // Aggregate students per month for last 12 months
+            const res = await fetch(`${API_BASE}/api/students`);
+            const students = res.ok ? await res.json() : [];
+            const map = new Map();
+            const now = new Date();
+            for (let i = 11; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+                map.set(key, 0);
+            }
+            students.forEach(s => {
+                if (!s.admissionDate) return;
+                const key = s.admissionDate.slice(0,7);
+                if (map.has(key)) map.set(key, map.get(key) + 1);
+            });
+            const labels = Array.from(map.keys()).map(k => monthLabelFromKey(k));
+            const data = Array.from(map.values());
+            chartPayload = { labels, data, keys: Array.from(map.keys()) };
+        } else {
+            const response = await fetch(`${API_BASE}/api/dashboard/enrollment-trend?period=${period}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch enrollment data');
+            }
+            const enrollmentData = await response.json();
+            chartPayload = enrollmentData;
         }
         
-        const enrollmentData = await response.json();
-        
         // Update chart
-        updateEnrollmentChart(enrollmentData);
+        updateEnrollmentChart(chartPayload);
     } catch (error) {
         console.error('Error loading enrollment chart:', error);
         showChartError('enrollmentChart');
@@ -239,21 +312,18 @@ function updateEnrollmentChart(chartData) {
     }
     
     enrollmentChartInstance = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: chartData.labels,
             datasets: [{
                 label: 'New Students',
                 data: chartData.data,
+                backgroundColor: 'rgba(59, 130, 246, 0.8)',
                 borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#3b82f6',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 2,
-                pointRadius: 5
+                borderWidth: 1,
+                borderRadius: 6,
+                borderSkipped: false,
+                maxBarThickness: 32
             }]
         },
         options: {
@@ -262,7 +332,22 @@ function updateEnrollmentChart(chartData) {
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `New Students: ${ctx.parsed.y}`
+                    }
                 }
+            },
+            onClick: async (evt, elements) => {
+                if (!elements || !elements.length) return;
+                const element = elements[0];
+                const index = element.index;
+                const label = chartData.labels[index];
+                const count = chartData.data[index];
+                // If monthly aggregation present, use its key to filter; else fallback to day
+                const monthKey = chartData.keys ? chartData.keys[index] : null;
+                await showEnrollmentDetails(label, monthKey, count);
             },
             scales: {
                 y: {
@@ -279,15 +364,89 @@ function updateEnrollmentChart(chartData) {
                         display: false
                     }
                 }
-            },
-            elements: {
-                point: {
-                    hoverRadius: 8
-                }
             }
         }
     });
 }
+
+// Convert label like "Aug 31" to approximate ISO date for current year
+function approximateIsoFromLabel(label) {
+    try {
+        const [monStr, dayStr] = label.split(' ');
+        const monthMap = {
+            Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+            Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+        };
+        const month = monthMap[monStr];
+        const day = parseInt(dayStr, 10);
+        const now = new Date();
+        const year = now.getFullYear();
+        const d = new Date(year, month, day);
+        // If date is in the future (period spanning last year), subtract one year
+        if (d > now) d.setFullYear(year - 1);
+        const iso = d.toISOString().slice(0, 10);
+        return iso;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Convert YYYY-MM to short month label like 'Apr'
+function monthLabelFromKey(key) {
+    try {
+        const parts = key.split('-');
+        if (parts.length !== 2) return key;
+        const monthIndex = parseInt(parts[1], 10) - 1;
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return months[Math.max(0, Math.min(11, monthIndex))];
+    } catch (e) {
+        return key;
+    }
+}
+
+// Fetch students for the selected date/month and show details modal
+async function showEnrollmentDetails(label, periodKey, count) {
+    try {
+        let studentsForSelection = [];
+        if (periodKey) {
+            const res = await fetch(`${API_BASE}/api/students`);
+            if (res.ok) {
+                const allStudents = await res.json();
+                // If key looks like YYYY-MM, filter by month; else exact date
+                if (/^\d{4}-\d{2}$/.test(periodKey)) {
+                    studentsForSelection = allStudents.filter(s => s.admissionDate && s.admissionDate.startsWith(periodKey));
+                } else {
+                    studentsForSelection = allStudents.filter(s => s.admissionDate === periodKey);
+                }
+            }
+        }
+        const modal = document.getElementById('enrollmentDetailsModal');
+        const title = document.getElementById('enrollmentDetailsTitle');
+        const list = document.getElementById('enrollmentDetailsList');
+        const meta = document.getElementById('enrollmentDetailsMeta');
+        if (modal && title && list && meta) {
+            title.textContent = `Enrollments — ${label}`;
+            meta.textContent = `${count} student(s)`;
+            if (studentsForSelection.length) {
+                list.innerHTML = studentsForSelection.map(s => `<li>${s.name || 'Student'} — ${s.courses || ''}</li>`).join('');
+            } else {
+                list.innerHTML = `<li>No detailed records available.</li>`;
+            }
+            modal.style.display = 'block';
+        }
+    } catch (err) {
+        console.error('Failed to load enrollment details', err);
+    }
+}
+
+// Close modal helper
+function closeEnrollmentDetailsModal() {
+    const modal = document.getElementById('enrollmentDetailsModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Expose close function
+window.closeEnrollmentDetailsModal = closeEnrollmentDetailsModal;
 
 // Update revenue chart
 function updateRevenueChart(chartData) {

@@ -60,7 +60,7 @@ class OfflineHandler {
     // Check if we can reach the server
     async checkServerConnection() {
         try {
-            const response = await fetch('https://aalekhapi.sahaedu.in/api/health', {
+            const response = await fetch('http://aalekhapi.sahaedu.in/api/health', {
                 method: 'HEAD',
                 timeout: 5000
             });
