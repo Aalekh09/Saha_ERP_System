@@ -23,6 +23,13 @@ const notificationMessage = document.getElementById('notificationMessage');
 const searchEnquiryInput = document.getElementById('searchEnquiryInput');
 const dateFilter = document.getElementById('dateFilter');
 const clearDateFilter = document.getElementById('clearDateFilter');
+const monthFilter = document.getElementById('monthFilter');
+const clearMonthFilter = document.getElementById('clearMonthFilter');
+const pendingCountEl = document.getElementById('pendingCount');
+const convertedCountEl = document.getElementById('convertedCount');
+const exportEnquiriesBtn = document.getElementById('exportEnquiriesBtn');
+const exportPendingBtn = document.getElementById('exportPendingBtn');
+const statusFilter = document.getElementById('statusFilter');
 const totalEnquiries = document.getElementById('totalEnquiries');
 const filteredEnquiries = document.getElementById('filteredEnquiries');
 const feedbackModal = document.getElementById('feedbackModal');
@@ -173,6 +180,15 @@ if (dateFilter) {
     });
 }
 
+// Month filter functionality
+if (monthFilter) {
+    monthFilter.addEventListener('change', () => applyFilters());
+}
+
+if (statusFilter) {
+    statusFilter.addEventListener('change', () => applyFilters());
+}
+
 // Clear date filter
 if (clearDateFilter) {
     clearDateFilter.addEventListener('click', () => {
@@ -181,10 +197,19 @@ if (clearDateFilter) {
     });
 }
 
+if (clearMonthFilter) {
+    clearMonthFilter.addEventListener('click', () => {
+        monthFilter.value = '';
+        applyFilters();
+    });
+}
+
 // Apply all filters (date and search)
 function applyFilters() {
     const selectedDate = dateFilter.value;
+    const selectedMonth = monthFilter ? monthFilter.value : '';
     const searchTerm = searchEnquiryInput.value.toLowerCase();
+    const chosenStatus = statusFilter ? statusFilter.value : 'all';
 
     let filteredEnquiries = allEnquiries;
 
@@ -193,6 +218,14 @@ function applyFilters() {
         filteredEnquiries = filteredEnquiries.filter(enquiry => {
             const enquiryDate = new Date(enquiry.dateOfEnquiry).toISOString().split('T')[0];
             return enquiryDate === selectedDate;
+        });
+    }
+
+    // Apply month filter (YYYY-MM)
+    if (selectedMonth) {
+        filteredEnquiries = filteredEnquiries.filter(enquiry => {
+            const ym = new Date(enquiry.dateOfEnquiry).toISOString().slice(0,7);
+            return ym === selectedMonth;
         });
     }
 
@@ -211,8 +244,16 @@ function applyFilters() {
         });
     }
 
+    // Apply status filter
+    if (chosenStatus === 'pending') {
+        filteredEnquiries = filteredEnquiries.filter(e => !e.convertedToStudent);
+    } else if (chosenStatus === 'converted') {
+        filteredEnquiries = filteredEnquiries.filter(e => e.convertedToStudent);
+    }
+
     displayEnquiries(filteredEnquiries);
     updateStats(allEnquiries.length, filteredEnquiries.length);
+    updateStatusSummary(filteredEnquiries);
 }
 
 // Update stats display
@@ -223,6 +264,79 @@ function updateStats(total, filtered) {
     if (filteredEnquiries) {
         filteredEnquiries.textContent = `Showing: ${filtered}`;
     }
+}
+
+function updateStatusSummary(enquiries) {
+    const pending = enquiries.filter(e => !e.convertedToStudent).length;
+    const converted = enquiries.filter(e => e.convertedToStudent).length;
+    if (pendingCountEl) pendingCountEl.textContent = `Pending: ${pending}`;
+    if (convertedCountEl) convertedCountEl.textContent = `Converted: ${converted}`;
+    const tbody = document.querySelector('#enquirySummaryTable tbody');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr><td>Pending</td><td>${pending}</td></tr>
+            <tr><td>Converted</td><td>${converted}</td></tr>
+        `;
+    }
+}
+
+// Export to Excel using SheetJS if present, else CSV fallback
+function exportTableToExcel(tableId, filename) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+    if (window.XLSX) {
+        const wb = XLSX.utils.table_to_book(table, {sheet: 'Sheet1'});
+        XLSX.writeFile(wb, `${filename}.xlsx`);
+    } else {
+        // CSV fallback
+        const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+            Array.from(tr.querySelectorAll('th,td')).map(td => '"' + (td.innerText || '').replace(/"/g,'""') + '"').join(',')
+        ).join('\n');
+        const blob = new Blob([rows], {type:'text/csv;charset=utf-8;'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${filename}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+
+if (exportEnquiriesBtn) {
+    exportEnquiriesBtn.addEventListener('click', () => exportTableToExcel('enquiriesTable', 'Enquiries'));
+}
+if (exportPendingBtn) {
+    exportPendingBtn.addEventListener('click', () => {
+        // Build a temporary table with only pending enquiries
+        const current = enquiriesPagination ? enquiriesPagination.getCurrentData() : allEnquiries;
+        const pending = current.filter(e => !e.convertedToStudent);
+        const tempTable = document.createElement('table');
+        const thead = document.createElement('thead');
+        thead.innerHTML = document.querySelector('#enquiriesTable thead').innerHTML;
+        const tbody = document.createElement('tbody');
+        tbody.innerHTML = pending.map((e) => `
+            <tr>
+                <td>${e.name}</td>
+                <td>${e.fatherName || ''}</td>
+                <td>${new Date(e.dateOfEnquiry).toLocaleDateString()}</td>
+                <td>${e.takenBy || 'N/A'}</td>
+                <td>${e.phoneNumber}</td>
+                <td>${e.course || ''}</td>
+                <td>${e.courseDuration || ''}</td>
+                <td class="mobile-hide">${e.remarks || ''}</td>
+                <td><span class="badge bg-warning">Pending</span></td>
+                <td class="mobile-hide"></td>
+                <td class="mobile-hide"></td>
+                <td class="mobile-hide"></td>
+            </tr>
+        `).join('');
+        tempTable.appendChild(thead);
+        tempTable.appendChild(tbody);
+        tempTable.style.display = 'none';
+        document.body.appendChild(tempTable);
+        exportTableToExcel(tempTable.id || (tempTable.id = 'tempPendingTable'), 'Pending_Enquiries');
+        document.body.removeChild(tempTable);
+    });
 }
 
 // Search functionality
