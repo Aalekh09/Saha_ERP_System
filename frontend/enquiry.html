@@ -170,12 +170,31 @@
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
+                            <div class="date-filter" style="margin-left:12px;">
+                                <label for="monthFilter">Filter by Month:</label>
+                                <input type="month" id="monthFilter" placeholder="Select month">
+                                <button id="clearMonthFilter" title="Clear month filter">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                             <div class="search-container">
                                 <div class="search-box">
                                     <i class="fas fa-search"></i>
                                     <input type="text" id="searchEnquiryInput" placeholder="Search enquiries...">
                                 </div>
                             </div>
+                            <div class="date-filter" style="margin-left:12px;">
+                                <label for="statusFilter">Status:</label>
+                                <select id="statusFilter">
+                                    <option value="all" selected>All</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="converted">Converted</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-actions" style="gap:8px;">
+                            <button id="exportEnquiriesBtn" class="action-btn"><i class="fas fa-file-excel"></i> Export Enquiries</button>
+                            <button id="exportPendingBtn" class="action-btn"><i class="fas fa-filter"></i> Export Pending</button>
                         </div>
                     </div>
                 </div>
@@ -184,8 +203,25 @@
                     <div class="enquiry-stats">
                         <span id="totalEnquiries">Total: 0</span>
                         <span id="filteredEnquiries">Showing: 0</span>
+                        <span id="pendingCount" style="margin-left:12px;">Pending: 0</span>
+                        <span id="convertedCount" style="margin-left:12px;">Converted: 0</span>
                     </div>
                     
+                    <div class="table-container" style="margin-bottom:16px;">
+                        <table id="enquirySummaryTable" class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Pending</td><td>0</td></tr>
+                                <tr><td>Converted</td><td>0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <div id="enquiries-panel">
                         <div class="table-container">
                             <table id="enquiriesTable">

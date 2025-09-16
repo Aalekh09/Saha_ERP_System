@@ -385,14 +385,9 @@ function showNotification(message, type = 'success') {
 }
 
 // Reports.js - Professional Reports Dashboard
-// Determine API base dynamically with robust fallbacks
-// Prefer a globally defined API base if present; otherwise use local origin or production
-const API_BASE_ROOT = (typeof window !== 'undefined' && window.API_BASE)
-    ? window.API_BASE
-    : (window.location.origin.includes(':3000')
-        ? window.location.origin.replace(':3000', ':4455')
-        : window.location.origin);
-const API_BASE = `${API_BASE_ROOT}/api/reports`;
+// Determine API base using global if provided, fallback to production host
+const REPORTS_API_HOST = (window.API_BASE || 'http://aalekhapi.sahaedu.in');
+const API_BASE = `${REPORTS_API_HOST}/api/reports`;
 
 // Global pagination instances for reports
 let studentAdmissionsPagination = null;
