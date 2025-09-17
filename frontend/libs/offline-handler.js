@@ -2,6 +2,7 @@
 class OfflineHandler {
     constructor() {
         this.isOnline = navigator.onLine;
+        this.applyCacheBusting();
         this.init();
     }
 
@@ -67,6 +68,37 @@ class OfflineHandler {
             return response.ok;
         } catch (error) {
             return false;
+        }
+    }
+
+    // Add a light cache-busting layer for static assets to avoid stale caches
+    applyCacheBusting() {
+        try {
+            const stored = localStorage.getItem('app_version');
+            const current = stored || String(Date.now());
+            if (!stored) localStorage.setItem('app_version', current);
+
+            const originalFetch = window.fetch;
+            window.fetch = function(input, init) {
+                try {
+                    const bust = (urlStr) => {
+                        const u = new URL(urlStr, window.location.origin);
+                        if (u.origin === window.location.origin && /\.(css|js|png|jpg|jpeg|svg|ico|html)$/i.test(u.pathname)) {
+                            u.searchParams.set('v', current);
+                            return u.toString();
+                        }
+                        return urlStr;
+                    };
+                    if (typeof input === 'string') {
+                        input = bust(input);
+                    } else if (input && input.url) {
+                        input = new Request(bust(input.url), input);
+                    }
+                } catch (e) { /* ignore */ }
+                return originalFetch.call(this, input, init);
+            };
+        } catch (e) {
+            // ignore
         }
     }
 }
